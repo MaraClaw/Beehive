@@ -115,6 +115,7 @@ import {
   runMigration,
   runSchedule,
   runWatchCycle,
+  SWARMVAULT_WORKSPACE_ID_ENV,
   serveSchedules,
   startGraphServer,
   startMcpServer,
@@ -123,6 +124,7 @@ import {
   uninstallGitHooks,
   updateMemoryTask,
   validateGraphVault,
+  validateWorkspaceId,
   watchVault
 } from "@swarmvaultai/engine";
 import { Command, Option } from "commander";
@@ -131,12 +133,15 @@ import { collectCliNotices, collectHeuristicProviderNotice } from "./notices.js"
 const program = new Command();
 const CLI_VERSION = readCliVersion();
 let activeCommand: Command | null = null;
+let previousWorkspaceId: string | undefined;
+let workspaceIdWasSetForCommand = false;
 
 program
   .name("swarmvault")
   .description("SwarmVault is a local-first knowledge compiler with graph outputs and optional provider-backed workflows.")
   .version(CLI_VERSION)
   .enablePositionalOptions()
+  .option("--workspace-id <id>", "Workspace id for generated artifacts and behavior commands")
   .option("--json", "Emit structured JSON output", false);
 
 program.addHelpText("after", (context) =>
@@ -388,8 +393,16 @@ async function pathExists(filePath: string): Promise<boolean> {
   }
 }
 
+function workspaceCommand(command: string): string {
+  const workspaceId = process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  if (!workspaceId || !command.startsWith("swarmvault ") || command.startsWith("swarmvault --workspace-id ")) {
+    return command;
+  }
+  return `swarmvault --workspace-id ${workspaceId}${command.slice("swarmvault".length)}`;
+}
+
 function nextRecommendation(label: string, command: string, description: string, priority: NextCommandPriority): NextCommandRecommendation {
-  return { label, command, description, priority };
+  return { label, command: workspaceCommand(command), description, priority };
 }
 
 function dedupeNextRecommendations(recommendations: NextCommandRecommendation[]): NextCommandRecommendation[] {
@@ -744,6 +757,34 @@ function getCommandPath(command: Command): string[] {
   return names;
 }
 
+function commandWorkspaceId(command: Command): string | undefined {
+  const optsWithGlobals = command.optsWithGlobals() as { workspaceId?: unknown };
+  return typeof optsWithGlobals.workspaceId === "string" ? optsWithGlobals.workspaceId : process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+}
+
+function beginWorkspaceCommand(command: Command): void {
+  const workspaceId = commandWorkspaceId(command);
+  if (workspaceId === undefined) {
+    throw new Error(`Behavior commands require --workspace-id <id> or ${SWARMVAULT_WORKSPACE_ID_ENV}.`);
+  }
+  previousWorkspaceId = process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  workspaceIdWasSetForCommand = true;
+  process.env[SWARMVAULT_WORKSPACE_ID_ENV] = validateWorkspaceId(workspaceId);
+}
+
+function finishWorkspaceCommand(): void {
+  if (!workspaceIdWasSetForCommand) {
+    return;
+  }
+  if (previousWorkspaceId === undefined) {
+    delete process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  } else {
+    process.env[SWARMVAULT_WORKSPACE_ID_ENV] = previousWorkspaceId;
+  }
+  previousWorkspaceId = undefined;
+  workspaceIdWasSetForCommand = false;
+}
+
 async function runGraphUpdateCommand(
   targetPath: string | undefined,
   options: { lint?: boolean; force?: boolean; file?: string[] }
@@ -909,11 +950,11 @@ async function runScanCommand(
     log(`Share kit: ${shareKitPath}`);
     log("");
     log("Next steps:");
-    log('  swarmvault query "What are the key concepts?"');
-    log("  swarmvault graph serve");
-    log("  swarmvault doctor");
-    log("  swarmvault candidate list");
-    log("  swarmvault next");
+    log(`  ${workspaceCommand('swarmvault query "What are the key concepts?"')}`);
+    log(`  ${workspaceCommand("swarmvault graph serve")}`);
+    log(`  ${workspaceCommand("swarmvault doctor")}`);
+    log(`  ${workspaceCommand("swarmvault candidate list")}`);
+    log(`  ${workspaceCommand("swarmvault next")}`);
   }
 
   if (options.mcp) {
@@ -943,7 +984,7 @@ async function runScanCommand(
       });
     } else {
       log(`Graph viewer running at http://localhost:${server.port}`);
-      log("Next orientation: swarmvault next");
+      log(`Next orientation: ${workspaceCommand("swarmvault next")}`);
     }
     process.on("SIGINT", async () => {
       try {
@@ -3670,9 +3711,9 @@ program
     await compileVault(demoDir, {});
 
     const { paths } = await loadVaultConfig(demoDir);
-    const shareCardPath = path.join(demoDir, "wiki", "graph", "share-card.md");
-    const shareCardSvgPath = path.join(demoDir, "wiki", "graph", "share-card.svg");
-    const shareKitPath = path.join(demoDir, "wiki", "graph", "share-kit");
+    const shareCardPath = path.join(paths.wikiDir, "graph", "share-card.md");
+    const shareCardSvgPath = path.join(paths.wikiDir, "graph", "share-card.svg");
+    const shareKitPath = path.join(paths.wikiDir, "graph", "share-kit");
 
     let graphStats = "";
     try {
@@ -3714,9 +3755,9 @@ program
         log("");
         log("Try next:");
         log(`  cd ${demoDir}`);
-        log("  swarmvault graph share --post");
-        log('  swarmvault query "How does contradiction detection work?"');
-        log("  swarmvault lint");
+        log(`  ${workspaceCommand("swarmvault graph share --post")}`);
+        log(`  ${workspaceCommand('swarmvault query "How does contradiction detection work?"')}`);
+        log(`  ${workspaceCommand("swarmvault lint")}`);
       }
       process.on("SIGINT", async () => {
         try {
@@ -3730,9 +3771,9 @@ program
       log("");
       log("Try next:");
       log(`  cd ${demoDir}`);
-      log("  swarmvault graph share --post");
-      log("  swarmvault graph serve");
-      log('  swarmvault query "How does contradiction detection work?"');
+      log(`  ${workspaceCommand("swarmvault graph share --post")}`);
+      log(`  ${workspaceCommand("swarmvault graph serve")}`);
+      log(`  ${workspaceCommand('swarmvault query "How does contradiction detection work?"')}`);
     }
   });
 
@@ -3989,6 +4030,10 @@ program
 
 function enableStructuredJsonOnSubcommands(command: Command): void {
   for (const subcommand of command.commands) {
+    const hasWorkspaceIdOption = subcommand.options.some((option) => option.attributeName() === "workspaceId");
+    if (!hasWorkspaceIdOption) {
+      subcommand.option("--workspace-id <id>", "Workspace id for generated artifacts and behavior commands");
+    }
     const hasJsonOption = subcommand.options.some((option) => option.attributeName() === "json");
     if (!hasJsonOption) {
       subcommand.option("--json", "Emit structured JSON output", false);
@@ -4001,9 +4046,11 @@ enableStructuredJsonOnSubcommands(program);
 
 program.hook("preAction", (_command, actionCommand) => {
   activeCommand = actionCommand;
+  beginWorkspaceCommand(actionCommand);
 });
 
 program.parseAsync(process.argv).catch((error: unknown) => {
+  finishWorkspaceCommand();
   const message = error instanceof Error ? error.message : String(error);
   if (isJson()) {
     emitJson({ error: message });
