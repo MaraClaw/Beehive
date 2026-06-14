@@ -112,6 +112,20 @@ async function withPrivateUrlAllowance<T>(run: () => Promise<T>): Promise<T> {
   }
 }
 
+async function withWorkspaceId<T>(workspaceId: string, run: () => Promise<T>): Promise<T> {
+  const previous = process.env.SWARMVAULT_WORKSPACE_ID;
+  process.env.SWARMVAULT_WORKSPACE_ID = workspaceId;
+  try {
+    return await run();
+  } finally {
+    if (previous === undefined) {
+      delete process.env.SWARMVAULT_WORKSPACE_ID;
+    } else {
+      process.env.SWARMVAULT_WORKSPACE_ID = previous;
+    }
+  }
+}
+
 async function startFixtureServer(
   routes: Record<string, { status?: number; contentType?: string; body: string | Buffer }>
 ): Promise<{ baseUrl: string; close: () => Promise<void> }> {
@@ -551,6 +565,36 @@ describe("swarmvault workflow", () => {
     await expect(fs.access(path.join(rootDir, "wiki", "insights", "index.md"))).rejects.toThrow();
   });
 
+  it("init --lite nests generated artifacts under the active workspace id", async () => {
+    const rootDir = await createTempWorkspace();
+    const previousOut = process.env.SWARMVAULT_OUT;
+    process.env.SWARMVAULT_OUT = ".swarmvault-out";
+    try {
+      await withWorkspaceId("lite", async () => {
+        await initVault(rootDir, { lite: true, obsidian: true });
+      });
+      const workspaceRoot = path.join(rootDir, ".swarmvault-out", "lite");
+
+      await expect(fs.access(path.join(workspaceRoot, "raw"))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(workspaceRoot, "wiki"))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(workspaceRoot, "swarmvault.schema.md"))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(workspaceRoot, ".obsidian"))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(workspaceRoot, "state"))).rejects.toThrow();
+
+      await expect(fs.access(path.join(rootDir, "swarmvault.config.json"))).rejects.toThrow();
+      await expect(fs.access(path.join(rootDir, "swarmvault.schema.md"))).rejects.toThrow();
+      await expect(fs.access(path.join(rootDir, "raw"))).rejects.toThrow();
+      await expect(fs.access(path.join(rootDir, "wiki"))).rejects.toThrow();
+      await expect(fs.access(path.join(rootDir, ".obsidian"))).rejects.toThrow();
+    } finally {
+      if (previousOut === undefined) {
+        delete process.env.SWARMVAULT_OUT;
+      } else {
+        process.env.SWARMVAULT_OUT = previousOut;
+      }
+    }
+  });
+
   it("resolves generated artifacts under SWARMVAULT_OUT while keeping config in the project root", async () => {
     const rootDir = await createTempWorkspace();
     const previousOut = process.env.SWARMVAULT_OUT;
@@ -577,6 +621,46 @@ describe("swarmvault workflow", () => {
       const task = await startMemoryTask(rootDir, { goal: "Track output root behavior", target: "Output Root", agent: "codex" });
       expect(task.artifactPath.startsWith(path.join(artifactRoot, "state", "memory"))).toBe(true);
       expect(task.markdownPath.startsWith(path.join(artifactRoot, "wiki", "memory"))).toBe(true);
+    } finally {
+      if (previousOut === undefined) {
+        delete process.env.SWARMVAULT_OUT;
+      } else {
+        process.env.SWARMVAULT_OUT = previousOut;
+      }
+    }
+  });
+
+  it("nests generated artifacts under the active workspace id", async () => {
+    const rootDir = await createTempWorkspace();
+    const previousOut = process.env.SWARMVAULT_OUT;
+    process.env.SWARMVAULT_OUT = ".swarmvault-out";
+    try {
+      await withWorkspaceId("alpha", async () => {
+        await initVault(rootDir, { obsidian: true });
+        const { paths } = await loadVaultConfig(rootDir);
+        const workspaceRoot = path.join(rootDir, ".swarmvault-out", "alpha");
+
+        expect(paths.artifactRootDir).toBe(workspaceRoot);
+        expect(paths.schemaPath).toBe(path.join(workspaceRoot, "swarmvault.schema.md"));
+        await expect(fs.access(path.join(rootDir, "swarmvault.config.json"))).resolves.toBeUndefined();
+        await expect(fs.access(path.join(workspaceRoot, "swarmvault.schema.md"))).resolves.toBeUndefined();
+        for (const entry of ["raw", "wiki", "state", "agent", "inbox", ".obsidian"]) {
+          await expect(fs.access(path.join(workspaceRoot, entry))).resolves.toBeUndefined();
+        }
+        for (const entry of ["swarmvault.schema.md", "raw", "wiki", "state", "agent", "inbox", ".obsidian"]) {
+          await expect(fs.access(path.join(rootDir, entry))).rejects.toThrow();
+        }
+
+        await fs.writeFile(path.join(rootDir, "workspace-source.md"), "# Workspace Source\n\nWorkspace id scoped artifacts.", "utf8");
+        await ingestInput(rootDir, "workspace-source.md");
+        await compileVault(rootDir);
+        await expect(fs.access(path.join(workspaceRoot, "state", "graph.json"))).resolves.toBeUndefined();
+        await expect(fs.access(path.join(workspaceRoot, "wiki", "graph", "report.md"))).resolves.toBeUndefined();
+
+        const task = await startMemoryTask(rootDir, { goal: "Track workspace id behavior", target: "Workspace Source", agent: "codex" });
+        expect(task.artifactPath.startsWith(path.join(workspaceRoot, "state", "memory"))).toBe(true);
+        expect(task.markdownPath.startsWith(path.join(workspaceRoot, "wiki", "memory"))).toBe(true);
+      });
     } finally {
       if (previousOut === undefined) {
         delete process.env.SWARMVAULT_OUT;
@@ -2225,134 +2309,143 @@ describe("swarmvault workflow", () => {
 
   it("enriches the graph with semantic similarity, group patterns, and richer graph-tool metadata", async () => {
     const rootDir = await createTempWorkspace();
-    await initVault(rootDir);
+    const workspaceId = "graph";
+    const artifactRoot = path.join(rootDir, workspaceId);
+    await withWorkspaceId(workspaceId, async () => {
+      await initVault(rootDir);
 
-    await fs.writeFile(
-      path.join(rootDir, "graph-provider.mjs"),
-      [
-        "export async function createAdapter(id, config) {",
-        "  function payload(title) {",
-        "    if (title.includes('Alpha')) {",
-        "      return { title, summary: 'Alpha summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Trust Surfaces', description: 'Trust-oriented reporting.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Alpha links parser-first analysis to trust surfaces.', confidence: 0.92, status: 'extracted', polarity: 'positive', citation: 'alpha' }], questions: ['How do parser-first trust surfaces improve graph quality?'] };",
-        "    }",
-        "    if (title.includes('Beta')) {",
-        "      return { title, summary: 'Beta summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Graph Reports', description: 'Graph report generation.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Beta links parser-first analysis to graph reports.', confidence: 0.9, status: 'extracted', polarity: 'positive', citation: 'beta' }], questions: ['What makes graph reports trustworthy?'] };",
-        "    }",
-        "    return { title, summary: 'Gamma summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Watch Reporting', description: 'Watch-driven reporting.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Gamma links parser-first analysis to watch reporting.', confidence: 0.91, status: 'extracted', polarity: 'positive', citation: 'gamma' }], questions: ['Which watch signals are structural?'] };",
-        "  }",
-        "  return {",
-        "    id,",
-        "    type: 'custom',",
-        "    model: config.model,",
-        "    capabilities: new Set(config.capabilities ?? ['chat', 'structured']),",
-        "    async generateText() { return { text: 'ok' }; },",
-        "    async generateStructured(request, schema) {",
-        "      const match = request.prompt.match(/Source title: (.+)/);",
-        "      const title = match ? match[1].trim() : 'Unknown';",
-        "      return schema.parse(payload(title));",
-        "    }",
-        "  };",
-        "}"
-      ].join("\n"),
-      "utf8"
-    );
+      await fs.writeFile(
+        path.join(rootDir, "graph-provider.mjs"),
+        [
+          "export async function createAdapter(id, config) {",
+          "  function payload(title) {",
+          "    if (title.includes('Alpha')) {",
+          "      return { title, summary: 'Alpha summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Trust Surfaces', description: 'Trust-oriented reporting.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Alpha links parser-first analysis to trust surfaces.', confidence: 0.92, status: 'extracted', polarity: 'positive', citation: 'alpha' }], questions: ['How do parser-first trust surfaces improve graph quality?'] };",
+          "    }",
+          "    if (title.includes('Beta')) {",
+          "      return { title, summary: 'Beta summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Graph Reports', description: 'Graph report generation.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Beta links parser-first analysis to graph reports.', confidence: 0.9, status: 'extracted', polarity: 'positive', citation: 'beta' }], questions: ['What makes graph reports trustworthy?'] };",
+          "    }",
+          "    return { title, summary: 'Gamma summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Watch Reporting', description: 'Watch-driven reporting.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Gamma links parser-first analysis to watch reporting.', confidence: 0.91, status: 'extracted', polarity: 'positive', citation: 'gamma' }], questions: ['Which watch signals are structural?'] };",
+          "  }",
+          "  return {",
+          "    id,",
+          "    type: 'custom',",
+          "    model: config.model,",
+          "    capabilities: new Set(config.capabilities ?? ['chat', 'structured']),",
+          "    async generateText() { return { text: 'ok' }; },",
+          "    async generateStructured(request, schema) {",
+          "      const match = request.prompt.match(/Source title: (.+)/);",
+          "      const title = match ? match[1].trim() : 'Unknown';",
+          "      return schema.parse(payload(title));",
+          "    }",
+          "  };",
+          "}"
+        ].join("\n"),
+        "utf8"
+      );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
-    const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
-      providers: Record<string, unknown>;
-      tasks: Record<string, string>;
-    };
-    config.providers.graphTest = {
-      type: "custom",
-      model: "graph-test",
-      module: "./graph-provider.mjs",
-      capabilities: ["chat", "structured"]
-    };
-    config.tasks.compileProvider = "graphTest";
-    await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
+      const configPath = path.join(rootDir, "swarmvault.config.json");
+      const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
+        providers: Record<string, unknown>;
+        tasks: Record<string, string>;
+      };
+      config.providers.graphTest = {
+        type: "custom",
+        model: "graph-test",
+        module: "./graph-provider.mjs",
+        capabilities: ["chat", "structured"]
+      };
+      config.tasks.compileProvider = "graphTest";
+      await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
 
-    for (const [name, body] of [
-      ["alpha.md", "# Alpha Source\n\nParser-first trust surfaces create durable graph reports."],
-      ["beta.md", "# Beta Source\n\nParser-first graph reports reveal cross-community structure."],
-      ["gamma.md", "# Gamma Source\n\nParser-first watch reporting improves graph trust."]
-    ] as const) {
-      await fs.writeFile(path.join(rootDir, name), body, "utf8");
-      await ingestInput(rootDir, name);
-    }
+      for (const [name, body] of [
+        ["alpha.md", "# Alpha Source\n\nParser-first trust surfaces create durable graph reports."],
+        ["beta.md", "# Beta Source\n\nParser-first graph reports reveal cross-community structure."],
+        ["gamma.md", "# Gamma Source\n\nParser-first watch reporting improves graph trust."]
+      ] as const) {
+        await fs.writeFile(path.join(rootDir, name), body, "utf8");
+        await ingestInput(rootDir, name);
+      }
 
-    await compileVault(rootDir);
+      await compileVault(rootDir);
 
-    const graph = JSON.parse(await fs.readFile(path.join(rootDir, "state", "graph.json"), "utf8")) as GraphArtifact;
-    const similarityEdges = graph.edges.filter((edge) => edge.relation === "semantically_similar_to");
-    expect(similarityEdges.length).toBeGreaterThan(0);
-    expect(similarityEdges[0]?.similarityReasons?.length).toBeGreaterThan(0);
-    expect(graph.hyperedges.length).toBeGreaterThan(0);
-    expect(graph.hyperedges.some((hyperedge) => hyperedge.relation === "participate_in")).toBe(true);
+      const graph = JSON.parse(await fs.readFile(path.join(artifactRoot, "state", "graph.json"), "utf8")) as GraphArtifact;
+      const similarityEdges = graph.edges.filter((edge) => edge.relation === "semantically_similar_to");
+      expect(similarityEdges.length).toBeGreaterThan(0);
+      expect(similarityEdges[0]?.similarityReasons?.length).toBeGreaterThan(0);
+      expect(graph.hyperedges.length).toBeGreaterThan(0);
+      expect(graph.hyperedges.some((hyperedge) => hyperedge.relation === "participate_in")).toBe(true);
 
-    const report = JSON.parse(await fs.readFile(path.join(rootDir, "wiki", "graph", "report.json"), "utf8")) as {
-      groupPatterns: Array<{ why: string; nodeIds: string[] }>;
-      surprisingConnections: Array<{ why: string; pathRelations: string[]; pathEvidenceClasses: string[] }>;
-    };
-    expect(report.groupPatterns.length).toBeGreaterThan(0);
-    expect(report.groupPatterns[0]?.why).toContain("source nodes");
-    expect(report.surprisingConnections.some((connection) => connection.why.length > 0 && connection.pathRelations.length > 0)).toBe(true);
+      const report = JSON.parse(await fs.readFile(path.join(artifactRoot, "wiki", "graph", "report.json"), "utf8")) as {
+        groupPatterns: Array<{ why: string; nodeIds: string[] }>;
+        surprisingConnections: Array<{ why: string; pathRelations: string[]; pathEvidenceClasses: string[] }>;
+      };
+      expect(report.groupPatterns.length).toBeGreaterThan(0);
+      expect(report.groupPatterns[0]?.why).toContain("source nodes");
+      expect(report.surprisingConnections.some((connection) => connection.why.length > 0 && connection.pathRelations.length > 0)).toBe(
+        true
+      );
 
-    const queryResult = await queryGraphVault(rootDir, "parser-first graph trust", { budget: 10 });
-    expect(queryResult.hyperedgeIds.length).toBeGreaterThan(0);
+      const queryResult = await queryGraphVault(rootDir, "parser-first graph trust", { budget: 10 });
+      expect(queryResult.hyperedgeIds.length).toBeGreaterThan(0);
 
-    const explainResult = await explainGraphVault(rootDir, similarityEdges[0]?.source ?? "");
-    expect(explainResult.hyperedges.length).toBeGreaterThan(0);
+      const explainResult = await explainGraphVault(rootDir, similarityEdges[0]?.source ?? "");
+      expect(explainResult.hyperedges.length).toBeGreaterThan(0);
 
-    const stats = await graphStatsVault(rootDir);
-    expect(stats.counts.nodes).toBe(graph.nodes.length);
-    expect(stats.counts.pages).toBe(graph.pages.length);
-    expect(stats.nodeTypes.source).toBeGreaterThan(0);
-    expect(stats.evidenceClasses.inferred).toBeGreaterThan(0);
+      const stats = await graphStatsVault(rootDir);
+      expect(stats.counts.nodes).toBe(graph.nodes.length);
+      expect(stats.counts.pages).toBe(graph.pages.length);
+      expect(stats.nodeTypes.source).toBeGreaterThan(0);
+      expect(stats.evidenceClasses.inferred).toBeGreaterThan(0);
 
-    const firstCommunity = graph.communities?.[0];
-    expect(firstCommunity).toBeTruthy();
-    const community = await getGraphCommunityVault(rootDir, firstCommunity?.id ?? "");
-    expect(community.id).toBe(firstCommunity?.id);
-    expect(community.nodes.length).toBeGreaterThan(0);
-    expect(community.pages.length).toBeGreaterThan(0);
+      const firstCommunity = graph.communities?.[0];
+      expect(firstCommunity).toBeTruthy();
+      const community = await getGraphCommunityVault(rootDir, firstCommunity?.id ?? "");
+      expect(community.id).toBe(firstCommunity?.id);
+      expect(community.nodes.length).toBeGreaterThan(0);
+      expect(community.pages.length).toBeGreaterThan(0);
 
-    const exportsDir = path.join(rootDir, "exports");
-    const graphml = await exportGraphFormat(rootDir, "graphml", path.join(exportsDir, "graph.graphml"));
-    const cypher = await exportGraphFormat(rootDir, "cypher", path.join(exportsDir, "graph.cypher"));
-    expect(await fs.readFile(graphml.outputPath, "utf8")).toContain("hyperedge:");
-    expect(await fs.readFile(graphml.outputPath, "utf8")).toContain("group_member");
-    expect(await fs.readFile(cypher.outputPath, "utf8")).toContain("GROUP_MEMBER");
-    expect(await fs.readFile(cypher.outputPath, "utf8")).toContain("similarityReasons");
+      const exportsDir = path.join(rootDir, "exports");
+      const graphml = await exportGraphFormat(rootDir, "graphml", path.join(exportsDir, "graph.graphml"));
+      const cypher = await exportGraphFormat(rootDir, "cypher", path.join(exportsDir, "graph.cypher"));
+      expect(await fs.readFile(graphml.outputPath, "utf8")).toContain("hyperedge:");
+      expect(await fs.readFile(graphml.outputPath, "utf8")).toContain("group_member");
+      expect(await fs.readFile(cypher.outputPath, "utf8")).toContain("GROUP_MEMBER");
+      expect(await fs.readFile(cypher.outputPath, "utf8")).toContain("similarityReasons");
 
-    const server = await createMcpServer(rootDir);
-    const client = new Client({ name: "swarmvault-graph-test-client", version: "1.0.0" });
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+      const server = await createMcpServer(rootDir);
+      const client = new Client({ name: "swarmvault-graph-test-client", version: "1.0.0" });
+      const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+      await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
 
-    const tools = await client.listTools();
-    expect(tools.tools.some((tool) => tool.name === "graph_report")).toBe(true);
-    expect(tools.tools.some((tool) => tool.name === "get_hyperedges")).toBe(true);
-    expect(tools.tools.some((tool) => tool.name === "graph_stats")).toBe(true);
-    expect(tools.tools.some((tool) => tool.name === "get_community")).toBe(true);
+      const tools = await client.listTools();
+      expect(tools.tools.some((tool) => tool.name === "graph_report")).toBe(true);
+      expect(tools.tools.some((tool) => tool.name === "get_hyperedges")).toBe(true);
+      expect(tools.tools.some((tool) => tool.name === "graph_stats")).toBe(true);
+      expect(tools.tools.some((tool) => tool.name === "get_community")).toBe(true);
 
-    const graphReport = await client.callTool({ name: "graph_report", arguments: {} });
-    const graphReportContent = graphReport.content as ToolContent;
-    expect(JSON.parse(graphReportContent[0]?.text ?? "{}").groupPatterns.length).toBeGreaterThan(0);
+      const callTool = async (name: string, args: Record<string, unknown> = {}) =>
+        await client.callTool({ name, arguments: { workspace_id: workspaceId, ...args } });
 
-    const hyperedgeTool = await client.callTool({ name: "get_hyperedges", arguments: { limit: 5 } });
-    const hyperedgeContent = hyperedgeTool.content as ToolContent;
-    expect(JSON.parse(hyperedgeContent[0]?.text ?? "[]").length).toBeGreaterThan(0);
+      const graphReport = await callTool("graph_report");
+      const graphReportContent = graphReport.content as ToolContent;
+      expect(JSON.parse(graphReportContent[0]?.text ?? "{}").groupPatterns.length).toBeGreaterThan(0);
 
-    const graphStatsTool = await client.callTool({ name: "graph_stats", arguments: {} });
-    const graphStatsContent = graphStatsTool.content as ToolContent;
-    expect(JSON.parse(graphStatsContent[0]?.text ?? "{}").counts.nodes).toBe(graph.nodes.length);
+      const hyperedgeTool = await callTool("get_hyperedges", { limit: 5 });
+      const hyperedgeContent = hyperedgeTool.content as ToolContent;
+      expect(JSON.parse(hyperedgeContent[0]?.text ?? "[]").length).toBeGreaterThan(0);
 
-    const communityTool = await client.callTool({ name: "get_community", arguments: { target: firstCommunity?.label, limit: 5 } });
-    const communityContent = communityTool.content as ToolContent;
-    expect(JSON.parse(communityContent[0]?.text ?? "{}").nodes.length).toBeGreaterThan(0);
+      const graphStatsTool = await callTool("graph_stats");
+      const graphStatsContent = graphStatsTool.content as ToolContent;
+      expect(JSON.parse(graphStatsContent[0]?.text ?? "{}").counts.nodes).toBe(graph.nodes.length);
 
-    await client.close();
-    await server.close();
+      const communityTool = await callTool("get_community", { target: firstCommunity?.label, limit: 5 });
+      const communityContent = communityTool.content as ToolContent;
+      expect(JSON.parse(communityContent[0]?.text ?? "{}").nodes.length).toBeGreaterThan(0);
+
+      await client.close();
+      await server.close();
+    });
   });
 
   it("uses configured embeddings for semantic graph query, cache artifacts, and inferred similarity edges", async () => {
@@ -2781,7 +2874,10 @@ describe("swarmvault workflow", () => {
 
   it("exposes vault operations through the MCP server", async () => {
     const rootDir = await createTempWorkspace();
-    await initVault(rootDir);
+    const workspaceId = "mcp";
+    await withWorkspaceId(workspaceId, async () => {
+      await initVault(rootDir);
+    });
     const notePath = path.join(rootDir, "notes.md");
     await fs.writeFile(
       notePath,
@@ -2789,10 +2885,12 @@ describe("swarmvault workflow", () => {
       "utf8"
     );
 
-    await ingestInput(rootDir, "notes.md");
-    await compileVault(rootDir);
+    await withWorkspaceId(workspaceId, async () => {
+      await ingestInput(rootDir, "notes.md");
+      await compileVault(rootDir);
+    });
 
-    const server = await createMcpServer(rootDir);
+    const server = await withWorkspaceId(workspaceId, async () => await createMcpServer(rootDir));
     const client = new Client({ name: "swarmvault-test-client", version: "1.0.0" });
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
@@ -2805,52 +2903,52 @@ describe("swarmvault workflow", () => {
     expect(tools.tools.some((tool) => tool.name === "start_task")).toBe(true);
     expect(tools.tools.some((tool) => tool.name === "retrieval_status")).toBe(true);
     expect(tools.tools.some((tool) => tool.name === "doctor_vault")).toBe(true);
+    expect(tools.tools.find((tool) => tool.name === "workspace_info")?.inputSchema.required).toContain("workspace_id");
 
-    const workspaceInfo = await client.callTool({ name: "workspace_info", arguments: {} });
+    const callTool = async (name: string, args: Record<string, unknown> = {}) =>
+      await client.callTool({ name, arguments: { workspace_id: workspaceId, ...args } });
+
+    const missingWorkspace = await client.callTool({ name: "workspace_info", arguments: {} });
+    expect(missingWorkspace.isError).toBe(true);
+    expect((missingWorkspace.content as ToolContent)[0]?.text ?? "").toContain("workspace_id");
+
+    const mismatchedWorkspace = await client.callTool({ name: "workspace_info", arguments: { workspace_id: "other" } });
+    expect(mismatchedWorkspace.isError).toBe(true);
+    expect((mismatchedWorkspace.content as ToolContent)[0]?.text ?? "").toContain("does not match server workspace");
+
+    const workspaceInfo = await callTool("workspace_info");
     const workspaceContent = workspaceInfo.content as ToolContent;
     expect(workspaceContent[0]?.type).toBe("text");
     expect(JSON.parse(workspaceContent[0]?.text ?? "{}").rootDir).toBe(rootDir);
-    expect(JSON.parse(workspaceContent[0]?.text ?? "{}").schemaPath).toBe(path.join(rootDir, "swarmvault.schema.md"));
+    expect(JSON.parse(workspaceContent[0]?.text ?? "{}").schemaPath).toBe(path.join(rootDir, workspaceId, "swarmvault.schema.md"));
 
-    const searchResults = await client.callTool({ name: "search_pages", arguments: { query: "wiki search", limit: 5 } });
+    const searchResults = await callTool("search_pages", { query: "wiki search", limit: 5 });
     const searchContent = searchResults.content as ToolContent;
     const parsedSearchResults = JSON.parse(searchContent[0]?.text ?? "[]") as Array<{ title?: string; path?: string }>;
     expect(parsedSearchResults.length).toBeGreaterThan(0);
     expect(typeof parsedSearchResults[0]?.title).toBe("string");
     expect(typeof parsedSearchResults[0]?.path).toBe("string");
 
-    const chartQuery = await client.callTool({
-      name: "query_vault",
-      arguments: { question: "Show this note as a chart", save: false, format: "chart" }
-    });
+    const chartQuery = await callTool("query_vault", { question: "Show this note as a chart", save: false, format: "chart" });
     const chartContent = chartQuery.content as ToolContent;
     expect(JSON.parse(chartContent[0]?.text ?? "{}").outputFormat).toBe("chart");
 
-    const unsavedQuery = await client.callTool({
-      name: "query_vault",
-      arguments: { question: "Summarize MCP optional response fields", save: false }
-    });
+    const unsavedQuery = await callTool("query_vault", { question: "Summarize MCP optional response fields", save: false });
     const unsavedContent = unsavedQuery.content as ToolContent;
     const parsedUnsavedQuery = JSON.parse(unsavedContent[0]?.text ?? "{}") as { savedPath?: string | null };
     expect(parsedUnsavedQuery.savedPath).toBeNull();
 
-    const untargetedContextPack = await client.callTool({
-      name: "build_context_pack",
-      arguments: { goal: "Prepare MCP context without a target", budgetTokens: 300 }
-    });
+    const untargetedContextPack = await callTool("build_context_pack", { goal: "Prepare MCP context without a target", budgetTokens: 300 });
     const untargetedContextContent = untargetedContextPack.content as ToolContent;
     const parsedUntargetedContext = JSON.parse(untargetedContextContent[0]?.text ?? "{}") as {
       pack?: { target?: string | null };
     };
     expect(parsedUntargetedContext.pack?.target).toBeNull();
 
-    const hyphenatedContextPack = await client.callTool({
-      name: "build_context_pack",
-      arguments: {
-        goal: "Review distributionally robust receive combining",
-        target: "concept:distributionally-robust-receive-combining",
-        budgetTokens: 300
-      }
+    const hyphenatedContextPack = await callTool("build_context_pack", {
+      goal: "Review distributionally robust receive combining",
+      target: "concept:distributionally-robust-receive-combining",
+      budgetTokens: 300
     });
     const hyphenatedContextContent = hyphenatedContextPack.content as ToolContent;
     const parsedHyphenatedContext = JSON.parse(hyphenatedContextContent[0]?.text ?? "{}") as {
@@ -2860,17 +2958,19 @@ describe("swarmvault workflow", () => {
     expect(parsedHyphenatedContext.isError).not.toBe(true);
     expect(parsedHyphenatedContext.pack?.target).toBe("concept:distributionally-robust-receive-combining");
 
-    const memoryStart = await client.callTool({
-      name: "start_memory_task",
-      arguments: { goal: "Remember MCP task work", target: "notes.md", budgetTokens: 300, agent: "test-client" }
+    const memoryStart = await callTool("start_memory_task", {
+      goal: "Remember MCP task work",
+      target: "notes.md",
+      budgetTokens: 300,
+      agent: "test-client"
     });
     const memoryStartContent = memoryStart.content as ToolContent;
     const memoryTaskId = JSON.parse(memoryStartContent[0]?.text ?? "{}").task.id as string;
     expect(memoryTaskId).toBeTruthy();
 
-    const memoryStartWithoutOptionals = await client.callTool({
-      name: "start_memory_task",
-      arguments: { goal: "Remember MCP task work without optionals", budgetTokens: 300 }
+    const memoryStartWithoutOptionals = await callTool("start_memory_task", {
+      goal: "Remember MCP task work without optionals",
+      budgetTokens: 300
     });
     const parsedMemoryStartWithoutOptionals = JSON.parse((memoryStartWithoutOptionals.content as ToolContent)[0]?.text ?? "{}") as {
       task?: { target?: string | null; agent?: string | null };
@@ -2878,39 +2978,38 @@ describe("swarmvault workflow", () => {
     expect(parsedMemoryStartWithoutOptionals.task?.target).toBeNull();
     expect(parsedMemoryStartWithoutOptionals.task?.agent).toBeNull();
 
-    const memoryUpdate = await client.callTool({
-      name: "update_memory_task",
-      arguments: { id: memoryTaskId, decision: "MCP memory tools mirror the CLI.", changedPath: "notes.md" }
+    const memoryUpdate = await callTool("update_memory_task", {
+      id: memoryTaskId,
+      decision: "MCP memory tools mirror the CLI.",
+      changedPath: "notes.md"
     });
     expect(JSON.parse((memoryUpdate.content as ToolContent)[0]?.text ?? "{}").task.decisions.length).toBe(1);
 
-    const memoryFinish = await client.callTool({
-      name: "finish_memory_task",
-      arguments: { id: memoryTaskId, outcome: "MCP memory lifecycle passed.", followUp: "Compile memory graph nodes." }
+    const memoryFinish = await callTool("finish_memory_task", {
+      id: memoryTaskId,
+      outcome: "MCP memory lifecycle passed.",
+      followUp: "Compile memory graph nodes."
     });
     expect(JSON.parse((memoryFinish.content as ToolContent)[0]?.text ?? "{}").task.status).toBe("completed");
 
-    const memoryList = await client.callTool({ name: "list_memory_tasks", arguments: {} });
+    const memoryList = await callTool("list_memory_tasks");
     expect(JSON.parse((memoryList.content as ToolContent)[0]?.text ?? "[]").some((task: { id: string }) => task.id === memoryTaskId)).toBe(
       true
     );
 
-    const memoryRead = await client.callTool({ name: "read_memory_task", arguments: { id: memoryTaskId } });
+    const memoryRead = await callTool("read_memory_task", { id: memoryTaskId });
     expect(JSON.parse((memoryRead.content as ToolContent)[0]?.text ?? "{}").id).toBe(memoryTaskId);
 
-    const memoryResume = await client.callTool({ name: "resume_memory_task", arguments: { id: memoryTaskId, format: "llms" } });
+    const memoryResume = await callTool("resume_memory_task", { id: memoryTaskId, format: "llms" });
     expect(JSON.parse((memoryResume.content as ToolContent)[0]?.text ?? "{}").rendered).toContain("Agent Task Resume");
 
-    const taskStart = await client.callTool({
-      name: "start_task",
-      arguments: { goal: "Remember MCP task alias work", target: "notes.md", agent: "test-client" }
-    });
+    const taskStart = await callTool("start_task", { goal: "Remember MCP task alias work", target: "notes.md", agent: "test-client" });
     const taskId = JSON.parse((taskStart.content as ToolContent)[0]?.text ?? "{}").task.id as string;
     expect(taskId).toBeTruthy();
 
-    const taskStartWithoutOptionals = await client.callTool({
-      name: "start_task",
-      arguments: { goal: "Remember MCP task alias work without optionals", budgetTokens: 300 }
+    const taskStartWithoutOptionals = await callTool("start_task", {
+      goal: "Remember MCP task alias work without optionals",
+      budgetTokens: 300
     });
     const parsedTaskStartWithoutOptionals = JSON.parse((taskStartWithoutOptionals.content as ToolContent)[0]?.text ?? "{}") as {
       task?: { target?: string | null; agent?: string | null };
@@ -2918,40 +3017,42 @@ describe("swarmvault workflow", () => {
     expect(parsedTaskStartWithoutOptionals.task?.target).toBeNull();
     expect(parsedTaskStartWithoutOptionals.task?.agent).toBeNull();
 
-    const taskStatus = await client.callTool({ name: "retrieval_status", arguments: {} });
+    const taskStatus = await callTool("retrieval_status");
     expect(JSON.parse((taskStatus.content as ToolContent)[0]?.text ?? "{}").configured.backend).toBe("sqlite");
 
-    const doctorStatus = await client.callTool({ name: "doctor_vault", arguments: {} });
+    const doctorStatus = await callTool("doctor_vault");
     const parsedDoctor = JSON.parse((doctorStatus.content as ToolContent)[0]?.text ?? "{}") as { checks?: Array<{ id: string }> };
     expect(parsedDoctor.checks?.some((check) => check.id === "graph")).toBe(true);
 
-    const configResource = await client.readResource({ uri: "swarmvault://config" });
+    const readResource = async (uri: string) => await client.readResource({ uri });
+
+    const configResource = await readResource("swarmvault://config");
     expect(configResource.contents[0]?.uri).toBe("swarmvault://config");
     expect((configResource.contents[0] as { text: string }).text).toContain('"inboxDir"');
 
-    const schemaResource = await client.readResource({ uri: "swarmvault://schema" });
+    const schemaResource = await readResource("swarmvault://schema");
     expect(schemaResource.contents[0]?.uri).toBe("swarmvault://schema");
     expect((schemaResource.contents[0] as { text: string }).text).toContain("# SwarmVault Schema");
 
-    const sessionsResource = await client.readResource({ uri: "swarmvault://sessions" });
+    const sessionsResource = await readResource("swarmvault://sessions");
     expect((sessionsResource.contents[0] as { text: string }).text).toContain("compile");
 
-    const memoryResource = await client.readResource({ uri: "swarmvault://memory-tasks" });
+    const memoryResource = await readResource("swarmvault://memory-tasks");
     expect((memoryResource.contents[0] as { text: string }).text).toContain(memoryTaskId);
 
-    const taskResource = await client.readResource({ uri: "swarmvault://tasks" });
+    const taskResource = await readResource("swarmvault://tasks");
     expect((taskResource.contents[0] as { text: string }).text).toContain(taskId);
 
     // A failing tool handler (e.g. get_node with an unknown target) must not
     // crash the server. The safeHandler wrapper should return an MCP error
     // response and the session should stay alive for subsequent tool calls.
-    const unresolved = await client.callTool({ name: "get_node", arguments: { target: "definitely-not-in-the-graph" } });
+    const unresolved = await callTool("get_node", { target: "definitely-not-in-the-graph" });
     expect(unresolved.isError).toBe(true);
     const unresolvedContent = unresolved.content as ToolContent;
     expect(unresolvedContent[0]?.text).toMatch(/could not resolve/i);
 
     // After the failing call the server should still answer healthy tools.
-    const postFailureInfo = await client.callTool({ name: "workspace_info", arguments: {} });
+    const postFailureInfo = await callTool("workspace_info");
     const postFailureContent = postFailureInfo.content as ToolContent;
     expect(JSON.parse(postFailureContent[0]?.text ?? "{}").rootDir).toBe(rootDir);
 
