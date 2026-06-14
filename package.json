@@ -33,9 +33,9 @@
     "prepare": "lefthook install"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@evilmartians/lefthook": "^2.1.5",
-    "playwright": "^1.59.1",
-    "typescript": "^5.9.3"
+    "@biomejs/biome": "^2.5.0",
+    "@evilmartians/lefthook": "^2.1.9",
+    "playwright": "^1.60.0",
+    "typescript": "^6.0.3"
   }
 }
