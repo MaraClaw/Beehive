@@ -30,7 +30,7 @@ export async function executeCli<T = unknown>(plugin: BeehivePlugin, options: Ex
   const linkedSignal = options.signal ?? controller.signal;
   const entry: RunLogEntry = {
     id,
-    command: "swarmvault",
+    command: "beehive",
     args: options.args,
     startedAt: Date.now(),
     status: "running",
@@ -78,7 +78,7 @@ export async function executeCli<T = unknown>(plugin: BeehivePlugin, options: Ex
     const msg = options.notifyOnError
       ? options.notifyOnError(err)
       : err instanceof CliNotFoundError
-        ? "Beehive CLI not found. Install with `npm i -g @swarmvaultai/cli`."
+        ? "Beehive CLI not found. Install with `npm i -g @beehive/cli`."
         : err instanceof Error
           ? err.message
           : String(err);

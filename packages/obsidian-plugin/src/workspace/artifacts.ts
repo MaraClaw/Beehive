@@ -1,5 +1,5 @@
 import { isAbsolute, join, resolve } from "node:path";
-import { SWARMVAULT_OUT_ENV, SWARMVAULT_WORKSPACE_ID_ENV } from "../constants";
+import { BEEHIVE_OUT_ENV, BEEHIVE_WORKSPACE_ID_ENV } from "../constants";
 import type { BeehiveSettings } from "../settings/defaults";
 
 const DEFAULT_PLUGIN_WORKSPACE_ID = "default";
@@ -21,12 +21,12 @@ export function resolvePluginWorkspaceId(settings: Pick<BeehiveSettings, "worksp
 export function workspaceCliEnv(settings: Pick<BeehiveSettings, "workspaceId">): NodeJS.ProcessEnv {
   return {
     ...process.env,
-    [SWARMVAULT_WORKSPACE_ID_ENV]: resolvePluginWorkspaceId(settings)
+    [BEEHIVE_WORKSPACE_ID_ENV]: resolvePluginWorkspaceId(settings)
   };
 }
 
 export function workspaceArtifactRoot(workspaceRoot: string, settings: Pick<BeehiveSettings, "workspaceId">): string {
-  const override = process.env[SWARMVAULT_OUT_ENV]?.trim();
+  const override = process.env[BEEHIVE_OUT_ENV]?.trim();
   const baseDir = !override ? resolve(workspaceRoot) : isAbsolute(override) ? resolve(override) : resolve(workspaceRoot, override);
   return join(baseDir, resolvePluginWorkspaceId(settings));
 }

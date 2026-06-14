@@ -26,7 +26,7 @@ export class StatusBar {
   ) {
     this.root = root;
     this.root.empty();
-    this.root.addClass("swarmvault-status-bar");
+    this.root.addClass("beehive-status-bar");
     this.build();
   }
 
@@ -37,16 +37,16 @@ export class StatusBar {
   }
 
   private build(): void {
-    this.workspaceEl = this.root.createSpan({ cls: "swarmvault-status-bar__workspace" });
+    this.workspaceEl = this.root.createSpan({ cls: "beehive-status-bar__workspace" });
     this.workspaceEl.onClickEvent?.(() => this.callbacks.onWorkspaceClick?.());
     this.workspaceEl.setAttr("aria-label", "Beehive workspace");
 
-    this.freshnessEl = this.root.createSpan({ cls: "swarmvault-status-bar__freshness" });
+    this.freshnessEl = this.root.createSpan({ cls: "beehive-status-bar__freshness" });
     this.freshnessDot = this.freshnessEl.createSpan({
-      cls: "swarmvault-status-bar__dot swarmvault-status-bar__dot--unknown"
+      cls: "beehive-status-bar__dot beehive-status-bar__dot--unknown"
     });
 
-    this.runningEl = this.root.createSpan({ cls: "swarmvault-status-bar__running" });
+    this.runningEl = this.root.createSpan({ cls: "beehive-status-bar__running" });
     this.runningEl.onClickEvent?.(() => this.callbacks.onRunLogClick?.());
   }
 
@@ -66,7 +66,7 @@ export class StatusBar {
   }
 
   private updateFreshness(level: FreshnessLevel): void {
-    const classes = ["swarmvault-status-bar__dot", `swarmvault-status-bar__dot--${level}`];
+    const classes = ["beehive-status-bar__dot", `beehive-status-bar__dot--${level}`];
     this.freshnessDot.className = classes.join(" ");
     this.freshnessEl.setAttr("aria-label", `Compile freshness: ${level}`);
   }

@@ -63,7 +63,7 @@ describe("CliRunner.invoke", () => {
     const runner = new CliRunner({ spawn: makeSpawn({ stdout, stderr }), now: () => 1000 });
     const stdoutLines: string[] = [];
     const stderrLines: string[] = [];
-    const result = await runner.invoke<{ version: string }>("swarmvault", {
+    const result = await runner.invoke<{ version: string }>("beehive", {
       args: ["--version", "--json"],
       onStdoutLine: (l) => stdoutLines.push(l),
       onStderrLine: (l) => stderrLines.push(l)
@@ -80,12 +80,12 @@ describe("CliRunner.invoke", () => {
     const runner = new CliRunner({
       spawn: makeSpawn({ stdout: '{"error":"nope"}', stderr: "boom\n", exitCode: 2 })
     });
-    await expect(runner.invoke("swarmvault", { args: ["compile"] })).rejects.toMatchObject({
+    await expect(runner.invoke("beehive", { args: ["compile"] })).rejects.toMatchObject({
       name: "CliInvocationError",
       exitCode: 2,
       rawStderr: "boom\n"
     });
-    await expect(runner.invoke("swarmvault", { args: ["compile"] })).rejects.toBeInstanceOf(CliInvocationError);
+    await expect(runner.invoke("beehive", { args: ["compile"] })).rejects.toBeInstanceOf(CliInvocationError);
   });
 
   it("throws CliNotFoundError when spawn reports ENOENT", async () => {
@@ -98,7 +98,7 @@ describe("CliRunner.invoke", () => {
 
   it("returns null json when stdout is empty", async () => {
     const runner = new CliRunner({ spawn: makeSpawn({ stdout: "", stderr: "" }) });
-    const result = await runner.invoke("swarmvault", { args: ["--version"] });
+    const result = await runner.invoke("beehive", { args: ["--version"] });
     expect(result.json).toBeNull();
   });
 
@@ -106,7 +106,7 @@ describe("CliRunner.invoke", () => {
     const runner = new CliRunner({
       spawn: makeSpawn({ stdout: 'hello\n{"version":"0.7.28"}\n', stderr: "" })
     });
-    const result = await runner.invoke<{ version: string }>("swarmvault", {
+    const result = await runner.invoke<{ version: string }>("beehive", {
       args: ["--version"]
     });
     expect(result.json).toEqual({ version: "0.7.28" });
@@ -117,7 +117,7 @@ describe("CliRunner.invoke", () => {
     const runner = new CliRunner({
       spawn: makeSpawn({ stdout: "", stderr: "", exitCode: 143, closeDelayMs: 500 })
     });
-    const promise = runner.invoke("swarmvault", {
+    const promise = runner.invoke("beehive", {
       args: ["watch"],
       signal: controller.signal
     });
@@ -132,7 +132,7 @@ describe("CliRunner line streaming", () => {
       spawn: makeSpawn({ stdout: "a\nb\nc", stderr: "" })
     });
     const lines: string[] = [];
-    await runner.invoke("swarmvault", { args: [], onStdoutLine: (l) => lines.push(l) });
+    await runner.invoke("beehive", { args: [], onStdoutLine: (l) => lines.push(l) });
     expect(lines).toEqual(["a", "b", "c"]);
   });
 });

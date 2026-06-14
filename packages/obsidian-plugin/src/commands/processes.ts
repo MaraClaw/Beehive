@@ -7,7 +7,7 @@ import { workspaceCliEnv } from "../workspace/artifacts";
 export async function startWatch(plugin: BeehivePlugin): Promise<void> {
   await spawnManaged(plugin, {
     kind: "watch",
-    label: "swarmvault watch",
+    label: "beehive watch",
     args: ["watch", "--json"]
   });
 }
@@ -44,7 +44,7 @@ export function stopWatch(plugin: BeehivePlugin): void {
 export async function startServe(plugin: BeehivePlugin): Promise<void> {
   const url = await spawnManaged(plugin, {
     kind: "serve",
-    label: "swarmvault graph serve",
+    label: "beehive graph serve",
     args: ["graph", "serve", "--json"],
     awaitInitialJson: true
   });
@@ -76,7 +76,7 @@ async function spawnManaged(plugin: BeehivePlugin, opts: SpawnManagedOptions): P
   const entryId = `managed-${handle.id}`;
   runLog.recordEntry({
     id: entryId,
-    command: "swarmvault",
+    command: "beehive",
     args: opts.args,
     startedAt: Date.now(),
     status: "running",

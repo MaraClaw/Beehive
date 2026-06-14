@@ -1,12 +1,12 @@
 import { type App, Notice, PluginSettingTab, Setting } from "obsidian";
 import { probeCliVersion } from "../cli/version-check";
-import type SwarmVaultPlugin from "../main";
+import type BeehivePlugin from "../main";
 import { CliNotFoundError } from "../types";
 
-export class SwarmVaultSettingsTab extends PluginSettingTab {
+export class BeehiveSettingsTab extends PluginSettingTab {
   constructor(
     app: App,
-    readonly plugin: SwarmVaultPlugin
+    readonly plugin: BeehivePlugin
   ) {
     super(app, plugin);
   }
@@ -15,14 +15,14 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
     const { containerEl, plugin } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "SwarmVault" });
+    containerEl.createEl("h2", { text: "Beehive" });
 
     new Setting(containerEl)
       .setName("CLI binary path")
-      .setDesc("Leave blank to use `swarmvault` from PATH, or point at an absolute binary path.")
+      .setDesc("Leave blank to use `beehive` from PATH, or point at an absolute binary path.")
       .addText((text) =>
         text
-          .setPlaceholder("swarmvault")
+          .setPlaceholder("beehive")
           .setValue(plugin.settings.cliBinary)
           .onChange(async (value) => {
             plugin.settings.cliBinary = value.trim();
@@ -32,18 +32,18 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Verify CLI")
-      .setDesc("Run `swarmvault --version --json` and confirm the binary is reachable.")
+      .setDesc("Run `beehive --version --json` and confirm the binary is reachable.")
       .addButton((btn) =>
         btn.setButtonText("Verify").onClick(async () => {
           btn.setDisabled(true).setButtonText("Verifying…");
           try {
             const info = await probeCliVersion(plugin.settings.cliBinary, plugin.cliRunner);
-            new Notice(`SwarmVault CLI ${info.version} reachable.`);
+            new Notice(`Beehive CLI ${info.version} reachable.`);
             plugin.updateStatusBar({ cliVersion: info.version });
           } catch (err) {
             const message =
               err instanceof CliNotFoundError
-                ? "CLI not found. Install with `npm i -g @swarmvaultai/cli`."
+                ? "CLI not found. Install with `npm i -g @beehive/cli`."
                 : err instanceof Error
                   ? err.message
                   : String(err);
@@ -56,7 +56,7 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Workspace root override")
-      .setDesc("Leave blank to auto-detect by walking up for `swarmvault.config.json` or legacy `swarmvault.schema.md`.")
+      .setDesc("Leave blank to auto-detect by walking up for `beehive.config.json` or legacy `beehive.schema.md`.")
       .addText((text) =>
         text
           .setPlaceholder("/absolute/path/to/workspace")
@@ -69,7 +69,7 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Workspace ID")
-      .setDesc("Workspace slug passed to the CLI as SWARMVAULT_WORKSPACE_ID and used for generated artifacts.")
+      .setDesc("Workspace slug passed to the CLI as BEEHIVE_WORKSPACE_ID and used for generated artifacts.")
       .addText((text) =>
         text
           .setPlaceholder("default")
@@ -99,7 +99,7 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Auto-compile on raw/ change")
-      .setDesc("Spawn `swarmvault watch` to recompile whenever raw/ changes.")
+      .setDesc("Spawn `beehive watch` to recompile whenever raw/ changes.")
       .addToggle((t) =>
         t.setValue(plugin.settings.autoCompileOnRawChange).onChange(async (v) => {
           plugin.settings.autoCompileOnRawChange = v;

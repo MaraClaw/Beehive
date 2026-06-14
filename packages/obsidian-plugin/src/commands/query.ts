@@ -128,7 +128,7 @@ async function openSavedPath(plugin: BeehivePlugin, absPath: string): Promise<vo
 
 async function openEphemeralPane(plugin: BeehivePlugin, question: string, answer: string): Promise<void> {
   const leaf = plugin.app.workspace.getLeaf(true);
-  const tmpName = `swarmvault-query-${Date.now()}.md`;
+  const tmpName = `beehive-query-${Date.now()}.md`;
   try {
     const file = await plugin.app.vault.create(tmpName, `# ${question}\n\n${answer}\n`);
     await leaf.openFile(file);

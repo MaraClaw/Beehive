@@ -68,23 +68,23 @@ export class RunLogView extends ItemView {
   private render(): void {
     const container = this.contentEl;
     container.empty();
-    container.addClass("swarmvault-run-log");
+    container.addClass("beehive-run-log");
 
-    const header = container.createEl("div", { cls: "swarmvault-run-log__header" });
+    const header = container.createEl("div", { cls: "beehive-run-log__header" });
     header.createEl("h3", { text: "Beehive run log" });
     header.createEl("div", { text: `${this.entries.length} recent` });
 
     if (this.entries.length === 0) {
       container.createEl("p", {
         text: "No commands have been run yet. Use the command palette to invoke a Beehive command.",
-        cls: "swarmvault-run-log__empty"
+        cls: "beehive-run-log__empty"
       });
       return;
     }
 
     this.nodes.clear();
     for (const entry of this.entries) {
-      const entryEl = container.createEl("div", { cls: "swarmvault-run-log__entry" });
+      const entryEl = container.createEl("div", { cls: "beehive-run-log__entry" });
       this.nodes.set(entry.id, entryEl);
       this.renderEntry(entry);
     }
@@ -95,7 +95,7 @@ export class RunLogView extends ItemView {
     if (!el) return;
     el.empty();
 
-    const summary = el.createEl("div", { cls: "swarmvault-run-log__summary" });
+    const summary = el.createEl("div", { cls: "beehive-run-log__summary" });
     summary.createEl("code", { text: `${entry.command} ${entry.args.join(" ")}`.trim() });
     const statusLabel = entry.status === "running" ? "running" : entry.status;
     summary.createEl("span", { text: ` — ${statusLabel}` });
@@ -112,11 +112,11 @@ export class RunLogView extends ItemView {
     }
 
     if (entry.stderr.length > 0) {
-      const stderr = el.createEl("pre", { cls: "swarmvault-run-log__stderr" });
+      const stderr = el.createEl("pre", { cls: "beehive-run-log__stderr" });
       stderr.setText(entry.stderr.slice(-200).join("\n"));
     }
     if (entry.stdout.length > 0) {
-      const stdout = el.createEl("pre", { cls: "swarmvault-run-log__stdout" });
+      const stdout = el.createEl("pre", { cls: "beehive-run-log__stdout" });
       stdout.setText(entry.stdout.slice(-200).join("\n"));
     }
   }

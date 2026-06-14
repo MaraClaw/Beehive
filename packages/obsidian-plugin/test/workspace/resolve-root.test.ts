@@ -3,7 +3,7 @@ import { resolveWorkspaceRoot } from "../../src/workspace/resolve-root";
 
 describe("resolveWorkspaceRoot", () => {
   it("returns the override when it contains the marker", () => {
-    const existing = new Set(["/foo/bar/swarmvault.schema.md"]);
+    const existing = new Set(["/foo/bar/beehive.schema.md"]);
     const result = resolveWorkspaceRoot(undefined, {
       override: "/foo/bar",
       exists: (p) => existing.has(p)
@@ -20,7 +20,7 @@ describe("resolveWorkspaceRoot", () => {
   });
 
   it("walks up from a descendant until marker is found", () => {
-    const existing = new Set(["/project/swarmvault.schema.md"]);
+    const existing = new Set(["/project/beehive.schema.md"]);
     const result = resolveWorkspaceRoot("/project/wiki/concepts", {
       exists: (p) => existing.has(p),
       isDirectory: () => true
@@ -29,7 +29,7 @@ describe("resolveWorkspaceRoot", () => {
   });
 
   it("walks up from a workspace artifact folder until root config is found", () => {
-    const existing = new Set(["/project/swarmvault.config.json"]);
+    const existing = new Set(["/project/beehive.config.json"]);
     const result = resolveWorkspaceRoot("/project/default/wiki/concepts", {
       exists: (p) => existing.has(p),
       isDirectory: () => true
@@ -38,7 +38,7 @@ describe("resolveWorkspaceRoot", () => {
   });
 
   it("prefers the root config over a nested workspace schema marker", () => {
-    const existing = new Set(["/project/swarmvault.config.json", "/project/default/swarmvault.schema.md"]);
+    const existing = new Set(["/project/beehive.config.json", "/project/default/beehive.schema.md"]);
     const result = resolveWorkspaceRoot("/project/default/wiki/concepts", {
       exists: (p) => existing.has(p),
       isDirectory: () => true
@@ -55,7 +55,7 @@ describe("resolveWorkspaceRoot", () => {
   });
 
   it("respects maxDepth", () => {
-    const existing = new Set(["/a/swarmvault.schema.md"]);
+    const existing = new Set(["/a/beehive.schema.md"]);
     const result = resolveWorkspaceRoot("/a/b/c/d/e/f/g/h/i/j/k", {
       exists: (p) => existing.has(p),
       isDirectory: () => true,
@@ -65,7 +65,7 @@ describe("resolveWorkspaceRoot", () => {
   });
 
   it("finds marker at the start directory", () => {
-    const existing = new Set(["/proj/swarmvault.schema.md"]);
+    const existing = new Set(["/proj/beehive.schema.md"]);
     const result = resolveWorkspaceRoot("/proj", {
       exists: (p) => existing.has(p),
       isDirectory: () => true
@@ -74,7 +74,7 @@ describe("resolveWorkspaceRoot", () => {
   });
 
   it("uses the root config when an override points inside a workspace artifact folder", () => {
-    const existing = new Set(["/proj/swarmvault.config.json", "/proj/default/swarmvault.schema.md"]);
+    const existing = new Set(["/proj/beehive.config.json", "/proj/default/beehive.schema.md"]);
     const result = resolveWorkspaceRoot(undefined, {
       override: "/proj/default",
       exists: (p) => existing.has(p),

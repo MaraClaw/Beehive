@@ -1,6 +1,6 @@
 import type { CliOutputMode } from "../types";
 
-export interface SwarmVaultSettings {
+export interface BeehiveSettings {
   cliBinary: string;
   workspaceRootOverride: string;
   workspaceId: string;
@@ -11,7 +11,7 @@ export interface SwarmVaultSettings {
   extraArgs: string;
 }
 
-export const DEFAULT_SETTINGS: SwarmVaultSettings = {
+export const DEFAULT_SETTINGS: BeehiveSettings = {
   cliBinary: "",
   workspaceRootOverride: "",
   workspaceId: "default",
@@ -22,6 +22,6 @@ export const DEFAULT_SETTINGS: SwarmVaultSettings = {
   extraArgs: ""
 };
 
-export function mergeSettings(partial: Partial<SwarmVaultSettings> | null | undefined): SwarmVaultSettings {
+export function mergeSettings(partial: Partial<BeehiveSettings> | null | undefined): BeehiveSettings {
   return { ...DEFAULT_SETTINGS, ...(partial ?? {}) };
 }

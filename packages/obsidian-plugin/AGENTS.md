@@ -44,9 +44,9 @@ esbuild.config.mjs   # CJS bundle despite package type module
 ## COMMANDS
 
 ```bash
-pnpm --filter @swarmvaultai/obsidian-plugin build
-pnpm --filter @swarmvaultai/obsidian-plugin test
-pnpm --filter @swarmvaultai/obsidian-plugin typecheck
+pnpm --filter @beehive/obsidian-plugin build
+pnpm --filter @beehive/obsidian-plugin test
+pnpm --filter @beehive/obsidian-plugin typecheck
 pnpm check
 ```
 

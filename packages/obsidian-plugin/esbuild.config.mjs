@@ -11,7 +11,7 @@ mkdirSync(distDir, { recursive: true });
 
 const banner = `/*
 Beehive Obsidian plugin — generated bundle.
-Source: https://github.com/swarmclawai/swarmvault
+Source: https://github.com/beehive/beehive
 */`;
 
 const common = {

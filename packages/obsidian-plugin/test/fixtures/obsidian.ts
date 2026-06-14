@@ -128,7 +128,7 @@ export interface WorkspaceLeaf {
 
 export interface PluginManifest {
   version: string;
-  swarmvaultCliMinVersion?: string;
+  beehiveCliMinVersion?: string;
 }
 
 function createMockEl(): HTMLElement {
