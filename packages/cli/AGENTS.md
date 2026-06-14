@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-`@swarmvaultai/cli` publishes the `swarmvault` and `vault` bins and should stay a thin Commander facade over engine behavior.
+`@beehive/cli` publishes the `beehive` and `vault` bins and should stay a thin Commander facade over engine behavior.
 
 ## STRUCTURE
 
@@ -19,9 +19,9 @@ package.json     # exact engine runtime dependency, bin map
 
 | Task | Location | Notes |
 | --- | --- | --- |
-| Command tree | `src/index.ts` | `new Command()`, `.name("swarmvault")`, version, global `--json`. |
+| Command tree | `src/index.ts` | `new Command()`, `.name("beehive")`, version, global `--json`. |
 | JSON behavior | `emitJson`, `log`, `isJson` in `src/index.ts` | stdout purity in JSON mode. |
-| Notices | `src/notices.ts` | `[swarmvault]` stderr notices and state file. |
+| Notices | `src/notices.ts` | `[beehive]` stderr notices and state file. |
 | Surface smoke | `../../scripts/cli-surface-smoke.mjs` | Parser-backed command/alias manifest. |
 | Stability | `../../STABILITY.md` | Public CLI compatibility policy. |
 
@@ -45,8 +45,8 @@ package.json     # exact engine runtime dependency, bin map
 ## COMMANDS
 
 ```bash
-pnpm --filter @swarmvaultai/cli test
-pnpm --filter @swarmvaultai/cli typecheck
+pnpm --filter @beehive/cli test
+pnpm --filter @beehive/cli typecheck
 pnpm live:cli-surface
 ```
 
@@ -54,4 +54,4 @@ pnpm live:cli-surface
 
 - `graph validate` intentionally sets `process.exitCode = 1` on validation failure.
 - Long-running MCP/server flows need SIGINT cleanup.
-- Notice state defaults to `~/.swarmvault/cli-state.json`; tests can override `SWARMVAULT_CLI_STATE_PATH`.
+- Notice state defaults to `~/.beehive/cli-state.json`; tests can override `BEEHIVE_CLI_STATE_PATH`.

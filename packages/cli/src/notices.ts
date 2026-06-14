@@ -6,8 +6,8 @@ import path from "node:path";
 const NOTICE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const HEURISTIC_NOTICE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const NOTICE_TIMEOUT_MS = 2_000;
-const STAR_URL = "https://github.com/swarmclawai/swarmvault";
-const NPM_PACKAGE = "@swarmvaultai/cli";
+const STAR_URL = "https://github.com/beehive/beehive";
+const NPM_PACKAGE = "@beehive/cli";
 const SUPPRESSED_COMMANDS = new Set(["graph serve", "mcp", "schedule serve", "watch"]);
 
 export const HEURISTIC_NOTICE_MESSAGE = [
@@ -15,12 +15,12 @@ export const HEURISTIC_NOTICE_MESSAGE = [
   "For much sharper concepts, entities, and summaries, configure an LLM provider.",
   "Recommended local setup:",
   "  ollama pull gemma4",
-  "then add to swarmvault.config.json:",
+  "then add to beehive.config.json:",
   '  "providers": { "llm": { "type": "ollama", "model": "gemma4" } },',
   '  "tasks": { "compileProvider": "llm", "queryProvider": "llm" }',
   "You can also configure openai, anthropic, gemini, openrouter, groq, together, xai,",
   "cerebras, or any openai-compatible endpoint as a provider.",
-  "Set SWARMVAULT_NO_NOTICES=1 to hide this notice."
+  "Set BEEHIVE_NO_NOTICES=1 to hide this notice."
 ].join("\n");
 
 export interface CliNoticeState {
@@ -43,7 +43,7 @@ export interface CliNoticeOptions {
 }
 
 export function resolveCliStatePath(env: NodeJS.ProcessEnv = process.env): string | null {
-  const override = env.SWARMVAULT_CLI_STATE_PATH?.trim();
+  const override = env.BEEHIVE_CLI_STATE_PATH?.trim();
   if (override) {
     return path.resolve(override);
   }
@@ -51,7 +51,7 @@ export function resolveCliStatePath(env: NodeJS.ProcessEnv = process.env): strin
   if (!homeDir) {
     return null;
   }
-  return path.join(homeDir, ".swarmvault", "cli-state.json");
+  return path.join(homeDir, ".beehive", "cli-state.json");
 }
 
 export function shouldEmitCliNotices(options: CliNoticeOptions): boolean {
@@ -59,7 +59,7 @@ export function shouldEmitCliNotices(options: CliNoticeOptions): boolean {
   if (options.json) {
     return false;
   }
-  if (env.SWARMVAULT_NO_NOTICES === "1") {
+  if (env.BEEHIVE_NO_NOTICES === "1") {
     return false;
   }
   if (env.CI && env.CI !== "0") {

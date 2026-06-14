@@ -1,20 +1,20 @@
-# @swarmvaultai/cli
+# @beehive/cli
 
-`@swarmvaultai/cli` is the global command-line entry point for Beehive.
+`@beehive/cli` is the global command-line entry point for Beehive.
 
-It gives you the `swarmvault` command for building a local-first knowledge vault from files, audio/video transcripts, YouTube URLs, reStructuredText and DOCX documents, browser clips, saved query outputs, and guided exploration runs.
+It gives you the `beehive` command for building a local-first knowledge vault from files, audio/video transcripts, YouTube URLs, reStructuredText and DOCX documents, browser clips, saved query outputs, and guided exploration runs.
 
 ## Install
 
 Beehive requires Node `>=24`.
 
 ```bash
-npm install -g @swarmvaultai/cli
+npm install -g @beehive/cli
 ```
 
 Installed commands:
 
-- `swarmvault`
+- `beehive`
 - `vault` as a compatibility alias
 
 ## Maintainer Validation
@@ -34,50 +34,50 @@ Start in an empty folder or scratch folder:
 ```bash
 mkdir my-vault
 cd my-vault
-export SWARMVAULT_WORKSPACE_ID=main
-swarmvault quickstart ../your-repo
+export BEEHIVE_WORKSPACE_ID=main
+beehive quickstart ../your-repo
 ```
 
-That single command initializes a vault, ingests the input, compiles the wiki and graph, writes share artifacts, and opens the local graph viewer. It is the beginner-friendly alias for `swarmvault scan`. Behavior commands require a workspace id; set `SWARMVAULT_WORKSPACE_ID` once per shell or pass `--workspace-id <id>` on each command.
+That single command initializes a vault, ingests the input, compiles the wiki and graph, writes share artifacts, and opens the local graph viewer. It is the beginner-friendly alias for `beehive scan`. Behavior commands require a workspace id; set `BEEHIVE_WORKSPACE_ID` once per shell or pass `--workspace-id <id>` on each command.
 
 No input ready yet?
 
 ```bash
-swarmvault demo
+beehive demo
 ```
 
 After the first compile, use:
 
 ```bash
-swarmvault next
-swarmvault query "What are the key concepts?"
-swarmvault graph serve
-swarmvault doctor
-swarmvault candidate list
+beehive next
+beehive query "What are the key concepts?"
+beehive graph serve
+beehive doctor
+beehive candidate list
 ```
 
-`swarmvault next` is read-only. It detects whether the current folder needs init, ingest, compile, graph refresh, review, or query work and prints the safest next commands.
+`beehive next` is read-only. It detects whether the current folder needs init, ingest, compile, graph refresh, review, or query work and prints the safest next commands.
 
 Use the step-by-step flow when you want more control:
 
-These examples assume `SWARMVAULT_WORKSPACE_ID=main` is set; use `--workspace-id main` if you prefer command-local flags.
+These examples assume `BEEHIVE_WORKSPACE_ID=main` is set; use `--workspace-id main` if you prefer command-local flags.
 
 ```bash
-swarmvault init --obsidian --profile personal-research
-swarmvault ingest ./src --repo-root .
-swarmvault ingest ./meeting.srt --guide
-swarmvault add https://arxiv.org/abs/2401.12345
-swarmvault compile
-swarmvault next
-swarmvault query "What is the auth flow?"
-swarmvault graph serve
+beehive init --obsidian --profile personal-research
+beehive ingest ./src --repo-root .
+beehive ingest ./meeting.srt --guide
+beehive add https://arxiv.org/abs/2401.12345
+beehive compile
+beehive next
+beehive query "What is the auth flow?"
+beehive graph serve
 ```
 
-Use `source add` for recurring inputs (`swarmvault source add https://github.com/karpathy/micrograd`, `swarmvault source add https://example.com/docs/getting-started`, `swarmvault source list`, `swarmvault source reload --all`, and `swarmvault source session file-customer-call-srt-12345678`). Use advanced graph/context surfaces when needed: `swarmvault graph status ./src`, `swarmvault check-update ./src`, `swarmvault update ./src`, `swarmvault graph stats`, `swarmvault graph validate --strict`, `swarmvault graph cluster`, `swarmvault cluster-only`, `swarmvault tree --output ./exports/tree.html`, `swarmvault export ai --out ./exports/ai`, `swarmvault context build "Ship this feature safely" --target ./src --budget 8000`, and `swarmvault task start "Ship this feature safely" --target ./src --agent codex`.
+Use `source add` for recurring inputs (`beehive source add https://github.com/karpathy/micrograd`, `beehive source add https://example.com/docs/getting-started`, `beehive source list`, `beehive source reload --all`, and `beehive source session file-customer-call-srt-12345678`). Use advanced graph/context surfaces when needed: `beehive graph status ./src`, `beehive check-update ./src`, `beehive update ./src`, `beehive graph stats`, `beehive graph validate --strict`, `beehive graph cluster`, `beehive cluster-only`, `beehive tree --output ./exports/tree.html`, `beehive export ai --out ./exports/ai`, `beehive context build "Ship this feature safely" --target ./src --budget 8000`, and `beehive task start "Ship this feature safely" --target ./src --agent codex`.
 
 ## Commands
 
-### `swarmvault next`
+### `beehive next`
 
 Print the safest next command for the current directory without changing files.
 
@@ -87,7 +87,7 @@ Print the safest next command for the current directory without changing files.
 - supports `--json` with `status`, `paths`, `checks`, and `recommendations`
 - does not emit notices, prompts, repairs, or writes
 
-### `swarmvault init [--obsidian] [--profile <alias-or-presets>]`
+### `beehive init [--obsidian] [--profile <alias-or-presets>]`
 
 Create a workspace with:
 
@@ -98,19 +98,19 @@ Create a workspace with:
 - `state/`
 - `state/sessions/`
 - `agent/`
-- `swarmvault.config.json`
-- `<workspace_id>/swarmvault.schema.md`
+- `beehive.config.json`
+- `<workspace_id>/beehive.schema.md`
 - optional `<workspace_id>/.obsidian/` workspace files when `--obsidian` is passed
 
 The schema file is the vault-specific instruction layer. Edit it to define naming rules, categories, grounding expectations, and exclusions before a serious compile.
 
-Set `SWARMVAULT_OUT=<dir>` when generated artifacts should be isolated from the project root. `swarmvault.config.json` stays at the root. Without `SWARMVAULT_WORKSPACE_ID`, `swarmvault.schema.md` stays at the root and relative `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` workspace directories resolve under the output root. With `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>`, the schema and generated artifact directories resolve under `<artifact-base>/<id>`.
+Set `BEEHIVE_OUT=<dir>` when generated artifacts should be isolated from the project root. `beehive.config.json` stays at the root. Without `BEEHIVE_WORKSPACE_ID`, `beehive.schema.md` stays at the root and relative `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` workspace directories resolve under the output root. With `BEEHIVE_WORKSPACE_ID=<id>` or `--workspace-id <id>`, the schema and generated artifact directories resolve under `<artifact-base>/<id>`.
 
-`--profile` accepts `default`, `personal-research`, or a comma-separated preset list such as `reader,timeline`. For fully custom vault behavior, edit the `profile` block in `swarmvault.config.json`; that deterministic profile layer works alongside the human-written `swarmvault.schema.md`. The `personal-research` preset also sets `profile.guidedIngestDefault: true` and `profile.deepLintDefault: true`, so guided ingest/source and lint flows are on by default until you override them with `--no-guide` or `--no-deep`.
+`--profile` accepts `default`, `personal-research`, or a comma-separated preset list such as `reader,timeline`. For fully custom vault behavior, edit the `profile` block in `beehive.config.json`; that deterministic profile layer works alongside the human-written `beehive.schema.md`. The `personal-research` preset also sets `profile.guidedIngestDefault: true` and `profile.deepLintDefault: true`, so guided ingest/source and lint flows are on by default until you override them with `--no-guide` or `--no-deep`.
 
-### `swarmvault quickstart <file|directory|github-url> [--port <port>] [--no-serve] [--no-viz] [--mcp] [--branch <name>] [--ref <ref>] [--checkout-dir <path>] [--install-agent-rules]`
+### `beehive quickstart <file|directory|github-url> [--port <port>] [--no-serve] [--no-viz] [--mcp] [--branch <name>] [--ref <ref>] [--checkout-dir <path>] [--install-agent-rules]`
 
-Beginner-friendly alias for `swarmvault scan`.
+Beginner-friendly alias for `beehive scan`.
 
 - initializes the current directory as a Beehive workspace
 - ingests the supplied local file or directory, or registers/syncs the supplied public GitHub repo root URL
@@ -122,7 +122,7 @@ Beginner-friendly alias for `swarmvault scan`.
 
 Use this as the default first-run command in docs and onboarding.
 
-### `swarmvault scan <file|directory|github-url> [--port <port>] [--no-serve] [--no-viz] [--mcp] [--branch <name>] [--ref <ref>] [--checkout-dir <path>] [--install-agent-rules]`
+### `beehive scan <file|directory|github-url> [--port <port>] [--no-serve] [--no-viz] [--mcp] [--branch <name>] [--ref <ref>] [--checkout-dir <path>] [--install-agent-rules]`
 
 Quick-start a scratch vault from a local file, directory, or public GitHub repo root URL in one command.
 
@@ -139,15 +139,15 @@ Quick-start a scratch vault from a local file, directory, or public GitHub repo 
 
 Use this when you want the fastest repo or docs-tree walkthrough without first deciding on managed-source registration.
 
-### `swarmvault clone <file|directory|github-url> [--no-viz] [--mcp] [--branch <name>] [--ref <ref>] [--checkout-dir <path>] [--install-agent-rules]`
+### `beehive clone <file|directory|github-url> [--no-viz] [--mcp] [--branch <name>] [--ref <ref>] [--checkout-dir <path>] [--install-agent-rules]`
 
-Compatibility alias for `swarmvault scan`.
+Compatibility alias for `beehive scan`.
 
 - initializes, ingests or registers the input, and compiles in one command
 - supports the same public GitHub repo checkout flags as `scan`
 - accepts `--no-serve`, `--no-viz`, `--mcp`, and `--port`
 
-### `swarmvault demo [--port <port>] [--no-serve]`
+### `beehive demo [--port <port>] [--no-serve]`
 
 Create a temporary sample vault with bundled sources, compile it immediately, and launch the graph viewer unless you pass `--no-serve`.
 
@@ -157,7 +157,7 @@ Create a temporary sample vault with bundled sources, compile it immediately, an
 - writes `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/` inside the demo vault
 - respects `--port` when you want a specific viewer port
 
-### `swarmvault diff`
+### `beehive diff`
 
 Compare the current `state/graph.json` against the last committed graph in git.
 
@@ -165,7 +165,7 @@ Compare the current `state/graph.json` against the last committed graph in git.
 - when no git baseline exists, falls back to a summary of the current graph state
 - supports `--json` for structured automation output
 
-### `swarmvault chat [question...] [--resume [id]] [--list] [--delete <id>]`
+### `beehive chat [question...] [--resume [id]] [--list] [--delete <id>]`
 
 Ask the compiled wiki in a persisted multi-turn session.
 
@@ -177,7 +177,7 @@ Ask the compiled wiki in a persisted multi-turn session.
 - `--save-output` also writes each turn as a regular `wiki/outputs/` query page
 - supports `--format markdown|report|slides|chart|image`, `--gap-fill`, and global `--json`
 
-### `swarmvault export ai [--out <dir>] [--max-full-chars <n>] [--no-page-siblings]`
+### `beehive export ai [--out <dir>] [--max-full-chars <n>] [--no-page-siblings]`
 
 Write a static AI handoff pack for agents, crawlers, and documentation systems.
 
@@ -187,7 +187,7 @@ Write a static AI handoff pack for agents, crawlers, and documentation systems.
 - caps `llms-full.txt` with `--max-full-chars` so huge vaults stay bounded
 - includes SHA-256 hashes and file metadata in `manifest.json`
 
-### `swarmvault doctor [--repair]`
+### `beehive doctor [--repair]`
 
 Run a whole-vault health check before handing the workspace to an agent or opening the live viewer.
 
@@ -199,7 +199,7 @@ Run a whole-vault health check before handing the workspace to an agent or openi
 - add `--repair` to rebuild safe derived retrieval artifacts
 - the live viewer workbench shows the same recommendations and checks with details, copyable suggested commands, and safe direct repair
 
-### `swarmvault source add|list|reload|review|guide|session|delete`
+### `beehive source add|list|reload|review|guide|session|delete`
 
 Manage recurring source roots through a registry-backed workflow.
 
@@ -237,12 +237,12 @@ Source-scoped artifacts are intentionally split by role:
 | Source guide | `source guide`, `source add --guide`, `ingest --guide` | Guided walkthrough with approval-bundled updates in `wiki/outputs/source-guides/` |
 | Source session | `source session`, `source add --guide`, `ingest --guide` | Resumable workflow state in `wiki/outputs/source-sessions/` and `state/source-sessions/` |
 
-### `swarmvault ingest <path-or-url> [--commit]`
+### `beehive ingest <path-or-url> [--commit]`
 
 Ingest a local file path, directory path, or URL into immutable source storage and write manifests to `state/manifests/`.
 
 - local directories recurse by default
-- directory ingest respects `.gitignore` and `.swarmvaultignore` unless you pass `--no-gitignore` or `--no-swarmvaultignore`
+- directory ingest respects `.gitignore` and `.beehiveignore` unless you pass `--no-gitignore` or `--no-beehiveignore`
 - repo-aware directory ingest records `repoRelativePath` and later compile writes `state/code-index.json`
 - use `source add` instead when the same local directory, public GitHub repo root, or docs hub should stay registered and reloadable
 - URL ingest still localizes remote image references by default
@@ -265,7 +265,7 @@ Useful flags:
 - `--include-resources`
 - `--include-generated`
 - `--no-gitignore`
-- `--no-swarmvaultignore`
+- `--no-beehiveignore`
 - `--video`
 - `--no-include-assets`
 - `--max-asset-size <bytes>`
@@ -279,7 +279,7 @@ Audio and video files use `tasks.audioProvider` when you configure a provider wi
 
 When `--commit` is set, Beehive stages `wiki/` and `state/` changes and creates a git commit when the vault root is inside a git worktree. Outside git, it becomes a no-op instead of failing.
 
-### `swarmvault add <url>`
+### `beehive add <url>`
 
 Capture supported URLs through a normalized markdown layer before ingesting them into the vault.
 
@@ -293,11 +293,11 @@ Capture supported URLs through a normalized markdown layer before ingesting them
 - normalized captures record fields such as `source_type`, `source_url`, `canonical_url`, `title`, `authors`, `published_at`, `updated_at`, `doi`, and `tags` when available
 - use `source add` instead when the URL is a public GitHub repo root or a docs hub that should stay synced over time
 
-### `swarmvault inbox import [dir]`
+### `beehive inbox import [dir]`
 
 Import supported files from the configured inbox directory. This is meant for browser-clipper style markdown bundles, HTML clip bundles, and other capture workflows. Local image and asset references are preserved and copied into canonical storage under `raw/assets/`.
 
-### `swarmvault compile [--approve] [--commit] [--max-tokens <n>]`
+### `beehive compile [--approve] [--commit] [--max-tokens <n>]`
 
 Compile the current manifests into:
 
@@ -306,7 +306,7 @@ Compile the current manifests into:
 - local retrieval data in `state/retrieval/`
 - share cards at `wiki/graph/share-card.md` and `wiki/graph/share-card.svg`, plus a portable share kit at `wiki/graph/share-kit/`
 
-The compiler also reads `swarmvault.schema.md` and records a `schema_hash` plus lifecycle metadata such as `status`, `created_at`, `updated_at`, `compiled_from`, and `managed_by` in generated pages so schema edits can mark pages stale without losing lifecycle state.
+The compiler also reads `beehive.schema.md` and records a `schema_hash` plus lifecycle metadata such as `status`, `created_at`, `updated_at`, `compiled_from`, and `managed_by` in generated pages so schema edits can mark pages stale without losing lifecycle state.
 
 Large compile runs process source analysis in bounded batches and use a sparse graph co-occurrence projection so high-overlap note sets do not explode into unbounded pairwise graph work.
 
@@ -324,7 +324,7 @@ Useful flags:
 
 `--max-tokens <n>` keeps the generated wiki inside a bounded token budget by dropping lower-priority pages from final `wiki/` output and reporting token-budget stats in the compile result. `--commit` immediately commits `wiki/` and `state/` changes when the vault lives in a git repo.
 
-### `swarmvault benchmark [--question "<text>" ...]`
+### `beehive benchmark [--question "<text>" ...]`
 
 Measure graph-guided context reduction against a naive full-corpus read.
 
@@ -333,9 +333,9 @@ Measure graph-guided context reduction against a naive full-corpus read.
 - accepts repeatable `--question` inputs for vault-specific benchmarks
 - compile and repo-aware refresh runs also keep the benchmark/report artifacts up to date by default
 
-### `swarmvault review list|show|accept|reject`
+### `beehive review list|show|accept|reject`
 
-Inspect and resolve staged approval bundles created by `swarmvault compile --approve`.
+Inspect and resolve staged approval bundles created by `beehive compile --approve`.
 
 - `review list` shows pending, accepted, and rejected entry counts per bundle
 - `review show <approvalId>` shows each staged entry plus its current and staged content, including a section-level change summary when available
@@ -345,7 +345,7 @@ Inspect and resolve staged approval bundles created by `swarmvault compile --app
 
 Targets can be page ids such as `concept:approval-concept` or relative wiki paths such as `concepts/approval-concept.md`.
 
-### `swarmvault candidate list|promote|archive`
+### `beehive candidate list|promote|archive`
 
 Inspect and resolve staged concept and entity candidates.
 
@@ -355,9 +355,9 @@ Inspect and resolve staged concept and entity candidates.
 
 Targets can be page ids or relative paths under `wiki/candidates/`.
 
-### `swarmvault query "<question>" [--no-save] [--commit] [--format markdown|report|slides|chart|image]`
+### `beehive query "<question>" [--no-save] [--commit] [--format markdown|report|slides|chart|image]`
 
-Query the compiled vault. The query layer also reads `swarmvault.schema.md`, so answers follow the vault’s own structure and grounding rules.
+Query the compiled vault. The query layer also reads `beehive.schema.md`, so answers follow the vault’s own structure and grounding rules.
 
 By default, the answer is written into `wiki/outputs/` and immediately registered in:
 
@@ -372,7 +372,7 @@ Human-authored pages in `wiki/insights/` are also indexed into search and query 
 
 By default, query uses the local SQLite retrieval index. When an embedding-capable provider is available and `retrieval.hybrid` is not disabled, semantic page matches are fused into the same candidate set before answer generation. `tasks.embeddingProvider` is the explicit way to choose that backend, but Beehive can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged top hits. `--commit` immediately commits saved `wiki/` and `state/` changes when the vault root is inside a git repo.
 
-### `swarmvault context build|list|show|delete`
+### `beehive context build|list|show|delete`
 
 Build and manage agent-ready context packs from the compiled vault.
 
@@ -387,7 +387,7 @@ Build and manage agent-ready context packs from the compiled vault.
 
 Use this before handing work to an agent, starting a PR review, or preserving the evidence bundle behind a design/debugging decision.
 
-### `swarmvault task start|update|finish|list|show|resume`
+### `beehive task start|update|finish|list|show|resume`
 
 Record a durable local task ledger for agent work.
 
@@ -398,7 +398,7 @@ Record a durable local task ledger for agent work.
 
 `query`, `explore`, and `context build` accept `--task <id>` so saved outputs and context packs can attach to an active task. The 2.0 `memory` command group and `--memory <id>` flag remain compatibility aliases.
 
-### `swarmvault retrieval status|rebuild|doctor`
+### `beehive retrieval status|rebuild|doctor`
 
 Inspect and maintain the local retrieval index under `state/retrieval/`.
 
@@ -406,7 +406,7 @@ Inspect and maintain the local retrieval index under `state/retrieval/`.
 - `retrieval rebuild` rebuilds the local shard from current wiki pages and refreshes `state/retrieval/manifest.json`
 - `retrieval doctor` checks for stale or missing retrieval artifacts; add `--repair` to rebuild missing or stale artifacts immediately
 
-### `swarmvault explore "<question>" [--steps <n>] [--format markdown|report|slides|chart|image]`
+### `beehive explore "<question>" [--steps <n>] [--format markdown|report|slides|chart|image]`
 
 Run a save-first multi-step research loop.
 
@@ -419,7 +419,7 @@ Each step:
 
 The command also writes a hub page linking the root question, saved step pages, and generated follow-up questions.
 
-### `swarmvault lint [--deep] [--no-deep] [--web] [--conflicts]`
+### `beehive lint [--deep] [--no-deep] [--web] [--conflicts]`
 
 Run anti-drift and vault health checks such as stale pages, missing graph artifacts, contradiction findings, and other structural issues.
 
@@ -432,13 +432,13 @@ Run anti-drift and vault health checks such as stale pages, missing graph artifa
 - `candidate_page`
 - `follow_up_question`
 
-Set `profile.deepLintDefault: true` when deep lint should be the default for `swarmvault lint`, and use `--no-deep` when one run should stay structural only.
+Set `profile.deepLintDefault: true` when deep lint should be the default for `beehive lint`, and use `--no-deep` when one run should stay structural only.
 
 `--web` can only be used when deep lint is enabled, either explicitly with `--deep` or through `profile.deepLintDefault`. It enriches deep-lint findings with external evidence snippets and URLs from a configured web-search provider. Web search is currently scoped to deep lint; other commands (compile, query, explore) use only local vault state.
 
 `--conflicts` filters the results down to contradiction-focused findings so you can audit conflicting claims without the rest of the lint output.
 
-### `swarmvault watch [--lint] [--repo] [--once] [--code-only] [--debounce <ms>]`
+### `beehive watch [--lint] [--repo] [--once] [--code-only] [--debounce <ms>]`
 
 Watch the inbox directory and trigger import and compile cycles when files change. With `--repo`, each cycle also refreshes tracked repo roots that were previously ingested through directory ingest. With `--once`, Beehive runs one refresh cycle immediately instead of starting a long-running watcher. With `--code-only`, Beehive forces the narrower AST-only refresh path and skips non-code semantic re-analysis until you run a normal `compile`. With `--lint`, each cycle also runs linting. Each cycle writes a canonical session artifact to `state/sessions/`, and compatibility run metadata is still appended to `state/jobs.ndjson`.
 
@@ -446,38 +446,38 @@ When `--repo` sees non-code changes under tracked repo roots, Beehive records th
 
 When `--repo` sees only code-file changes under tracked repo roots, Beehive takes the faster code-only path: it refreshes code pages and graph structure without re-running non-code semantic analysis for unchanged sources.
 
-### `swarmvault watch status`
+### `beehive watch status`
 
 Show watched repo roots, the latest watch run, and any pending semantic refresh entries for tracked non-code repo changes.
 
-### `swarmvault graph update [path]`
+### `beehive graph update [path]`
 
 Refresh code-derived graph artifacts from tracked repo roots or one explicit repo path.
 
-- aliases to `swarmvault graph refresh [path]`
-- runs the same code-only repo refresh path as `swarmvault watch --repo --code-only --once`
+- aliases to `beehive graph refresh [path]`
+- runs the same code-only repo refresh path as `beehive watch --repo --code-only --once`
 - without `path`, uses configured or auto-discovered watched repo roots
 - with `path`, refreshes that repo root instead of the tracked set
-- aborts if nodes or edges drop by more than 25% compared with the existing graph; pass `--force` or set `SWARMVAULT_FORCE_UPDATE=1` when the shrink is expected
+- aborts if nodes or edges drop by more than 25% compared with the existing graph; pass `--force` or set `BEEHIVE_FORCE_UPDATE=1` when the shrink is expected
 - `--json` returns the same one-shot watch result shape, including repo import/update/remove counts and pending semantic refresh entries
 
-### `swarmvault check-update [path]`
+### `beehive check-update [path]`
 
-Compatibility alias for `swarmvault graph status [path]`.
+Compatibility alias for `beehive graph status [path]`.
 
 - performs the same read-only graph/report freshness check
 - keeps automation-friendly JSON output for cron or hook wrappers
-- recommends `swarmvault update`/`swarmvault graph update` for code-only drift and `swarmvault compile` when semantic refresh is required
+- recommends `beehive update`/`beehive graph update` for code-only drift and `beehive compile` when semantic refresh is required
 
-### `swarmvault update [path]`
+### `beehive update [path]`
 
-Compatibility alias for `swarmvault graph update [path]`.
+Compatibility alias for `beehive graph update [path]`.
 
 - runs the same code-only repo refresh path
 - accepts `--lint` and `--force`
 - returns the same JSON shape as `graph update`
 
-### `swarmvault graph tree [--output <html>] [--root <path>] [--label <name>] [--max-children <n>]`
+### `beehive graph tree [--output <html>] [--root <path>] [--label <name>] [--max-children <n>]`
 
 Write a collapsible HTML source tree for the current `state/graph.json`.
 
@@ -487,14 +487,14 @@ Write a collapsible HTML source tree for the current `state/graph.json`.
 - `--max-children` caps very wide folders or modules with a `+N more` row
 - `--json` returns the output path, source count, node count, and tree payload
 
-### `swarmvault tree [--output <html>] [--root <path>] [--label <name>] [--max-children <n>]`
+### `beehive tree [--output <html>] [--root <path>] [--label <name>] [--max-children <n>]`
 
-Compatibility alias for `swarmvault graph tree`.
+Compatibility alias for `beehive graph tree`.
 
 - writes the same source/module/symbol tree
 - returns the same JSON shape as `graph tree`
 
-### `swarmvault graph merge <graph...> --out <path> [--label <name>]`
+### `beehive graph merge <graph...> --out <path> [--label <name>]`
 
 Merge multiple graph JSON files into one namespaced graph artifact.
 
@@ -504,25 +504,25 @@ Merge multiple graph JSON files into one namespaced graph artifact.
 - maps explicit extracted/inferred/ambiguous edge evidence into Beehive edge semantics
 - `--json` returns the merged graph, input summaries, and warnings
 
-### `swarmvault merge-graphs <graph...> --out <path> [--label <name>]`
+### `beehive merge-graphs <graph...> --out <path> [--label <name>]`
 
-Compatibility alias for `swarmvault graph merge`.
+Compatibility alias for `beehive graph merge`.
 
 - accepts the same Beehive and NetworkX/node-link graph inputs
 - returns the same JSON shape as `graph merge`
 
-### `swarmvault graph status [path]`
+### `beehive graph status [path]`
 
 Read-only graph freshness check for tracked repo roots or one explicit repo path.
 
 - reports graph and graph-report presence
 - lists tracked repo roots and changed files without writing watch status
 - separates code-only changes from semantic refresh changes
-- recommends `swarmvault graph update` for code-only graph drift
-- recommends `swarmvault compile` when graph/report artifacts are missing, non-code files changed, or a semantic refresh is pending
+- recommends `beehive graph update` for code-only graph drift
+- recommends `beehive compile` when graph/report artifacts are missing, non-code files changed, or a semantic refresh is pending
 - supports global `--json` for automation
 
-### `swarmvault watch [path] [--once] [--code-only] [--lint]`
+### `beehive watch [path] [--once] [--code-only] [--lint]`
 
 Watch or refresh one explicit repo root without first writing `watch.repoRoots`.
 
@@ -531,7 +531,7 @@ Watch or refresh one explicit repo root without first writing `watch.repoRoots`.
 - `--code-only` limits the refresh to parser-backed repo graph artifacts
 - repeated `--root <path>` remains available when you need multiple roots
 
-### `swarmvault graph stats`
+### `beehive graph stats`
 
 Summarize the current compiled graph without opening the viewer.
 
@@ -540,7 +540,7 @@ Summarize the current compiled graph without opening the viewer.
 - keeps the same lightweight shape as the MCP `graph_stats` tool
 - supports global `--json` for automation
 
-### `swarmvault graph validate [graph] [--strict]`
+### `beehive graph validate [graph] [--strict]`
 
 Validate graph artifact integrity before exporting, merging, pushing, or publishing generated graph evidence.
 
@@ -550,7 +550,7 @@ Validate graph artifact integrity before exporting, merging, pushing, or publish
 - exits non-zero when errors are present; with `--strict`, warnings also fail the command
 - supports global `--json` for automation
 
-### `swarmvault graph cluster [--resolution <n>]`
+### `beehive graph cluster [--resolution <n>]`
 
 Recompute communities, node degrees, bridge scores, god-node flags, and graph report artifacts from the existing `state/graph.json` without re-ingesting or re-analyzing sources.
 
@@ -560,22 +560,22 @@ Recompute communities, node degrees, bridge scores, god-node flags, and graph re
 - splits oversized or low-cohesion communities after the initial Louvain pass so large-repo reports stay scannable
 - `--json` returns counts plus the graph/report paths
 
-### `swarmvault cluster-only [vault] [--resolution <n>]`
+### `beehive cluster-only [vault] [--resolution <n>]`
 
-Compatibility alias for `swarmvault graph cluster`.
+Compatibility alias for `beehive graph cluster`.
 
 - recomputes communities and graph report artifacts without ingest or semantic analysis
 - accepts an optional vault root when the command is run from outside the vault
 - returns the same JSON shape as `graph cluster`
 
-### `swarmvault graph export --neo4j <path>`
+### `beehive graph export --neo4j <path>`
 
-Compatibility alias for `swarmvault graph export --cypher <path>`.
+Compatibility alias for `beehive graph export --cypher <path>`.
 
 - writes a Neo4j-ready Cypher import file
 - can be combined with other `graph export` formats in the same run
 
-### `swarmvault hook install|uninstall|status`
+### `beehive hook install|uninstall|status`
 
 Manage Beehive's local git hook blocks for the nearest git repository.
 
@@ -583,11 +583,11 @@ Manage Beehive's local git hook blocks for the nearest git repository.
 - `hook uninstall` removes only the Beehive-managed hook block
 - `hook status` reports whether those managed hook blocks are installed
 
-The installed hooks run `swarmvault watch --repo --once --code-only` from the vault root so commit and checkout refreshes update code pages and graph structure quickly. Run a normal `swarmvault compile` when you also want non-code semantic re-analysis.
+The installed hooks run `beehive watch --repo --once --code-only` from the vault root so commit and checkout refreshes update code pages and graph structure quickly. Run a normal `beehive compile` when you also want non-code semantic re-analysis.
 
-### `swarmvault mcp`
+### `beehive mcp`
 
-Run Beehive as a local MCP server over stdio. Start it with `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>` so resources resolve to the intended workspace; MCP tool calls must include the same `workspace_id`. This exposes the vault to compatible clients and agents through tools and resources such as:
+Run Beehive as a local MCP server over stdio. Start it with `BEEHIVE_WORKSPACE_ID=<id>` or `--workspace-id <id>` so resources resolve to the intended workspace; MCP tool calls must include the same `workspace_id`. This exposes the vault to compatible clients and agents through tools and resources such as:
 
 - `workspace_info`
 - `search_pages`
@@ -628,11 +628,11 @@ Run Beehive as a local MCP server over stdio. Start it with `SWARMVAULT_WORKSPAC
 - `shortest_path`
 - `god_nodes`
 
-`compile_vault` also accepts `maxTokens` for bounded wiki output, `graph_stats` returns lightweight graph counts, `cluster_graph` mirrors `swarmvault graph cluster`, `get_community` resolves community members and pages, `blast_radius` traces reverse import impact for a file or module target, `build_context_pack` creates the same bounded agent evidence bundles as `swarmvault context build`, the task tools mirror `swarmvault task`, the memory tools mirror the compatibility command group, `doctor_vault` mirrors `swarmvault doctor`, and retrieval tools inspect or repair the local index.
+`compile_vault` also accepts `maxTokens` for bounded wiki output, `graph_stats` returns lightweight graph counts, `cluster_graph` mirrors `beehive graph cluster`, `get_community` resolves community members and pages, `blast_radius` traces reverse import impact for a file or module target, `build_context_pack` creates the same bounded agent evidence bundles as `beehive context build`, the task tools mirror `beehive task`, the memory tools mirror the compatibility command group, `doctor_vault` mirrors `beehive doctor`, and retrieval tools inspect or repair the local index.
 
-The MCP surface also exposes `swarmvault://schema`, `swarmvault://sessions`, `swarmvault://sessions/{path}`, `swarmvault://context-packs`, `swarmvault://tasks`, `swarmvault://memory-tasks`, and includes `schemaPath` in `workspace_info`.
+The MCP surface also exposes `beehive://schema`, `beehive://sessions`, `beehive://sessions/{path}`, `beehive://context-packs`, `beehive://tasks`, `beehive://memory-tasks`, and includes `schemaPath` in `workspace_info`.
 
-### `swarmvault graph serve`
+### `beehive graph serve`
 
 Start the local graph workspace backed by `state/graph.json`, `/api/search`, `/api/page`, local graph query/path/explain endpoints, and the workbench APIs for doctor, retrieval repair, capture, context packs, task start, and source reload.
 
@@ -640,23 +640,23 @@ The workbench renders prioritized vault doctor recommendations, every check with
 
 It also exposes `/api/bookmarklet` and `/api/clip`, so a running local viewer can capture the current browser URL, page title, selected text, markdown, HTML excerpts, and tags through the workbench or bookmarklet without leaving the browser. URL-only bookmarklet clips use normalized `add`; selected text is imported through the inbox path.
 
-### `swarmvault graph query "<question>" [--dfs] [--budget <n>]`
+### `beehive graph query "<question>" [--dfs] [--budget <n>]`
 
 Run a deterministic local graph traversal seeded from local search, graph labels, and matching group patterns.
 
-### `swarmvault graph path <from> <to>`
+### `beehive graph path <from> <to>`
 
 Return the shortest high-confidence path between two graph targets.
 
-### `swarmvault graph explain <target>`
+### `beehive graph explain <target>`
 
 Inspect graph metadata, community membership, neighbors, provenance, and group-pattern membership for a node or page.
 
-### `swarmvault graph god-nodes [--limit <n>]`
+### `beehive graph god-nodes [--limit <n>]`
 
 List the most connected bridge-heavy nodes in the current graph.
 
-### `swarmvault graph share [--post] [--svg [path]] [--bundle [dir]]`
+### `beehive graph share [--post] [--svg [path]] [--bundle [dir]]`
 
 Print a shareable summary of the compiled graph.
 
@@ -665,9 +665,9 @@ Print a shareable summary of the compiled graph.
 - `--svg [path]` writes the 1200x630 visual share card, defaulting to `wiki/graph/share-card.svg`
 - `--bundle [dir]` writes `share-card.md`, `share-post.txt`, `share-card.svg`, `share-preview.html`, and `share-artifact.json`, defaulting to `wiki/graph/share-kit`
 - `--json` emits the structured share artifact for automation; with `--svg`, it also includes `svgPath`; with `--bundle`, it includes `bundlePath` and named output paths
-- useful immediately after `swarmvault scan`, `swarmvault demo`, or a normal compile
+- useful immediately after `beehive scan`, `beehive demo`, or a normal compile
 
-### `swarmvault graph blast <target> [--depth <n>]`
+### `beehive graph blast <target> [--depth <n>]`
 
 Trace the reverse-import blast radius of changing a file or module.
 
@@ -675,7 +675,7 @@ Trace the reverse-import blast radius of changing a file or module.
 - follows reverse `imports` edges through the compiled graph
 - reports affected modules by depth so you can estimate downstream impact before editing
 
-### `swarmvault graph cycles [--relation <name>] [--limit <n>] [--max-depth <n>]`
+### `beehive graph cycles [--relation <name>] [--limit <n>] [--max-depth <n>]`
 
 Find deterministic directed cycles in the compiled graph.
 
@@ -683,7 +683,7 @@ Find deterministic directed cycles in the compiled graph.
 - accepts repeated `--relation` flags to inspect other directed relationships
 - supports global `--json` for automation
 
-### `swarmvault graph export --html|--html-standalone|--report|--svg|--graphml|--cypher|--json|--callflow|--obsidian|--canvas <output>`
+### `beehive graph export --html|--html-standalone|--report|--svg|--graphml|--cypher|--json|--callflow|--obsidian|--canvas <output>`
 
 Export the current graph as one or more shareable formats:
 
@@ -700,9 +700,9 @@ Export the current graph as one or more shareable formats:
 
 You can combine multiple flags in one run to write several exports at once.
 
-Set `graph.communityResolution` in `swarmvault.config.json` when you want to pin the Louvain clustering resolution used by graph reports and Obsidian community output instead of relying on the adaptive default.
+Set `graph.communityResolution` in `beehive.config.json` when you want to pin the Louvain clustering resolution used by graph reports and Obsidian community output instead of relying on the adaptive default.
 
-### `swarmvault graph push neo4j`
+### `beehive graph push neo4j`
 
 Push the compiled graph directly into Neo4j over Bolt/Aura instead of writing an intermediate file.
 
@@ -720,26 +720,26 @@ Useful flags:
 
 Defaults:
 
-- reads `graphSinks.neo4j` from `swarmvault.config.json` when present
+- reads `graphSinks.neo4j` from `beehive.config.json` when present
 - includes only `first_party` graph material unless you opt into more source classes
 - namespaces every remote record by `vaultId` so multiple vaults can safely share one Neo4j database
 - upserts current graph records and does not prune stale remote data yet
 
-### `swarmvault install --agent <agent> [--scope project|user]`
+### `beehive install --agent <agent> [--scope project|user]`
 
 Install agent-specific rules into the current project so an agent understands the Beehive workspace contract and workflow.
 
-`init`, `quickstart`, `scan`, and `clone` do not write project-local agent rule files by default. Run `swarmvault install --agent <agent> --scope project` for one target at a time, use `--scope user` for supported user-scope skill installs, or list targets in `swarmvault.config.json` and pass `--install-agent-rules` to `init`, `quickstart`, `scan`, or `clone` when you intentionally want configured targets installed together.
+`init`, `quickstart`, `scan`, and `clone` do not write project-local agent rule files by default. Run `beehive install --agent <agent> --scope project` for one target at a time, use `--scope user` for supported user-scope skill installs, or list targets in `beehive.config.json` and pass `--install-agent-rules` to `init`, `quickstart`, `scan`, or `clone` when you intentionally want configured targets installed together.
 
 Hook-capable installs:
 
 ```bash
-swarmvault install --agent codex --hook
-swarmvault install --agent claude --hook
-swarmvault install --agent gemini --hook
-swarmvault install --agent opencode --hook
-swarmvault install --agent copilot --hook
-swarmvault install --agent kilo --hook
+beehive install --agent codex --hook
+beehive install --agent claude --hook
+beehive install --agent gemini --hook
+beehive install --agent opencode --hook
+beehive install --agent copilot --hook
+beehive install --agent kilo --hook
 ```
 
 Agent target mapping:
@@ -749,29 +749,29 @@ Agent target mapping:
 - `gemini` writes `GEMINI.md`
 - `aider` writes `CONVENTIONS.md` and merges `.aider.conf.yml`
 - `copilot` writes `.github/copilot-instructions.md` plus `AGENTS.md`
-- `cursor` writes `.cursor/rules/swarmvault.mdc`
-- `trae` writes `.trae/rules/swarmvault.md`
-- `claw` writes `.claw/skills/swarmvault/SKILL.md`
-- `droid` writes `.factory/rules/swarmvault.md`
-- `kiro` writes `.kiro/skills/swarmvault/SKILL.md` and `.kiro/steering/swarmvault.md`
-- `kilo` project-scope writes `AGENTS.md`; with `--hook`, it also writes `.kilo/plugins/swarmvault.js` and `.kilo/kilo.json` while preserving an existing `.kilo/kilo.jsonc`
-- `hermes` writes `~/.hermes/skills/swarmvault/SKILL.md` plus `AGENTS.md`
-- `antigravity` writes `.agents/rules/swarmvault.md` and `.agents/workflows/swarmvault.md`, and removes older fully managed `.agent/` files during reinstall
-- `vscode` writes `.github/chatmodes/swarmvault.chatmode.md` plus `.github/copilot-instructions.md`
-- `devin` writes `.devin/skills/swarmvault/SKILL.md` plus `.windsurf/rules/swarmvault.md`
+- `cursor` writes `.cursor/rules/beehive.mdc`
+- `trae` writes `.trae/rules/beehive.md`
+- `claw` writes `.claw/skills/beehive/SKILL.md`
+- `droid` writes `.factory/rules/beehive.md`
+- `kiro` writes `.kiro/skills/beehive/SKILL.md` and `.kiro/steering/beehive.md`
+- `kilo` project-scope writes `AGENTS.md`; with `--hook`, it also writes `.kilo/plugins/beehive.js` and `.kilo/kilo.json` while preserving an existing `.kilo/kilo.jsonc`
+- `hermes` writes `~/.hermes/skills/beehive/SKILL.md` plus `AGENTS.md`
+- `antigravity` writes `.agents/rules/beehive.md` and `.agents/workflows/beehive.md`, and removes older fully managed `.agent/` files during reinstall
+- `vscode` writes `.github/chatmodes/beehive.chatmode.md` plus `.github/copilot-instructions.md`
+- `devin` writes `.devin/skills/beehive/SKILL.md` plus `.windsurf/rules/beehive.md`
 
-`swarmvault install status --agent <agent> [--scope project|user] [--hook]` reports the expected install paths and whether they exist without writing files.
+`beehive install status --agent <agent> [--scope project|user] [--hook]` reports the expected install paths and whether they exist without writing files.
 
 Beehive only owns the managed block inside shared markdown rule files. It keeps the Beehive block aligned across targets while preserving any user-owned text before or after the block, so `AGENTS.md` and `CLAUDE.md` do not need to be byte-identical.
 
 Hook semantics:
 
-- `codex --hook` writes `.codex/hooks.json` plus `.codex/hooks/swarmvault-graph-first.js` and emits model-visible guidance before broad shell search
-- `claude --hook` writes `.claude/settings.json` plus `.claude/hooks/swarmvault-graph-first.js` and adds model-visible advisory context through structured hook JSON
-- `gemini --hook` writes `.gemini/settings.json` plus `.gemini/hooks/swarmvault-graph-first.js` and stays advisory/model-visible
-- `opencode --hook` writes `.opencode/plugins/swarmvault-graph-first.js` and stays advisory/log-only
-- `copilot --hook` writes `.github/hooks/swarmvault-graph-first.json` plus `.github/hooks/swarmvault-graph-first.js` and remains decision-based rather than advisory
-- `kilo --hook` writes `.kilo/plugins/swarmvault.js` and registers it in `.kilo/kilo.json`
+- `codex --hook` writes `.codex/hooks.json` plus `.codex/hooks/beehive-graph-first.js` and emits model-visible guidance before broad shell search
+- `claude --hook` writes `.claude/settings.json` plus `.claude/hooks/beehive-graph-first.js` and adds model-visible advisory context through structured hook JSON
+- `gemini --hook` writes `.gemini/settings.json` plus `.gemini/hooks/beehive-graph-first.js` and stays advisory/model-visible
+- `opencode --hook` writes `.opencode/plugins/beehive-graph-first.js` and stays advisory/log-only
+- `copilot --hook` writes `.github/hooks/beehive-graph-first.json` plus `.github/hooks/beehive-graph-first.js` and remains decision-based rather than advisory
+- `kilo --hook` writes `.kilo/plugins/beehive.js` and registers it in `.kilo/kilo.json`
 
 `aider` is intentionally file/config-based in this release rather than hook-based.
 
@@ -780,13 +780,13 @@ Hook semantics:
 If you use OpenClaw through ClawHub, install the packaged skill:
 
 ```bash
-clawhub install swarmvault
+clawhub install beehive
 ```
 
 That published bundle includes `SKILL.md`, a ClawHub README, examples, references, troubleshooting notes, and release-validation prompts. The CLI binary still comes from npm:
 
 ```bash
-npm install -g @swarmvaultai/cli
+npm install -g @beehive/cli
 ```
 
 ## Provider Configuration
@@ -796,10 +796,10 @@ Beehive defaults to a local `heuristic` provider so the CLI works without API ke
 CLI registry commands:
 
 ```bash
-swarmvault provider add router --type openrouter --model openrouter/auto --api-key-env OPENROUTER_API_KEY --capability chat --capability structured --task queryProvider
-swarmvault provider list
-swarmvault provider show router
-swarmvault provider remove router --fallback local
+beehive provider add router --type openrouter --model openrouter/auto --api-key-env OPENROUTER_API_KEY --capability chat --capability structured --task queryProvider
+beehive provider list
+beehive provider show router
+beehive provider remove router --fallback local
 ```
 
 `provider add|remove` preserves unrelated config fields and stores secret references through `apiKeyEnv`, not literal API key values.
@@ -878,11 +878,11 @@ Search behavior is configurable separately from provider routing:
 - If a provider claims OpenAI compatibility but fails structured generation, declare only the capabilities it actually supports
 - If `lint --deep --web` fails immediately, make sure a `webSearch` provider is configured and mapped to `tasks.deepLintProvider`
 - If you still see a `node:sqlite` experimental warning on Node 24, upgrade to the latest CLI; current releases suppress that upstream warning during normal runs
-- If compile reports `Failed to parse JSON file ...`, the named derived state file is corrupt or empty. Remove the named file or restore it from git, then rerun `swarmvault compile`; current releases write JSON state atomically to reduce partial-file failures.
+- If compile reports `Failed to parse JSON file ...`, the named derived state file is corrupt or empty. Remove the named file or restore it from git, then rerun `beehive compile`; current releases write JSON state atomically to reduce partial-file failures.
 - If a large heuristic vault fails with heap exhaustion or `Map maximum size exceeded` on an older CLI, upgrade and rerun compile. Current releases bound analysis concurrency and graph projection during compile.
 
 ## Links
 
-- Website: https://www.swarmvault.ai
-- Docs: https://www.swarmvault.ai/docs
-- GitHub: https://github.com/swarmclawai/swarmvault
+- Website: <https://www.beehive.ai>
+- Docs: <https://www.beehive.ai/docs>
+- GitHub: <https://github.com/MaraClaw/Beehive>
