@@ -1,4 +1,4 @@
-# SWARMVAULT SKILL KNOWLEDGE BASE
+# BEEHIVE SKILL KNOWLEDGE BASE
 
 ## OVERVIEW
 
@@ -28,17 +28,17 @@ validation/smoke-prompts.md # human validation prompts
 
 ## CONVENTIONS
 
-- `SKILL.md` frontmatter must keep `name: swarmvault`, current version, description, and `metadata` as a quoted JSON string.
-- `metadata.openclaw.requires.anyBins` includes `swarmvault` and `vault`.
-- `metadata.openclaw.install` includes package `@swarmvaultai/cli` and exposes `swarmvault` plus `vault` bins.
+- `SKILL.md` frontmatter must keep `name: beehive`, current version, description, and `metadata` as a quoted JSON string.
+- `metadata.openclaw.requires.anyBins` includes `beehive` and `vault`.
+- `metadata.openclaw.install` includes package `@beehive/cli` and exposes `beehive` plus `vault` bins.
 - Skill version must match root/package versions enforced by release sync.
-- README required substrings include ClawHub install/update commands, npm install/update commands, `swarmvault --version`, core CLI commands, supported file extensions, docs links, npm, and GitHub.
+- README required substrings include ClawHub install/update commands, npm install/update commands, `beehive --version`, core CLI commands, supported file extensions, docs links, npm, and GitHub.
 - `examples/graph-first-agent-workflow.md` is authored package content even if not currently required by the checker.
 
 ## ANTI-PATTERNS
 
 - Do not paraphrase checker-required README substrings so much that substring checks fail.
-- Do not claim the skill bundles the CLI; users still need Node >=24 and `npm install -g @swarmvaultai/cli` or ClawHub install flow.
+- Do not claim the skill bundles the CLI; users still need Node >=24 and `npm install -g @beehive/cli` or ClawHub install flow.
 - Do not say `init`, `quickstart`, `scan`, or `clone` install project-local agent rules by default.
 - Do not imply web search affects compile/query/explore generally; README scopes web search to deep lint.
 - Do not say heuristic or local providers are invalid; they are valid lower-quality/offline starts.
@@ -54,7 +54,7 @@ pnpm live:cli-surface
 
 ## GENERATED ARTIFACT NOTES
 
-- Generated vault roots normally include `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/`; `SWARMVAULT_OUT` can move those while config/schema remain at project root.
+- Generated vault roots normally include `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/`; `BEEHIVE_OUT` can move those while config/schema remain at project root.
 - Raw sources are immutable provenance; corrections belong in schema, new sources, or saved outputs.
 - Save-first commands include `query`, `chat`, `context build`, `export ai`, and `task`.
 - `compile --approve` stages review bundles in `state/approvals/`; candidates stage under `wiki/candidates/`.

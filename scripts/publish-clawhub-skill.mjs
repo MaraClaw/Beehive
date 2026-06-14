@@ -3,11 +3,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const DEFAULT_TAGS = ["latest", "swarmvault", "knowledge-base", "local-first", "markdown", "mcp", "graph"];
+const DEFAULT_TAGS = ["latest", "beehive", "knowledge-base", "local-first", "markdown", "mcp", "graph"];
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
-const skillDir = path.join(repoRoot, "skills", "swarmvault");
+const skillDir = path.join(repoRoot, "skills", "beehive");
 
 function parseArgs(argv) {
   const args = { dryRun: false, version: undefined, changelog: undefined };
@@ -83,7 +83,7 @@ const publishArgs = [
   "publish",
   skillDir,
   "--slug",
-  "swarmvault",
+  "beehive",
   "--name",
   "Beehive",
   "--version",
