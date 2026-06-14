@@ -1,5 +1,7 @@
 # Command Reference
 
+Set `SWARMVAULT_WORKSPACE_ID=<id>` once per shell, or add `--workspace-id <id>` to behavior commands, so CLI and MCP operations target the same generated artifact directory.
+
 ## Setup
 
 ```bash
@@ -113,8 +115,10 @@ swarmvault graph export --neo4j ./graph.cypher
 swarmvault export ai --out ./exports/ai
 swarmvault export ai --out ./exports/ai --no-page-siblings
 swarmvault graph push neo4j --dry-run
-swarmvault mcp
+SWARMVAULT_WORKSPACE_ID=main swarmvault mcp
 ```
+
+MCP tool calls must include `workspace_id`, matching the workspace id used to start the server.
 
 ## Providers
 
@@ -167,4 +171,4 @@ swarmvault install status --agent kilo --hook
 swarmvault install status --agent claude --hook --mcp
 ```
 
-The Claude Code hook guides graph-first reads: session-start graph instructions plus a staleness note, a one-time advisory note on the first broad Grep/Glob/Bash search per session, and a background `swarmvault graph update --file <path>` refresh after Edit/Write. Add `--graph-first` to opt in to enforcement (the first broad search is denied once with a guided redirect; repeating the search is allowed) — it persists `hooks.graphFirst: "deny"` in `swarmvault.config.json`, and `SWARMVAULT_GRAPH_FIRST=deny|context|off` overrides per session. `--mcp` registers the MCP server in the project `.mcp.json`; `--scope user` installs the Claude skill, hook, and settings under `~/.claude`.
+The Claude Code hook guides graph-first reads: session-start graph instructions plus a staleness note, a one-time advisory note on the first broad Grep/Glob/Bash search per session, and a background `swarmvault graph update --file <path>` refresh after Edit/Write. Add `--graph-first` to opt in to enforcement (the first broad search is denied once with a guided redirect; repeating the search is allowed) — it persists `hooks.graphFirst: "deny"` in `swarmvault.config.json`, and `SWARMVAULT_GRAPH_FIRST=deny|context|off` overrides per session. `--mcp` registers the MCP server in the project `.mcp.json`; start it with `SWARMVAULT_WORKSPACE_ID=<id>` or a `--workspace-id <id>` client arg, and include the same `workspace_id` in MCP tool calls. `--scope user` installs the Claude skill, hook, and settings under `~/.claude`.

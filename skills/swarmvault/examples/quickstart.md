@@ -6,6 +6,7 @@ Use this when the user needs the shortest path from install to a working vault.
 
 ```bash
 npm install -g @swarmvaultai/cli
+export SWARMVAULT_WORKSPACE_ID=main
 swarmvault quickstart ./repo
 swarmvault quickstart ./notes.pdf --no-serve
 swarmvault next
@@ -48,13 +49,13 @@ swarmvault export ai --out ./exports/ai
 
 ## What To Check
 
-- `swarmvault.schema.md` exists and reflects the vault contract
+- `main/swarmvault.schema.md` exists and reflects the vault contract when using the example workspace id
 - `swarmvault next` reports `uninitialized`, `initialized`, or `compiled` and recommends the next safe command without changing files
 - `demo --no-serve` leaves a temporary compiled vault behind even on a clean machine
 - `quickstart`, `quickstart --no-serve`, `scan --no-serve`, `scan --no-viz`, and `clone --no-viz` accept local files as well as directories and leave a compiled vault behind even when the viewer is not launched
 - `quickstart`, `scan`, and `clone` do not create project-local agent rule files unless `--install-agent-rules` is passed with configured agents
-- `state/sources.json` contains the managed source registry entry
-- `wiki/graph/report.md` exists after compile
+- `main/state/sources.json` contains the managed source registry entry when using the example workspace id
+- `main/wiki/graph/report.md` exists after compile when using the example workspace id
 - `graph status` and `check-update` report whether tracked repo changes need `graph update`/`update` or a full `compile` without writing watch state
 - `watch [path] --once --code-only` can refresh one repo root without persisting watch config
 - `graph stats` prints lightweight graph counts and relation mix without opening the viewer
@@ -71,7 +72,7 @@ swarmvault export ai --out ./exports/ai
 - `wiki/context/` and `state/context-packs/` contain the saved context pack when `context build` is used
 - `wiki/exports/ai/` or the configured export directory contains `llms.txt`, `llms-full.txt`, `graph.jsonld`, `manifest.json`, `ai-readme.md`, and optional page siblings when `export ai` is used
 - `wiki/memory/` and `state/memory/tasks/` contain task ledger artifacts when `task start` is used
-- `state/graph.json` and `state/retrieval/` exist
+- `main/state/graph.json` and `main/state/retrieval/` exist when using the example workspace id
 - `swarmvault doctor` reports `ok` or gives concrete next commands such as `swarmvault compile` or `swarmvault retrieval rebuild`; `graph serve` shows those checks and commands in the workbench
 
 ## Guidance

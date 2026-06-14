@@ -17,6 +17,7 @@ Install the CLI it depends on:
 ```bash
 npm install -g @swarmvaultai/cli
 swarmvault --version
+export SWARMVAULT_WORKSPACE_ID=main
 swarmvault quickstart ./your-repo
 swarmvault quickstart ./whitepaper.pdf --no-serve
 swarmvault next
@@ -55,6 +56,7 @@ npm install -g @swarmvaultai/cli@latest
 ## Quickstart
 
 ```bash
+export SWARMVAULT_WORKSPACE_ID=main
 swarmvault quickstart ./your-repo
 swarmvault quickstart ./whitepaper.pdf --no-serve
 swarmvault quickstart ./your-repo --no-serve
@@ -98,10 +100,10 @@ swarmvault chat "What should the next agent know?"
 swarmvault chat --resume <session-id> "What changed?"
 swarmvault export ai --out ./exports/ai
 swarmvault clone https://github.com/owner/repo --no-viz
-swarmvault mcp
+SWARMVAULT_WORKSPACE_ID=main swarmvault mcp
 ```
 
-For the fastest scratch walkthrough of a local file, local repo, public GitHub repo, or docs tree, run `swarmvault quickstart ./path`, `swarmvault quickstart ./path --no-serve`, `swarmvault scan ./path --no-viz`, or `swarmvault clone https://github.com/owner/repo --branch main --no-viz`. `quickstart` is the beginner-friendly alias for `scan`: it initializes the current directory as a vault, ingests that input, compiles immediately, opens the graph viewer by default, and writes `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/`. Interactive file and directory runs show bounded stderr progress with the active file while JSON, MCP, watch, and CI-style flows stay quiet. Run `swarmvault next` when you want a read-only status check that recommends init, ingest, compile, query, review, or refresh commands. Use `quickstart --mcp`, `scan --mcp`, or `clone --mcp` when the next step should be an MCP stdio server.
+For the fastest scratch walkthrough of a local file, local repo, public GitHub repo, or docs tree, set `SWARMVAULT_WORKSPACE_ID=main` once per shell or pass `--workspace-id main`, then run `swarmvault quickstart ./path`, `swarmvault quickstart ./path --no-serve`, `swarmvault scan ./path --no-viz`, or `swarmvault clone https://github.com/owner/repo --branch main --no-viz`. `quickstart` is the beginner-friendly alias for `scan`: it initializes the current directory as a vault, ingests that input, compiles immediately, opens the graph viewer by default, and writes `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/` under the active workspace artifact root. Interactive file and directory runs show bounded stderr progress with the active file while JSON, MCP, watch, and CI-style flows stay quiet. Run `swarmvault next` when you want a read-only status check that recommends init, ingest, compile, query, review, or refresh commands. Use `quickstart --mcp`, `scan --mcp`, or `clone --mcp` when the next step should be an MCP stdio server.
 
 If you want the same zero-config walkthrough without supplying your own inputs first, run `swarmvault demo --no-serve`. It creates a temporary demo vault with bundled sources and compiles it immediately.
 
@@ -127,7 +129,7 @@ With an embedding-capable provider available, SwarmVault can also merge semantic
 
 Audio and video ingest use `tasks.audioProvider` when you configure a provider with `audio` capability. The fully-local option is `swarmvault provider setup --local-whisper --apply`, which installs a `local-whisper` provider, downloads a whisper.cpp ggml model into `~/.swarmvault/models/`, and assigns `tasks.audioProvider` so voice memos, meetings, interviews, and video audio transcribe with no API keys and no network calls. Local video needs `ffmpeg`; public video URL ingest with `--video` needs `yt-dlp`. YouTube transcript ingest works without a model provider. If you want to pin graph clustering instead of using the adaptive default and its oversized/low-cohesion community split pass, set `graph.communityResolution` in `swarmvault.config.json` or run `swarmvault graph cluster --resolution <n>` for one recompute.
 
-Set `SWARMVAULT_OUT=<dir>` when generated `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` artifacts should be isolated from the source tree. Config and schema files remain in the project root, which keeps shared source worktrees clean while still giving agents the same vault contract.
+Set `SWARMVAULT_OUT=<dir>` when generated `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` artifacts should be isolated from the source tree. `swarmvault.config.json` remains in the project root; when `SWARMVAULT_WORKSPACE_ID=<id>` is active, `swarmvault.schema.md` and generated artifacts live under `<artifact-base>/<id>`.
 
 `init`, `quickstart`, `scan`, and `clone` do not write project-local agent rule files by default. Run `swarmvault install --agent <agent> [--scope project|user]` for explicit installs, use `swarmvault install status --agent <agent>` for read-only status, or set `agents` in `swarmvault.config.json` and pass `--install-agent-rules` when you intentionally want configured targets installed together.
 
@@ -174,11 +176,11 @@ The published ClawHub package is intentionally text-only in this release.
 8. Inspect `wiki/`, `wiki/dashboards/`, and `state/` artifacts before broad re-search. When the vault lives inside git, `ingest|compile|query --commit` can commit those artifacts immediately after the run.
 9. Use `swarmvault query`, `swarmvault chat`, `swarmvault context build`, `swarmvault export ai`, `swarmvault task`, `swarmvault memory`, `swarmvault explore`, `swarmvault review`, `swarmvault candidate`, and `swarmvault lint` to keep the vault current, portable, and reviewable. Set `profile.deepLintDefault: true` when `lint` should run the advisory deep pass by default, and use `--no-deep` to force a structural-only run.
 10. Use `swarmvault doctor [--repair]` when the vault needs one health summary before deeper troubleshooting or handoff.
-11. Use `swarmvault graph share --post` for a quick copyable summary, `swarmvault graph share --svg [path]` for a visual share card, `swarmvault graph share --bundle [dir]` for a portable share kit, `swarmvault graph blast` for reverse-import impact checks, `swarmvault graph cycles` for directed cycle checks, `swarmvault graph status [path]` or `swarmvault check-update [path]` for read-only graph freshness checks, `swarmvault graph stats` for lightweight counts and relation mix, `swarmvault graph validate [graph] --strict` before export/merge/push workflows, `swarmvault graph update [path] --force` or `swarmvault update [path] --force` only when a large graph shrink is expected, `swarmvault graph query "<seed>" --context calls --evidence extracted` for focused relation-aware traversal, `swarmvault graph tree` for an interactive source/module/symbol tree, `swarmvault graph merge <graph...> --out <path>` for combining SwarmVault or node-link JSON, `swarmvault graph cluster` or `swarmvault cluster-only` for graph community/report refresh without re-ingest, `swarmvault graph serve` for the live workspace, detailed health workbench, prioritized next actions, explicit capture modes, title/tag capture fields, budgeted agent handoffs, and bookmarklet clipper, `swarmvault graph export --report` for a self-contained HTML report, `swarmvault graph export --callflow <path>` for a directed relationship HTML view, `swarmvault graph export --neo4j <path>` for a Neo4j-ready Cypher import, other `swarmvault graph export` formats, `swarmvault graph push neo4j`, or `swarmvault mcp` when the vault needs to be explored or shared elsewhere.
+11. Use `swarmvault graph share --post` for a quick copyable summary, `swarmvault graph share --svg [path]` for a visual share card, `swarmvault graph share --bundle [dir]` for a portable share kit, `swarmvault graph blast` for reverse-import impact checks, `swarmvault graph cycles` for directed cycle checks, `swarmvault graph status [path]` or `swarmvault check-update [path]` for read-only graph freshness checks, `swarmvault graph stats` for lightweight counts and relation mix, `swarmvault graph validate [graph] --strict` before export/merge/push workflows, `swarmvault graph update [path] --force` or `swarmvault update [path] --force` only when a large graph shrink is expected, `swarmvault graph query "<seed>" --context calls --evidence extracted` for focused relation-aware traversal, `swarmvault graph tree` for an interactive source/module/symbol tree, `swarmvault graph merge <graph...> --out <path>` for combining SwarmVault or node-link graph JSON, `swarmvault graph cluster` or `swarmvault cluster-only` for graph community/report refresh without re-ingest, `swarmvault graph serve` for the live workspace, detailed health workbench, prioritized next actions, explicit capture modes, title/tag capture fields, budgeted agent handoffs, and bookmarklet clipper, `swarmvault graph export --report` for a self-contained HTML report, `swarmvault graph export --callflow <path>` for a directed relationship HTML view, `swarmvault graph export --neo4j <path>` for a Neo4j-ready Cypher import, other `swarmvault graph export` formats, `swarmvault graph push neo4j`, or `SWARMVAULT_WORKSPACE_ID=<id> swarmvault mcp` when the vault needs to be explored or shared elsewhere through MCP. MCP tool calls must include the same `workspace_id`.
 
 ## What SwarmVault Writes
 
-- `SWARMVAULT_OUT` can relocate generated artifact directories while keeping config and schema at the project root
+- `SWARMVAULT_OUT` can relocate generated artifact directories; `SWARMVAULT_WORKSPACE_ID=<id>` nests schema and generated artifacts under `<artifact-base>/<id>` while keeping config at the project root
 - `raw/sources/` and `raw/assets/` for canonical input storage
 - `wiki/` for compiled source, concept, entity, code, graph, and output pages
 - `wiki/outputs/source-briefs/` for recurring-source onboarding briefs
@@ -216,7 +218,7 @@ swarmvault hook install        # git-hook refresh on commit/checkout (pass a rep
 
 For hook-capable agents, the installed hooks guide graph-first reads. The Claude Code hook injects graph-first instructions at session start — answer code-understanding questions with the plain `swarmvault graph query|explain|path` commands (avoid `--json`, which produces much larger output), `swarmvault query`, `swarmvault context build`, or `wiki/graph/report.md`, and read source files only when editing them — plus a graph staleness note. `swarmvault graph query "<seed>"` prints the top matches with page paths plus an inline excerpt of the best-matching wiki page, so one command usually answers where-is/what-calls questions without follow-up file reads. By default the hook is advisory: the first broad Grep/Glob/Bash search per session gets a one-time guidance note. Opt in to enforcement with `--graph-first` (persists `hooks.graphFirst: "deny"`), which denies that first search with the same guided redirect — repeating the search is then allowed, so work is never blocked. Either way the hook spawns a background `swarmvault graph update --file <path>` refresh after every Edit/Write. Searches scoped to vault artifact directories (`wiki/`, `raw/`, `state/`), single files, or search tools filtering piped output are never intercepted. `SWARMVAULT_GRAPH_FIRST=deny|context|off` overrides per session. The Codex, Gemini, Copilot, OpenCode, and Kilo hooks carry the same graph-first guidance with a session note plus a one-time search redirect appropriate to each tool's hook API.
 
-`swarmvault install --agent claude --mcp` also registers the SwarmVault MCP server in the project's `.mcp.json` (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`). Claude installs additionally write a project skill bundle at `.claude/skills/swarmvault/SKILL.md`, and `--scope user` installs the skill, hook, and settings once under `~/.claude` for all repos — the hook no-ops in repos without a compiled graph report.
+`swarmvault install --agent claude --mcp` also registers the SwarmVault MCP server in the project's `.mcp.json` (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`). Start that server with `SWARMVAULT_WORKSPACE_ID=<id>` or add `--workspace-id <id>` in the client args, and include the same `workspace_id` in MCP tool calls. Claude installs additionally write a project skill bundle at `.claude/skills/swarmvault/SKILL.md`, and `--scope user` installs the skill, hook, and settings once under `~/.claude` for all repos — the hook no-ops in repos without a compiled graph report.
 
 `swarmvault install --agent <agent>` also keeps the host project clean: in git repos the vault artifact directories are appended to `.gitignore`, strict-JSON `tsconfig.json` files get the artifact directories added to `"exclude"` so stored source copies under `raw/` do not break the host typecheck (commented JSONC tsconfigs are left untouched with a warning instead of a rewrite), and linter configs that still cover the artifact directories produce an advisory warning. Everything is skipped when `SWARMVAULT_OUT` keeps artifacts outside the repo.
 
@@ -274,10 +276,10 @@ Supported agent installs:
 Expose the vault over MCP with:
 
 ```bash
-swarmvault mcp
+SWARMVAULT_WORKSPACE_ID=main swarmvault mcp
 ```
 
-The MCP surface includes graph stats, read-only graph freshness (`graph_status`), symbol caller lookup with file:line call-site evidence (`graph_callers`), code-only graph refresh (`update_graph`, with an optional files array for per-file refreshes), graph clustering refresh, community lookup, hyperedges, context-pack build/read/list, task start/update/finish/list/read/resume, compatibility memory task, `doctor_vault`, and retrieval status/rebuild/doctor tools so host agents can request bounded evidence, keep a durable task ledger, keep the graph current after edits, and inspect vault health without shelling out to the CLI.
+MCP tools require a `workspace_id` argument on each call; use the same id as the server environment. The MCP surface includes graph stats, read-only graph freshness (`graph_status`), symbol caller lookup with file:line call-site evidence (`graph_callers`), code-only graph refresh (`update_graph`, with an optional files array for per-file refreshes), graph clustering refresh, community lookup, hyperedges, context-pack build/read/list, task start/update/finish/list/read/resume, compatibility memory task, `doctor_vault`, and retrieval status/rebuild/doctor tools so host agents can request bounded evidence, keep a durable task ledger, keep the graph current after edits, and inspect vault health without shelling out to the CLI.
 
 ## Links
 
