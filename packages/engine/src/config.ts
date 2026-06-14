@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -140,6 +141,8 @@ const WORKSPACE_DIR_DEFAULTS = {
 } as const;
 
 export const SWARMVAULT_OUT_ENV = "SWARMVAULT_OUT";
+export const SWARMVAULT_WORKSPACE_ID_ENV = "SWARMVAULT_WORKSPACE_ID";
+const workspaceIdContext = new AsyncLocalStorage<string>();
 
 const vaultConfigSchema = z.object({
   workspace: z
@@ -599,15 +602,53 @@ async function findConfigPath(rootDir: string): Promise<string> {
 }
 
 async function findSchemaPath(rootDir: string): Promise<string> {
-  const primaryPath = path.join(rootDir, PRIMARY_SCHEMA_FILENAME);
-  return primaryPath;
+  return resolveSchemaPath(rootDir);
+}
+
+export function validateWorkspaceId(workspaceId: string): string {
+  const value = workspaceId.trim();
+  if (!value) {
+    throw new Error(`${SWARMVAULT_WORKSPACE_ID_ENV} cannot be empty.`);
+  }
+  if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(value)) {
+    throw new Error(
+      `Invalid workspace id "${workspaceId}". Workspace ids must be safe ASCII slugs containing only letters, numbers, underscores, and hyphens.`
+    );
+  }
+  return value;
+}
+
+export function getActiveWorkspaceId(): string | undefined {
+  const contextValue = workspaceIdContext.getStore();
+  if (contextValue !== undefined) {
+    return contextValue;
+  }
+  const value = process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  return value === undefined ? undefined : validateWorkspaceId(value);
+}
+
+export async function withWorkspaceId<T>(workspaceId: string, run: () => Promise<T>): Promise<T> {
+  return await workspaceIdContext.run(validateWorkspaceId(workspaceId), run);
+}
+
+export function resolveArtifactBaseDir(rootDir: string): string {
+  const override = process.env[SWARMVAULT_OUT_ENV]?.trim();
+  if (!override) {
+    return path.resolve(rootDir);
+  }
+  return path.isAbsolute(override) ? path.resolve(override) : path.resolve(rootDir, override);
+}
+
+export function resolveSchemaPath(rootDir: string): string {
+  const workspaceId = getActiveWorkspaceId();
+  return workspaceId ? path.join(resolveArtifactRootDir(rootDir), PRIMARY_SCHEMA_FILENAME) : path.join(rootDir, PRIMARY_SCHEMA_FILENAME);
 }
 
 export function resolvePaths(
   rootDir: string,
   config?: VaultConfig,
   configPath = path.join(rootDir, PRIMARY_CONFIG_FILENAME),
-  schemaPath = path.join(rootDir, PRIMARY_SCHEMA_FILENAME)
+  schemaPath = resolveSchemaPath(rootDir)
 ): ResolvedPaths {
   const effective = config ?? defaultVaultConfig();
   const artifactRootDir = resolveArtifactRootDir(rootDir);
@@ -671,11 +712,9 @@ export function resolvePaths(
 }
 
 export function resolveArtifactRootDir(rootDir: string): string {
-  const override = process.env[SWARMVAULT_OUT_ENV]?.trim();
-  if (!override) {
-    return path.resolve(rootDir);
-  }
-  return path.isAbsolute(override) ? path.resolve(override) : path.resolve(rootDir, override);
+  const baseDir = resolveArtifactBaseDir(rootDir);
+  const workspaceId = getActiveWorkspaceId();
+  return workspaceId ? path.join(baseDir, workspaceId) : baseDir;
 }
 
 export async function loadVaultConfig(rootDir: string): Promise<{ config: VaultConfig; paths: ResolvedPaths }> {
@@ -702,7 +741,6 @@ export async function initWorkspace(
   const initProfile = resolveInitProfile(options.profile);
   const config = (await fileExists(configPath)) ? (await loadVaultConfig(rootDir)).config : defaultVaultConfig(initProfile.profile);
   const paths = resolvePaths(rootDir, config, configPath, schemaPath);
-  const primarySchemaPath = path.join(rootDir, PRIMARY_SCHEMA_FILENAME);
 
   await Promise.all([
     ensureDir(paths.rawDir),
@@ -733,9 +771,9 @@ export async function initWorkspace(
     await writeJsonFile(configPath, config);
   }
 
-  if (!(await fileExists(primarySchemaPath))) {
-    await ensureDir(path.dirname(primarySchemaPath));
-    await fs.writeFile(primarySchemaPath, defaultVaultSchema(config.profile), "utf8");
+  if (!(await fileExists(paths.schemaPath))) {
+    await ensureDir(path.dirname(paths.schemaPath));
+    await fs.writeFile(paths.schemaPath, defaultVaultSchema(config.profile), "utf8");
   }
 
   return { config, paths };

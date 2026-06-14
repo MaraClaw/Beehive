@@ -8,11 +8,17 @@ export { askChatSession, deleteChatSession, listChatSessions, readChatSession } 
 export {
   defaultVaultConfig,
   defaultVaultSchema,
+  getActiveWorkspaceId,
   initWorkspace,
   loadVaultConfig,
+  resolveArtifactBaseDir,
   resolveArtifactRootDir,
   resolvePaths,
-  SWARMVAULT_OUT_ENV
+  resolveSchemaPath,
+  SWARMVAULT_OUT_ENV,
+  SWARMVAULT_WORKSPACE_ID_ENV,
+  validateWorkspaceId,
+  withWorkspaceId
 } from "./config.js";
 export { DEFAULT_CONSOLIDATION_CONFIG, resolveConsolidationConfig, runConsolidation } from "./consolidate.js";
 export {
