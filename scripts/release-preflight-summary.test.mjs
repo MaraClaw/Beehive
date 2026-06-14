@@ -6,7 +6,7 @@ import test from "node:test";
 import { createPreflightSummary, formatPreflightSummaryMarkdown, writePreflightSummary } from "./release-preflight-summary.mjs";
 
 test("formats and writes release preflight summaries", async () => {
-  const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-preflight-summary-"));
+  const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-preflight-summary-"));
   try {
     const summary = createPreflightSummary({
       version: "3.5.0",

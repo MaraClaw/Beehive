@@ -10,11 +10,11 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
 const workspaceRoot = path.resolve(repoRoot, "..");
 const desktopRoot = path.join(workspaceRoot, "desktop");
-const defaultGithubRepo = "swarmclawai/swarmvault";
+const defaultGithubRepo = "beehive/beehive";
 const npmPackages = [
-  { name: "@swarmvaultai/viewer", dir: "packages/viewer" },
-  { name: "@swarmvaultai/engine", dir: "packages/engine" },
-  { name: "@swarmvaultai/cli", dir: "packages/cli" }
+  { name: "@beehive/viewer", dir: "packages/viewer" },
+  { name: "@beehive/engine", dir: "packages/engine" },
+  { name: "@beehive/cli", dir: "packages/cli" }
 ];
 
 function parseArgs(argv) {
@@ -266,15 +266,15 @@ async function validateVersions(version) {
   }
 
   const cliPackage = await readJson(path.join(repoRoot, "packages", "cli", "package.json"));
-  if (cliPackage.dependencies?.["@swarmvaultai/engine"] !== version) {
-    throw new Error(`@swarmvaultai/cli must depend on @swarmvaultai/engine ${version}.`);
+  if (cliPackage.dependencies?.["@beehive/engine"] !== version) {
+    throw new Error(`@beehive/cli must depend on @beehive/engine ${version}.`);
   }
 
   if (await pathExists(path.join(desktopRoot, "package.json"))) {
     const desktopPackage = await readJson(path.join(desktopRoot, "package.json"));
     assertVersion(desktopPackage.version, version, "desktop package.json");
-    if (desktopPackage.dependencies?.["@swarmvaultai/cli"] !== version) {
-      throw new Error(`desktop package must depend on @swarmvaultai/cli ${version}.`);
+    if (desktopPackage.dependencies?.["@beehive/cli"] !== version) {
+      throw new Error(`desktop package must depend on @beehive/cli ${version}.`);
     }
   }
 }
@@ -483,7 +483,7 @@ async function createGithubRelease(version, tagName) {
   }
 
   const notes = await readChangelogEntry(version);
-  const notesPath = path.join(await fs.mkdtemp(path.join(os.tmpdir(), `swarmvault-release-${version}-`)), "notes.md");
+  const notesPath = path.join(await fs.mkdtemp(path.join(os.tmpdir(), `beehive-release-${version}-`)), "notes.md");
   await fs.writeFile(notesPath, `${notes}\n`, "utf8");
   try {
     await runCommand(

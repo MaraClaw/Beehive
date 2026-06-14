@@ -289,7 +289,7 @@ function commandToken(spec) {
 
 function assertRootHelpIsProgressive(stdout) {
   assert.ok(stdout.includes("next"), "root help should include the next command");
-  assert.ok(stdout.includes("swarmvault next"), "root help should point users at swarmvault next");
+  assert.ok(stdout.includes("beehive next"), "root help should point users at beehive next");
   for (const alias of ["scan", "clone", "check-update", "update", "cluster-only", "tree", "merge-graphs", "memory"]) {
     const visibleAliasLine = stdout
       .split("\n")
@@ -304,7 +304,7 @@ async function assertExecutableCli(targetPath) {
 }
 
 async function runBehaviorSmoke() {
-  const workspaceDir = await makeTempDir("swarmvault-cli-surface-workspace-");
+  const workspaceDir = await makeTempDir("beehive-cli-surface-workspace-");
   const sourceDir = path.join(workspaceDir, "source");
   await fs.mkdir(sourceDir, { recursive: true });
   await fs.writeFile(
@@ -332,13 +332,13 @@ async function runBehaviorSmoke() {
     "utf8"
   );
 
-  await runCliExpectFailure(["--json", "next"], workspaceDir, "missing workspace id", /workspace-id|SWARMVAULT_WORKSPACE_ID|workspace/i);
+  await runCliExpectFailure(["--json", "next"], workspaceDir, "missing workspace id", /workspace-id|BEEHIVE_WORKSPACE_ID|workspace/i);
 
-  const nextEmptyWorkspace = await makeTempDir("swarmvault-cli-surface-next-empty-");
+  const nextEmptyWorkspace = await makeTempDir("beehive-cli-surface-next-empty-");
   await runJsonCheck(["next"], nextEmptyWorkspace, "next uninitialized", (result) => {
     assert.equal(result.status, "uninitialized", "next did not identify an uninitialized workspace");
     assert.ok(
-      result.recommendations.some((entry) => entry.command.startsWith(`swarmvault --workspace-id ${WORKSPACE_ID} quickstart`)),
+      result.recommendations.some((entry) => entry.command.startsWith(`beehive --workspace-id ${WORKSPACE_ID} quickstart`)),
       "next did not recommend quickstart"
     );
   });
@@ -348,7 +348,7 @@ async function runBehaviorSmoke() {
 
   await runJsonCheck(["next"], workspaceDir, "next initialized", (result) => {
     assert.equal(result.status, "initialized", "next did not identify an initialized workspace before compile");
-    assert.ok(result.recommendations.some((entry) => entry.command === `swarmvault --workspace-id ${WORKSPACE_ID} compile`), "next did not recommend compile");
+    assert.ok(result.recommendations.some((entry) => entry.command === `beehive --workspace-id ${WORKSPACE_ID} compile`), "next did not recommend compile");
   });
 
   const ingested = await runJson(["ingest", sourceDir, "--repo-root", sourceDir], workspaceDir);
@@ -654,12 +654,12 @@ async function runBehaviorSmoke() {
     assert.equal(result.agent, "claude", "install claude did not return the requested agent");
     assert.ok(result.targets.some((entry) => entry.endsWith(".mcp.json")), "install claude --mcp did not include .mcp.json");
     assert.ok(
-      result.targets.some((entry) => entry.endsWith(path.join(".claude", "hooks", "swarmvault-graph-first.js"))),
+      result.targets.some((entry) => entry.endsWith(path.join(".claude", "hooks", "beehive-graph-first.js"))),
       "install claude --hook did not include the hook script"
     );
   });
 
-  const scanDir = await makeTempDir("swarmvault-cli-surface-scan-");
+  const scanDir = await makeTempDir("beehive-cli-surface-scan-");
   const scanInput = path.join(scanDir, "input");
   const scanWorkspace = path.join(scanDir, "workspace");
   await fs.mkdir(scanInput, { recursive: true });
@@ -692,8 +692,8 @@ async function runBehaviorSmoke() {
     label: "quickstart human"
   });
   assert.ok(
-    quickstartHuman.stdout.trim().endsWith(`swarmvault --workspace-id ${WORKSPACE_ID} next`),
-    "quickstart human output should end with swarmvault next"
+    quickstartHuman.stdout.trim().endsWith(`beehive --workspace-id ${WORKSPACE_ID} next`),
+    "quickstart human output should end with beehive next"
   );
   summary.behaviorChecks.push("quickstart human next");
 
@@ -703,7 +703,7 @@ async function runBehaviorSmoke() {
     cwd: initHumanWorkspace,
     label: "init human"
   });
-  assert.ok(initHuman.stdout.trim().endsWith("Next: swarmvault next"), "init human output should end with swarmvault next");
+  assert.ok(initHuman.stdout.trim().endsWith("Next: beehive next"), "init human output should end with beehive next");
   summary.behaviorChecks.push("init human next");
 
   const cloneWorkspace = path.join(scanDir, "clone-workspace");
@@ -745,7 +745,7 @@ async function runCliExpectFailure(commandArgs, cwd, label, stderrPattern) {
   const argsForCli = cliPath.endsWith(".js") ? [cliPath, ...commandArgs] : commandArgs;
   const child = spawn(command, argsForCli, {
     cwd,
-    env: { ...process.env, SWARMVAULT_NO_NOTICES: "1" },
+    env: { ...process.env, BEEHIVE_NO_NOTICES: "1" },
     stdio: ["ignore", "pipe", "pipe"]
   });
   let stdout = "";
@@ -770,7 +770,7 @@ async function runCli(commandArgs, options) {
   const argsForCli = cliPath.endsWith(".js") ? [cliPath, ...commandArgs] : commandArgs;
   const child = spawn(command, argsForCli, {
     cwd: options.cwd,
-    env: { ...process.env, SWARMVAULT_NO_NOTICES: "1" },
+    env: { ...process.env, BEEHIVE_NO_NOTICES: "1" },
     stdio: ["ignore", "pipe", "pipe"]
   });
   let stdout = "";

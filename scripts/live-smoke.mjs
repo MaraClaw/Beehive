@@ -27,12 +27,12 @@ await loadEnvFile(path.join(repoRoot, ".env.local"));
 const args = parseArgs(process.argv.slice(2));
 const lane = args.lane ?? "heuristic";
 const version = args.version ?? (await readPackageVersion());
-const installSpecs = args.installSpecs?.length ? args.installSpecs : [`@swarmvaultai/cli@${version}`];
+const installSpecs = args.installSpecs?.length ? args.installSpecs : [`@beehive/cli@${version}`];
 const keepArtifacts = args.keepArtifacts ?? process.env.KEEP_LIVE_SMOKE_ARTIFACTS === "1";
-const browserCheck = args.browserCheck ?? process.env.SWARMVAULT_BROWSER_CHECK === "1";
-const runCodexAgentSmoke = process.env.SWARMVAULT_RUN_CODEX_AGENT_SMOKE === "1";
-const runOpencodeAgentSmoke = process.env.SWARMVAULT_RUN_OPENCODE_AGENT_SMOKE === "1";
-const runLocalEmbeddingsSmoke = process.env.SWARMVAULT_RUN_LOCAL_EMBEDDINGS_SMOKE === "1";
+const browserCheck = args.browserCheck ?? process.env.BEEHIVE_BROWSER_CHECK === "1";
+const runCodexAgentSmoke = process.env.BEEHIVE_RUN_CODEX_AGENT_SMOKE === "1";
+const runOpencodeAgentSmoke = process.env.BEEHIVE_RUN_OPENCODE_AGENT_SMOKE === "1";
+const runLocalEmbeddingsSmoke = process.env.BEEHIVE_RUN_LOCAL_EMBEDDINGS_SMOKE === "1";
 const artifactDir =
   args.artifactDir ??
   path.join(repoRoot, ".live-smoke-artifacts", `${lane}-${new Date().toISOString().replaceAll(":", "-")}`);
@@ -55,7 +55,7 @@ let installedCli;
 
 if (usesPublishedRegistryInstall(installSpecs)) {
   console.log(
-    `[live-smoke] auditing the published npm package path for @swarmvaultai/cli@${version}. Use --install-spec tarballs to validate unreleased local changes.`
+    `[live-smoke] auditing the published npm package path for @beehive/cli@${version}. Use --install-spec tarballs to validate unreleased local changes.`
   );
 }
 
@@ -130,8 +130,8 @@ try {
   await runStep("init-workspace", async () => {
     await fs.mkdir(workspaceDir, { recursive: true });
     await runCliJson(["init"]);
-    await assertExists(path.join(workspaceDir, "swarmvault.config.json"));
-    await assertExists(artifactPath("swarmvault.schema.md"));
+    await assertExists(path.join(workspaceDir, "beehive.config.json"));
+    await assertExists(artifactPath("beehive.schema.md"));
     await assertExists(artifactPath("inbox"));
     await assertExists(artifactPath("wiki"));
     await assertExists(artifactPath("state"));
@@ -139,29 +139,29 @@ try {
 
   if (lane === "openai" || lane === "ollama" || lane === "anthropic") {
     await runStep(`configure-${lane}`, async () => {
-      const configPath = path.join(workspaceDir, "swarmvault.config.json");
+      const configPath = path.join(workspaceDir, "beehive.config.json");
       const config = JSON.parse(await fs.readFile(configPath, "utf8"));
       if (lane === "openai") {
         assert.ok(process.env.OPENAI_API_KEY, "OPENAI_API_KEY is required for the openai live-smoke lane");
         config.providers.live = {
           type: "openai",
-          model: process.env.SWARMVAULT_OPENAI_MODEL ?? "gpt-4.1-mini",
+          model: process.env.BEEHIVE_OPENAI_MODEL ?? "gpt-4.1-mini",
           apiKeyEnv: "OPENAI_API_KEY"
         };
       } else if (lane === "ollama") {
         assert.ok(process.env.OLLAMA_API_KEY, "OLLAMA_API_KEY is required for the ollama live-smoke lane");
         config.providers.live = {
           type: "ollama",
-          model: process.env.SWARMVAULT_OLLAMA_MODEL ?? "gpt-oss:20b-cloud",
+          model: process.env.BEEHIVE_OLLAMA_MODEL ?? "gpt-oss:20b-cloud",
           apiKeyEnv: "OLLAMA_API_KEY",
-          baseUrl: process.env.SWARMVAULT_OLLAMA_BASE_URL ?? "https://ollama.com/v1",
-          apiStyle: process.env.SWARMVAULT_OLLAMA_API_STYLE ?? "chat"
+          baseUrl: process.env.BEEHIVE_OLLAMA_BASE_URL ?? "https://ollama.com/v1",
+          apiStyle: process.env.BEEHIVE_OLLAMA_API_STYLE ?? "chat"
         };
       } else {
         assert.ok(process.env.ANTHROPIC_API_KEY, "ANTHROPIC_API_KEY is required for the anthropic live-smoke lane");
         config.providers.live = {
           type: "anthropic",
-          model: process.env.SWARMVAULT_ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514",
+          model: process.env.BEEHIVE_ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514",
           apiKeyEnv: "ANTHROPIC_API_KEY"
         };
       }
@@ -217,7 +217,7 @@ try {
     const sharePreview = await fs.readFile(defaultShareKit.bundleFiles.previewHtmlPath, "utf8");
     assert.ok(sharePreview.includes("<!doctype html>"), "share kit preview is not an HTML document");
     assert.ok(
-      sharePreview.includes("npm install -g @swarmvaultai/cli && swarmvault quickstart ./your-repo"),
+      sharePreview.includes("npm install -g @beehive/cli && beehive quickstart ./your-repo"),
       "share kit preview does not include the install/quickstart CTA"
     );
     const customShareKitPath = path.join(workspaceDir, "exports", "share-kit");
@@ -243,7 +243,7 @@ try {
 
   if (lane === "neo4j") {
     await runStep("neo4j-push", async () => {
-      const password = "swarmvault-neo4j-password";
+      const password = "beehive-neo4j-password";
       const neo4jContainer = await startNeo4jContainer(password);
       try {
         const dryRun = await runCliJson(
@@ -256,14 +256,14 @@ try {
             "--username",
             "neo4j",
             "--password-env",
-            "SWARMVAULT_NEO4J_PASSWORD",
+            "BEEHIVE_NEO4J_PASSWORD",
             "--database",
             "neo4j",
             "--dry-run"
           ],
           {
             env: {
-              SWARMVAULT_NEO4J_PASSWORD: password
+              BEEHIVE_NEO4J_PASSWORD: password
             }
           }
         );
@@ -280,13 +280,13 @@ try {
             "--username",
             "neo4j",
             "--password-env",
-            "SWARMVAULT_NEO4J_PASSWORD",
+            "BEEHIVE_NEO4J_PASSWORD",
             "--database",
             "neo4j"
           ],
           {
             env: {
-              SWARMVAULT_NEO4J_PASSWORD: password
+              BEEHIVE_NEO4J_PASSWORD: password
             }
           }
         );
@@ -410,7 +410,7 @@ try {
       try {
         const docsSource = await runCliJson(
           ["source", "add", `${server.baseUrl}/docs/index.html`, "--max-pages", "6", "--max-depth", "2"],
-          { env: { SWARMVAULT_ALLOW_PRIVATE_URLS: "1" } }
+          { env: { BEEHIVE_ALLOW_PRIVATE_URLS: "1" } }
         );
         assert.equal(docsSource.source.kind, "crawl_url", "docs source add did not classify the docs URL as a crawl source");
         assert.equal(docsSource.briefGenerated, true, "docs source add did not generate a source brief");
@@ -644,7 +644,7 @@ try {
           "</body></html>"
         ].join("");
 
-        const fixtureEnv = { SWARMVAULT_ALLOW_PRIVATE_URLS: "1" };
+        const fixtureEnv = { BEEHIVE_ALLOW_PRIVATE_URLS: "1" };
 
         const htmlManifest = primaryManifestFromIngestSummary(await runCliJson(["ingest", `${server.baseUrl}/article`], { env: fixtureEnv }));
         assert.equal(htmlManifest.attachments.length, 2, "expected HTML URL ingest to localize both remote images");
@@ -710,7 +710,7 @@ try {
       });
       try {
         const articleUrl = `${server.baseUrl}/article`;
-        const fixtureEnv = { SWARMVAULT_ALLOW_PRIVATE_URLS: "1" };
+        const fixtureEnv = { BEEHIVE_ALLOW_PRIVATE_URLS: "1" };
         const article = await runCliJson(["add", articleUrl, "--contributor", "Smoke"], { env: fixtureEnv });
         assert.equal(article.captureType, "article", "article capture did not report article");
         assert.equal(article.fallback, false, "article capture unexpectedly fell back");
@@ -1326,8 +1326,8 @@ try {
         await updateConfig((config) => {
           config.providers.localEmbeddings = {
             type: "ollama",
-            model: process.env.SWARMVAULT_LOCAL_EMBEDDINGS_MODEL ?? "nomic-embed-text",
-            baseUrl: process.env.SWARMVAULT_LOCAL_EMBEDDINGS_BASE_URL ?? "http://localhost:11434/v1"
+            model: process.env.BEEHIVE_LOCAL_EMBEDDINGS_MODEL ?? "nomic-embed-text",
+            baseUrl: process.env.BEEHIVE_LOCAL_EMBEDDINGS_BASE_URL ?? "http://localhost:11434/v1"
           };
           config.tasks.embeddingProvider = "localEmbeddings";
         });
@@ -1516,7 +1516,7 @@ try {
     });
 
     await runStep("schedule-run", async () => {
-      const configPath = path.join(workspaceDir, "swarmvault.config.json");
+      const configPath = path.join(workspaceDir, "beehive.config.json");
       const config = JSON.parse(await fs.readFile(configPath, "utf8"));
       config.schedules = {
         "nightly-chart": {
@@ -1775,7 +1775,7 @@ try {
         command: installedCli.command,
         args: [...installedCli.args, "mcp"],
         cwd: workspaceDir,
-        env: { ...inheritedEnv(), SWARMVAULT_WORKSPACE_ID: WORKSPACE_ID },
+        env: { ...inheritedEnv(), BEEHIVE_WORKSPACE_ID: WORKSPACE_ID },
         stderr: "pipe"
       });
       const stderrPath = path.join(logsDir, "mcp.stderr.log");
@@ -1786,7 +1786,7 @@ try {
         });
       }
 
-      const client = new Client({ name: "swarmvault-live-smoke", version: "1.0.0" });
+      const client = new Client({ name: "beehive-live-smoke", version: "1.0.0" });
       try {
         await client.connect(transport);
         const tools = await client.listTools();
@@ -1851,7 +1851,7 @@ try {
       await assertSamePath(claude.target, path.join(workspaceDir, "CLAUDE.md"), "claude target path mismatch");
       await assertSamePath(opencode.target, path.join(workspaceDir, "AGENTS.md"), "opencode target path mismatch");
       await assertSamePath(gemini.target, path.join(workspaceDir, "GEMINI.md"), "gemini target path mismatch");
-      await assertSamePath(cursor.target, path.join(workspaceDir, ".cursor", "rules", "swarmvault.mdc"), "cursor target path mismatch");
+      await assertSamePath(cursor.target, path.join(workspaceDir, ".cursor", "rules", "beehive.mdc"), "cursor target path mismatch");
       await assertSamePath(
         copilot.target,
         path.join(workspaceDir, ".github", "copilot-instructions.md"),
@@ -1861,36 +1861,36 @@ try {
 
       await assertExists(path.join(workspaceDir, "AGENTS.md"));
       await assertExists(path.join(workspaceDir, ".codex", "hooks.json"));
-      await assertExists(path.join(workspaceDir, ".codex", "hooks", "swarmvault-graph-first.js"));
+      await assertExists(path.join(workspaceDir, ".codex", "hooks", "beehive-graph-first.js"));
       await assertExists(path.join(workspaceDir, "CLAUDE.md"));
       await assertExists(path.join(workspaceDir, ".claude", "settings.json"));
-      await assertExists(path.join(workspaceDir, ".claude", "hooks", "swarmvault-graph-first.js"));
+      await assertExists(path.join(workspaceDir, ".claude", "hooks", "beehive-graph-first.js"));
       await assertExists(path.join(workspaceDir, "GEMINI.md"));
-      await assertExists(path.join(workspaceDir, ".cursor", "rules", "swarmvault.mdc"));
+      await assertExists(path.join(workspaceDir, ".cursor", "rules", "beehive.mdc"));
       await assertExists(path.join(workspaceDir, "CONVENTIONS.md"));
       await assertExists(path.join(workspaceDir, ".gemini", "settings.json"));
-      await assertExists(path.join(workspaceDir, ".gemini", "hooks", "swarmvault-graph-first.js"));
-      await assertExists(path.join(workspaceDir, ".opencode", "plugins", "swarmvault-graph-first.js"));
+      await assertExists(path.join(workspaceDir, ".gemini", "hooks", "beehive-graph-first.js"));
+      await assertExists(path.join(workspaceDir, ".opencode", "plugins", "beehive-graph-first.js"));
       await assertExists(path.join(workspaceDir, ".github", "copilot-instructions.md"));
-      await assertExists(path.join(workspaceDir, ".github", "hooks", "swarmvault-graph-first.json"));
-      await assertExists(path.join(workspaceDir, ".github", "hooks", "swarmvault-graph-first.js"));
+      await assertExists(path.join(workspaceDir, ".github", "hooks", "beehive-graph-first.json"));
+      await assertExists(path.join(workspaceDir, ".github", "hooks", "beehive-graph-first.js"));
       await assertExists(path.join(workspaceDir, ".aider.conf.yml"));
       const agentsContent = await fs.readFile(path.join(workspaceDir, "AGENTS.md"), "utf8");
       const codexHooksContent = await fs.readFile(path.join(workspaceDir, ".codex", "hooks.json"), "utf8");
-      const codexHookContent = await fs.readFile(path.join(workspaceDir, ".codex", "hooks", "swarmvault-graph-first.js"), "utf8");
+      const codexHookContent = await fs.readFile(path.join(workspaceDir, ".codex", "hooks", "beehive-graph-first.js"), "utf8");
       const claudeContent = await fs.readFile(path.join(workspaceDir, "CLAUDE.md"), "utf8");
       const claudeSettingsContent = await fs.readFile(path.join(workspaceDir, ".claude", "settings.json"), "utf8");
-      const claudeHookContent = await fs.readFile(path.join(workspaceDir, ".claude", "hooks", "swarmvault-graph-first.js"), "utf8");
+      const claudeHookContent = await fs.readFile(path.join(workspaceDir, ".claude", "hooks", "beehive-graph-first.js"), "utf8");
       const geminiContent = await fs.readFile(path.join(workspaceDir, "GEMINI.md"), "utf8");
-      const cursorContent = await fs.readFile(path.join(workspaceDir, ".cursor", "rules", "swarmvault.mdc"), "utf8");
+      const cursorContent = await fs.readFile(path.join(workspaceDir, ".cursor", "rules", "beehive.mdc"), "utf8");
       const copilotContent = await fs.readFile(path.join(workspaceDir, ".github", "copilot-instructions.md"), "utf8");
       const conventionsContent = await fs.readFile(path.join(workspaceDir, "CONVENTIONS.md"), "utf8");
       assert.ok(agentsContent.includes("# Beehive Rules"), "AGENTS.md missing managed rules");
-      assert.ok(codexHooksContent.includes("swarmvault-graph-first.js"), "codex hooks config missing hook helper");
+      assert.ok(codexHooksContent.includes("beehive-graph-first.js"), "codex hooks config missing hook helper");
       assert.ok(codexHooksContent.includes('"Bash"'), "codex hooks config missing Bash matcher");
       assert.ok(codexHookContent.includes("wiki/graph/report.md"), "codex hook helper missing graph report notice");
       assert.ok(claudeContent.includes("# Beehive Rules"), "CLAUDE.md missing managed rules");
-      assert.ok(claudeSettingsContent.includes("swarmvault-graph-first.js"), "claude settings missing hook helper");
+      assert.ok(claudeSettingsContent.includes("beehive-graph-first.js"), "claude settings missing hook helper");
       assert.ok(claudeHookContent.includes("additionalContext"), "claude hook helper missing additionalContext output");
       assert.ok(geminiContent.includes("# Beehive Rules"), "GEMINI.md missing managed rules");
       assert.ok(cursorContent.includes("alwaysApply: true"), "cursor rule missing alwaysApply frontmatter");
@@ -1899,19 +1899,19 @@ try {
       assert.ok(copilotContent.includes("# Beehive Repository Instructions"), "copilot instructions missing managed rules");
       assert.ok(conventionsContent.includes("# Beehive Conventions"), "CONVENTIONS.md missing managed rules");
       assert.ok(
-        Array.isArray(codex.targets) && (await targetListIncludesPath(codex.targets, path.join(workspaceDir, ".codex", "hooks", "swarmvault-graph-first.js")))
+        Array.isArray(codex.targets) && (await targetListIncludesPath(codex.targets, path.join(workspaceDir, ".codex", "hooks", "beehive-graph-first.js")))
       );
       assert.ok(
-        Array.isArray(claude.targets) && (await targetListIncludesPath(claude.targets, path.join(workspaceDir, ".claude", "hooks", "swarmvault-graph-first.js")))
+        Array.isArray(claude.targets) && (await targetListIncludesPath(claude.targets, path.join(workspaceDir, ".claude", "hooks", "beehive-graph-first.js")))
       );
       assert.ok(
         Array.isArray(opencode.targets) &&
-          (await targetListIncludesPath(opencode.targets, path.join(workspaceDir, ".opencode", "plugins", "swarmvault-graph-first.js")))
+          (await targetListIncludesPath(opencode.targets, path.join(workspaceDir, ".opencode", "plugins", "beehive-graph-first.js")))
       );
       assert.ok(
         Array.isArray(gemini.targets) && (await targetListIncludesPath(gemini.targets, path.join(workspaceDir, ".gemini", "settings.json")))
       );
-      assert.ok(Array.isArray(cursor.targets) && (await targetListIncludesPath(cursor.targets, path.join(workspaceDir, ".cursor", "rules", "swarmvault.mdc"))));
+      assert.ok(Array.isArray(cursor.targets) && (await targetListIncludesPath(cursor.targets, path.join(workspaceDir, ".cursor", "rules", "beehive.mdc"))));
       assert.ok(Array.isArray(copilot.targets) && (await targetListIncludesPath(copilot.targets, path.join(workspaceDir, "AGENTS.md"))));
       assert.ok(Array.isArray(aider.targets) && (await targetListIncludesPath(aider.targets, path.join(workspaceDir, ".aider.conf.yml"))));
     });
@@ -1934,7 +1934,7 @@ try {
         );
         const codexOutput = await fs.readFile(codexOutputPath, "utf8");
         assert.ok(codexOutput.includes("AGENTS.md"), "codex smoke did not use AGENTS.md");
-        assert.ok(codexOutput.includes("swarmvault "), "codex smoke did not recommend a Beehive command");
+        assert.ok(codexOutput.includes("beehive "), "codex smoke did not recommend a Beehive command");
       }
 
       if (await commandOnPath("claude") && process.env.ANTHROPIC_API_KEY) {
@@ -1948,7 +1948,7 @@ try {
             "--permission-mode",
             "bypassPermissions",
             "--model",
-            process.env.SWARMVAULT_CLAUDE_CODE_MODEL ?? "claude-sonnet-4-6",
+            process.env.BEEHIVE_CLAUDE_CODE_MODEL ?? "claude-sonnet-4-6",
             prompt
           ],
           {
@@ -1958,11 +1958,11 @@ try {
           }
         );
         assert.ok(claudeResult.stdout.includes("CLAUDE.md"), "claude smoke did not use CLAUDE.md");
-        assert.ok(claudeResult.stdout.includes("swarmvault "), "claude smoke did not recommend a Beehive command");
+        assert.ok(claudeResult.stdout.includes("beehive "), "claude smoke did not recommend a Beehive command");
       }
 
       if (runOpencodeAgentSmoke && (await commandOnPath("opencode")) && process.env.OLLAMA_API_KEY) {
-        const opencodeModel = process.env.SWARMVAULT_OPENCODE_OLLAMA_MODEL ?? process.env.SWARMVAULT_OLLAMA_MODEL ?? "gpt-oss:20b-cloud";
+        const opencodeModel = process.env.BEEHIVE_OPENCODE_OLLAMA_MODEL ?? process.env.BEEHIVE_OLLAMA_MODEL ?? "gpt-oss:20b-cloud";
         await fs.writeFile(
           path.join(workspaceDir, "opencode.json"),
           `${JSON.stringify(
@@ -1973,7 +1973,7 @@ try {
                   npm: "@ai-sdk/openai-compatible",
                   name: "Ollama Cloud",
                   options: {
-                    baseURL: process.env.SWARMVAULT_OLLAMA_BASE_URL ?? "https://ollama.com/v1",
+                    baseURL: process.env.BEEHIVE_OLLAMA_BASE_URL ?? "https://ollama.com/v1",
                     apiKey: "{env:OLLAMA_API_KEY}"
                   },
                   models: {
@@ -1990,7 +1990,7 @@ try {
           "utf8"
         );
         const opencodePrompt =
-          "Read AGENTS.md from the workspace and reply with exactly two lines. First line: file=AGENTS.md. Second line: command=<one swarmvault command that AGENTS.md recommends>.";
+          "Read AGENTS.md from the workspace and reply with exactly two lines. First line: file=AGENTS.md. Second line: command=<one beehive command that AGENTS.md recommends>.";
         const opencodeResult = await runCommand(
           "opencode-agent-smoke",
           "opencode",
@@ -2003,27 +2003,27 @@ try {
         );
         const opencodeTranscript = `${opencodeResult.stdout}\n${opencodeResult.stderr}`;
         assert.ok(opencodeTranscript.includes("AGENTS.md"), "opencode smoke did not use AGENTS.md");
-        assert.ok(opencodeTranscript.includes("swarmvault "), "opencode smoke did not recommend a Beehive command");
+        assert.ok(opencodeTranscript.includes("beehive "), "opencode smoke did not recommend a Beehive command");
       }
 
       if (await commandOnPath("gemini") && (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
         const geminiResult = await runCommand(
           "gemini-agent-smoke",
           "gemini",
-          ["-p", "Read GEMINI.md from the workspace and reply with exactly two lines. First line: file=GEMINI.md. Second line: command=<one swarmvault command that GEMINI.md recommends>."],
+          ["-p", "Read GEMINI.md from the workspace and reply with exactly two lines. First line: file=GEMINI.md. Second line: command=<one beehive command that GEMINI.md recommends>."],
           {
             cwd: workspaceDir
           }
         );
         const geminiTranscript = `${geminiResult.stdout}\n${geminiResult.stderr}`;
         assert.ok(geminiTranscript.includes("GEMINI.md"), "gemini smoke did not use GEMINI.md");
-        assert.ok(geminiTranscript.includes("swarmvault "), "gemini smoke did not recommend a Beehive command");
+        assert.ok(geminiTranscript.includes("beehive "), "gemini smoke did not recommend a Beehive command");
       }
     });
   }
 
   await writeSummary("passed");
-  console.log(`[live-smoke] ${lane} lane passed for @swarmvaultai/cli@${version}`);
+  console.log(`[live-smoke] ${lane} lane passed for @beehive/cli@${version}`);
 
   if (!keepArtifacts) {
     await fs.rm(artifactDir, { recursive: true, force: true });
@@ -2084,7 +2084,7 @@ function usesPublishedRegistryInstall(specs) {
     if (path.isAbsolute(spec)) {
       return false;
     }
-    return spec.startsWith("@swarmvaultai/cli@");
+    return spec.startsWith("@beehive/cli@");
   });
 }
 
@@ -2124,7 +2124,7 @@ async function loadEnvFile(filePath) {
 }
 
 function cliPath(prefix) {
-  return process.platform === "win32" ? path.join(prefix, "swarmvault.cmd") : path.join(prefix, "bin", "swarmvault");
+  return process.platform === "win32" ? path.join(prefix, "beehive.cmd") : path.join(prefix, "bin", "beehive");
 }
 
 async function runStep(name, fn) {
@@ -2148,7 +2148,7 @@ async function runStep(name, fn) {
 async function runCliJson(args, options = {}) {
   const result = await runInstalledCliCommand(args.join("-").replaceAll(path.sep, "_"), ["--json", ...args], {
     cwd: options.cwd ?? workspaceDir,
-    env: { ...inheritedEnv(), SWARMVAULT_WORKSPACE_ID: WORKSPACE_ID, ...(options.env ?? {}) }
+    env: { ...inheritedEnv(), BEEHIVE_WORKSPACE_ID: WORKSPACE_ID, ...(options.env ?? {}) }
   });
   const lines = result.stdout
     .split("\n")
@@ -2159,7 +2159,7 @@ async function runCliJson(args, options = {}) {
 }
 
 async function updateConfig(mutate) {
-  const configPath = path.join(workspaceDir, "swarmvault.config.json");
+  const configPath = path.join(workspaceDir, "beehive.config.json");
   const config = JSON.parse(await fs.readFile(configPath, "utf8"));
   mutate(config);
   await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
@@ -2508,7 +2508,7 @@ function buildOverviewFixtureReport() {
 }
 
 function readEmbeddedViewerData(html) {
-  const marker = "window.__SWARMVAULT_EMBEDDED_DATA__ = ";
+  const marker = "window.__BEEHIVE_EMBEDDED_DATA__ = ";
   const start = html.indexOf(marker);
   assert.ok(start >= 0, "exported HTML did not embed viewer data");
   const jsonStart = start + marker.length;
@@ -2741,7 +2741,7 @@ async function startNeo4jContainer(password) {
       }`.trim()
     );
   }
-  const name = `swarmvault-neo4j-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+  const name = `beehive-neo4j-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
   const boltPort = await reservePort();
   const httpPort = await reservePort();
   await runCommand("docker-run-neo4j", "docker", [
@@ -2819,7 +2819,7 @@ async function startCliServer(label, args, cwd) {
   assert.ok(installedCli, "installed CLI has not been resolved yet");
   const child = spawn(installedCli.command, [...installedCli.args, "--json", ...args], {
     cwd,
-    env: { ...inheritedEnv(), SWARMVAULT_WORKSPACE_ID: WORKSPACE_ID },
+    env: { ...inheritedEnv(), BEEHIVE_WORKSPACE_ID: WORKSPACE_ID },
     stdio: ["ignore", "pipe", "pipe"]
   });
 
@@ -2881,7 +2881,7 @@ async function runBrowserValidation(targetUrl, label, options = {}) {
     await page.goto(targetUrl, { waitUntil: "domcontentloaded" });
     await page.locator('[data-testid="graph-canvas"]').waitFor({ state: "visible" });
     await page.waitForFunction(
-      () => Array.isArray(window.__SWARMVAULT_TEST__?.getNodeIds?.()) && window.__SWARMVAULT_TEST__.getNodeIds().length > 0,
+      () => Array.isArray(window.__BEEHIVE_TEST__?.getNodeIds?.()) && window.__BEEHIVE_TEST__.getNodeIds().length > 0,
       undefined,
       { timeout: browserValidationTimeoutMs }
     );
@@ -2889,16 +2889,16 @@ async function runBrowserValidation(targetUrl, label, options = {}) {
       await page.locator('[data-testid="graph-overview-banner"]').waitFor({ state: "visible" });
     }
 
-    const firstNodeId = await page.evaluate(() => window.__SWARMVAULT_TEST__?.getNodeIds?.()[0] ?? null);
+    const firstNodeId = await page.evaluate(() => window.__BEEHIVE_TEST__?.getNodeIds?.()[0] ?? null);
     assert.ok(firstNodeId, `${label} did not expose a selectable graph node`);
-    const connectedNodePair = await page.evaluate(() => window.__SWARMVAULT_TEST__?.getConnectedNodePair?.() ?? null);
+    const connectedNodePair = await page.evaluate(() => window.__BEEHIVE_TEST__?.getConnectedNodePair?.() ?? null);
     assert.ok(connectedNodePair?.from && connectedNodePair?.to, `${label} did not expose a connected node pair for path validation`);
 
     const canvas = page.locator('[data-testid="graph-canvas"]');
     const canvasBox = await canvas.boundingBox();
     assert.ok(canvasBox, `${label} graph canvas did not produce a bounding box`);
 
-    const renderedPosition = await page.evaluate((nodeId) => window.__SWARMVAULT_TEST__?.getRenderedNodePosition?.(nodeId), firstNodeId);
+    const renderedPosition = await page.evaluate((nodeId) => window.__BEEHIVE_TEST__?.getRenderedNodePosition?.(nodeId), firstNodeId);
     assert.ok(renderedPosition, `${label} did not expose a rendered node position`);
 
     await page.mouse.click(canvasBox.x + renderedPosition.x, canvasBox.y + renderedPosition.y);
@@ -2913,13 +2913,13 @@ async function runBrowserValidation(targetUrl, label, options = {}) {
     await page.locator('[data-testid="graph-path-highlight"]').click();
     await page.locator('[data-testid="graph-path-summary"]').waitFor({ state: "visible" });
     const [hasFromPathClass, hasToPathClass] = await Promise.all([
-      page.evaluate((nodeId) => window.__SWARMVAULT_TEST__?.hasClass?.(nodeId, "path-node") ?? false, connectedNodePair.from),
-      page.evaluate((nodeId) => window.__SWARMVAULT_TEST__?.hasClass?.(nodeId, "path-node") ?? false, connectedNodePair.to)
+      page.evaluate((nodeId) => window.__BEEHIVE_TEST__?.hasClass?.(nodeId, "path-node") ?? false, connectedNodePair.from),
+      page.evaluate((nodeId) => window.__BEEHIVE_TEST__?.hasClass?.(nodeId, "path-node") ?? false, connectedNodePair.to)
     ]);
     assert.equal(hasFromPathClass, true, `${label} path highlight did not mark the source node`);
     assert.equal(hasToPathClass, true, `${label} path highlight did not mark the target node`);
 
-    await page.evaluate(() => window.__SWARMVAULT_TEST__?.clearSelection?.());
+    await page.evaluate(() => window.__BEEHIVE_TEST__?.clearSelection?.());
     await page.waitForFunction(
       () => document.querySelector('[data-testid="selection-panel"]')?.getAttribute("data-selected-node-id") === "",
       undefined,

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Published @swarmvaultai/cli version to test
+        description: Published @beehive/cli version to test
         required: false
         type: string
       lane:
@@ -44,15 +44,15 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run heuristic live smoke
-        run: pnpm live:smoke:heuristic -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+        run: pnpm live:smoke:heuristic -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload heuristic smoke artifacts
         if: failure()
@@ -83,15 +83,15 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run heuristic live smoke with browser check
-        run: pnpm live:smoke:heuristic:browser -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+        run: pnpm live:smoke:heuristic:browser -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload heuristic browser smoke artifacts
         if: failure()
@@ -121,15 +121,15 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run OSS corpus against the published package
-        run: pnpm live:oss:corpus -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+        run: pnpm live:oss:corpus -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload OSS corpus artifacts
         if: failure()
@@ -170,18 +170,18 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run OpenAI live smoke
         if: env.OPENAI_API_KEY != ''
         env:
-          SWARMVAULT_OPENAI_MODEL: gpt-4.1-mini
-        run: pnpm live:smoke:openai -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+          BEEHIVE_OPENAI_MODEL: gpt-4.1-mini
+        run: pnpm live:smoke:openai -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload OpenAI smoke artifacts
         if: failure() && env.OPENAI_API_KEY != ''
@@ -222,20 +222,20 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run Ollama live smoke
         if: env.OLLAMA_API_KEY != ''
         env:
-          SWARMVAULT_OLLAMA_MODEL: gpt-oss:20b-cloud
-          SWARMVAULT_OLLAMA_BASE_URL: https://ollama.com/v1
-          SWARMVAULT_OLLAMA_API_STYLE: chat
-        run: pnpm live:smoke:ollama -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+          BEEHIVE_OLLAMA_MODEL: gpt-oss:20b-cloud
+          BEEHIVE_OLLAMA_BASE_URL: https://ollama.com/v1
+          BEEHIVE_OLLAMA_API_STYLE: chat
+        run: pnpm live:smoke:ollama -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload Ollama smoke artifacts
         if: failure() && env.OLLAMA_API_KEY != ''

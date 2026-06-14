@@ -35,12 +35,12 @@ const obsidianRootManifestRaw = await fs.readFile(path.join(repoRoot, "manifest.
 const obsidianPluginCliCompat = JSON.parse(
   await fs.readFile(path.join(repoRoot, "packages", "obsidian-plugin", "cli-compat.json"), "utf8")
 );
-const skillContent = await fs.readFile(path.join(repoRoot, "skills", "swarmvault", "SKILL.md"), "utf8");
+const skillContent = await fs.readFile(path.join(repoRoot, "skills", "beehive", "SKILL.md"), "utf8");
 const cliSource = await fs.readFile(path.join(repoRoot, "packages", "cli", "src", "index.ts"), "utf8");
 const mcpSource = await fs.readFile(path.join(repoRoot, "packages", "engine", "src", "mcp.ts"), "utf8");
 
 const rootVersion = rootPackageJson.version;
-const skillVersion = extractMatch(skillContent, /^version:\s*"([^"]+)"$/m, "skill version from skills/swarmvault/SKILL.md");
+const skillVersion = extractMatch(skillContent, /^version:\s*"([^"]+)"$/m, "skill version from skills/beehive/SKILL.md");
 const cliFallbackVersions = [...cliSource.matchAll(/return\s+"([^"]+)";/g)].map((match) => match[1]);
 const mcpServerVersion = extractMatch(mcpSource, /const SERVER_VERSION = "([^"]+)";/, "MCP server version from packages/engine/src/mcp.ts");
 
@@ -49,8 +49,8 @@ assertCondition(enginePackageJson.version === rootVersion, "Engine package versi
 assertCondition(viewerPackageJson.version === rootVersion, "Viewer package version is out of sync with root package version");
 assertCondition(skillVersion === rootVersion, `Skill version ${skillVersion} does not match root package version ${rootVersion}`);
 assertCondition(
-  cliPackageJson.dependencies?.["@swarmvaultai/engine"] === rootVersion,
-  `CLI runtime dependency on @swarmvaultai/engine must match ${rootVersion}`
+  cliPackageJson.dependencies?.["@beehive/engine"] === rootVersion,
+  `CLI runtime dependency on @beehive/engine must match ${rootVersion}`
 );
 assertCondition(
   cliFallbackVersions.every((version) => version === rootVersion),
