@@ -28,6 +28,24 @@ describe("resolveWorkspaceRoot", () => {
     expect(result).toEqual({ root: "/project", source: "marker" });
   });
 
+  it("walks up from a workspace artifact folder until root config is found", () => {
+    const existing = new Set(["/project/swarmvault.config.json"]);
+    const result = resolveWorkspaceRoot("/project/default/wiki/concepts", {
+      exists: (p) => existing.has(p),
+      isDirectory: () => true
+    });
+    expect(result).toEqual({ root: "/project", source: "marker" });
+  });
+
+  it("prefers the root config over a nested workspace schema marker", () => {
+    const existing = new Set(["/project/swarmvault.config.json", "/project/default/swarmvault.schema.md"]);
+    const result = resolveWorkspaceRoot("/project/default/wiki/concepts", {
+      exists: (p) => existing.has(p),
+      isDirectory: () => true
+    });
+    expect(result).toEqual({ root: "/project", source: "marker" });
+  });
+
   it("returns not-found when walking hits the drive root", () => {
     const result = resolveWorkspaceRoot("/some/path/deep", {
       exists: () => false,
@@ -53,5 +71,15 @@ describe("resolveWorkspaceRoot", () => {
       isDirectory: () => true
     });
     expect(result.root).toBe("/proj");
+  });
+
+  it("uses the root config when an override points inside a workspace artifact folder", () => {
+    const existing = new Set(["/proj/swarmvault.config.json", "/proj/default/swarmvault.schema.md"]);
+    const result = resolveWorkspaceRoot(undefined, {
+      override: "/proj/default",
+      exists: (p) => existing.has(p),
+      isDirectory: () => true
+    });
+    expect(result).toEqual({ root: "/proj", source: "override" });
   });
 });
