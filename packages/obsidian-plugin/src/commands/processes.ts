@@ -2,6 +2,7 @@ import { Notice } from "obsidian";
 import type { ManagedProcessHandle } from "../cli/managed-processes";
 import type SwarmVaultPlugin from "../main";
 import { CliInvocationError, CliNotFoundError } from "../types";
+import { workspaceCliEnv } from "../workspace/artifacts";
 
 export async function startWatch(plugin: SwarmVaultPlugin): Promise<void> {
   await spawnManaged(plugin, {
@@ -98,6 +99,7 @@ async function spawnManaged(plugin: SwarmVaultPlugin, opts: SpawnManagedOptions)
     .invoke(plugin.settings.cliBinary, {
       args: opts.args,
       cwd: plugin.workspaceRoot ?? undefined,
+      env: workspaceCliEnv(plugin.settings),
       signal: handle.abort.signal,
       onStdoutLine: (line) => {
         runLog.appendStdout(entryId, line);
