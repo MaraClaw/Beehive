@@ -1,0 +1,57 @@
+# CLI PACKAGE KNOWLEDGE BASE
+
+## OVERVIEW
+
+`@swarmvaultai/cli` publishes the `swarmvault` and `vault` bins and should stay a thin Commander facade over engine behavior.
+
+## STRUCTURE
+
+```
+src/index.ts     # shebang entry, Commander command tree, output helpers
+src/notices.ts   # stderr notices and suppression rules
+src/shims.d.ts   # local declarations
+test/            # notice behavior tests
+README.md        # CLI contract docs
+package.json     # exact engine runtime dependency, bin map
+```
+
+## WHERE TO LOOK
+
+| Task | Location | Notes |
+| --- | --- | --- |
+| Command tree | `src/index.ts` | `new Command()`, `.name("swarmvault")`, version, global `--json`. |
+| JSON behavior | `emitJson`, `log`, `isJson` in `src/index.ts` | stdout purity in JSON mode. |
+| Notices | `src/notices.ts` | `[swarmvault]` stderr notices and state file. |
+| Surface smoke | `../../scripts/cli-surface-smoke.mjs` | Parser-backed command/alias manifest. |
+| Stability | `../../STABILITY.md` | Public CLI compatibility policy. |
+
+## CONVENTIONS
+
+- `enableStructuredJsonOnSubcommands(program)` adds global `--json` to subcommands; `activeCommand` is set in `preAction`.
+- Human output goes to stdout; in JSON mode, non-JSON logs/progress/notices must go to stderr or be suppressed.
+- `emitJson(data)` is the only JSON stdout path for structured output.
+- Command groups include `source`, `context`, `task`, `graph`, `review`, `candidate`, `schedule`, `provider`, and `retrieval`.
+- Options use Commander `Option(...).choices([...]).default(...)`, repeatable flags via `collectRepeated`, and boolean negation flags where needed.
+- Compatibility aliases include `vault`, `scan`, hidden `clone`, `graph refresh`, `graph clusters`, `check-update`, `update`, `tree`, `merge-graphs`, `cluster-only`, `watch-status`, and hidden `memory`.
+
+## ANTI-PATTERNS
+
+- Do not put engine runtime behavior in CLI parsing code.
+- Do not change command names, aliases, hidden status, or help behavior without updating `SURFACE_MANIFEST`, docs, and stability notes.
+- Do not print progress or notices to stdout when `--json` is active.
+- Do not prompt interactively unless TTY and not JSON mode.
+- Do not break `quickstart/scan --mcp` startup status JSON-on-stderr behavior.
+
+## COMMANDS
+
+```bash
+pnpm --filter @swarmvaultai/cli test
+pnpm --filter @swarmvaultai/cli typecheck
+pnpm live:cli-surface
+```
+
+## NOTES
+
+- `graph validate` intentionally sets `process.exitCode = 1` on validation failure.
+- Long-running MCP/server flows need SIGINT cleanup.
+- Notice state defaults to `~/.swarmvault/cli-state.json`; tests can override `SWARMVAULT_CLI_STATE_PATH`.

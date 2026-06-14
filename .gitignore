@@ -17,3 +17,6 @@ packages/viewer/dist/
 .live-smoke-artifacts/
 .oss-corpus-artifacts/
 .release-preflight/
+# CocoIndex Code (ccc)
+/.cocoindex_code/
+.omo/
