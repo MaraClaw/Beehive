@@ -11,7 +11,11 @@ export const VIEW_TYPE_GRAPH = "swarmvault-graph";
 export const VIEW_TYPE_NODE_BACKLINKS = "swarmvault-node-backlinks";
 
 export const WORKSPACE_MARKER = "swarmvault.schema.md";
+export const WORKSPACE_CONFIG_MARKER = "swarmvault.config.json";
 export const WORKSPACE_WALKUP_LIMIT = 8;
+
+export const SWARMVAULT_WORKSPACE_ID_ENV = "SWARMVAULT_WORKSPACE_ID";
+export const SWARMVAULT_OUT_ENV = "SWARMVAULT_OUT";
 
 export const CLI_PROBE_TIMEOUT_MS = 10_000;
 export const CLI_KILL_GRACE_MS = 3_000;
