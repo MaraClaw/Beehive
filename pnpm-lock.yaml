@@ -23,7 +23,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@swarmvaultai/engine':
+      '@beehive/engine':
         specifier: 3.21.0
         version: link:../engine
       commander:

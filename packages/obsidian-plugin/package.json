@@ -1,16 +1,16 @@
 {
-  "name": "@swarmvaultai/obsidian-plugin",
+  "name": "@beehive/obsidian-plugin",
   "version": "3.21.0",
   "description": "Drive your Beehive workspace from inside Obsidian.",
   "private": true,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swarmclawai/swarmvault.git"
+    "url": "git+https://github.com/beehive/beehive.git"
   },
-  "homepage": "https://www.swarmvault.ai",
+  "homepage": "https://www.beehive.ai",
   "bugs": {
-    "url": "https://github.com/swarmclawai/swarmvault/issues"
+    "url": "https://github.com/beehive/beehive/issues"
   },
   "license": "MIT",
   "engines": {

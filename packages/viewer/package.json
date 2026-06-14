@@ -1,5 +1,5 @@
 {
-  "name": "@swarmvaultai/viewer",
+  "name": "@beehive/viewer",
   "version": "3.21.0",
   "description": "Graph viewer package for Beehive graph artifacts.",
   "type": "module",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swarmclawai/swarmvault.git"
+    "url": "git+https://github.com/beehive/beehive.git"
   },
-  "homepage": "https://www.swarmvault.ai",
+  "homepage": "https://www.beehive.ai",
   "bugs": {
-    "url": "https://github.com/swarmclawai/swarmvault/issues"
+    "url": "https://github.com/beehive/beehive/issues"
   },
   "keywords": [
-    "swarmvault",
+    "beehive",
     "viewer",
     "graph",
     "cytoscape",
