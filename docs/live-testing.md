@@ -145,7 +145,7 @@ Confirm the published skill includes `README.md` plus the expected examples, ref
 - start `graph serve` and verify HTML plus `/api/graph`, `/api/search`, `/api/page`, `/api/asset`, `/api/candidates`, and `/api/reviews`
 - promote a candidate through the viewer API and resolve a staged approval bundle through the CLI review commands
 - run `watch --lint`, `watch --repo --code-only --once`, and `graph update .` against the published install and verify `state/jobs.ndjson`, watch sessions, and the code-only refresh path; include one intentional shrink fixture that requires `graph update --force`
-- start `mcp` and call tools over stdio, including `search_pages` and chart-format `query_vault`
+- start `mcp` with `SWARMVAULT_WORKSPACE_ID` and call tools over stdio with `workspace_id`, including `search_pages` and chart-format `query_vault`
 - run `install --agent codex --hook`
 - run `install --agent claude`
 - run `install --agent opencode --hook`
@@ -225,8 +225,8 @@ Use `--keep-artifacts` or `KEEP_LIVE_SMOKE_ARTIFACTS=1` to preserve them during 
 These checks remain complementary manual gut-checks:
 
 1. Install the published package in a fresh directory on a real machine with Node 24.
-2. Run `swarmvault graph serve` and confirm the viewer looks right in a real browser, beyond the automated headless browser check.
-3. Launch `swarmvault mcp` from a real MCP client configuration and confirm tool discovery works.
+2. Run `SWARMVAULT_WORKSPACE_ID=live swarmvault graph serve` and confirm the viewer looks right in a real browser, beyond the automated headless browser check.
+3. Launch `SWARMVAULT_WORKSPACE_ID=live swarmvault mcp` from a real MCP client configuration and confirm tool discovery works; MCP tool calls should include `workspace_id: "live"`.
 4. Verify `swarmvault ingest <url>` localizes remote images as expected, including `--no-include-assets` and `--max-asset-size` behavior.
 5. Compare heuristic output quality versus the Ollama and OpenAI lanes on the same fixture vault.
 

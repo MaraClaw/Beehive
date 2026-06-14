@@ -19,10 +19,11 @@ Documentation on the website is currently English-first. If wording drifts betwe
 
 ```bash
 npm install -g @swarmvaultai/cli
+export SWARMVAULT_WORKSPACE_ID=main
 swarmvault quickstart ./your-repo
 ```
 
-`quickstart` initializes a vault in the current directory, ingests a local file, directory, or public GitHub repo, compiles the wiki and graph, writes share artifacts, and opens the local graph viewer. It is the beginner-friendly alias for `swarmvault scan`.
+`quickstart` initializes a vault in the current directory, ingests a local file, directory, or public GitHub repo, compiles the wiki and graph, writes share artifacts, and opens the local graph viewer. It is the beginner-friendly alias for `swarmvault scan`. Behavior commands require a workspace id; set `SWARMVAULT_WORKSPACE_ID` once per shell or pass `--workspace-id <id>` on each command.
 
 No repo handy?
 
@@ -48,11 +49,12 @@ No API keys are required for the first run. The built-in heuristic provider runs
 
 **What you get on disk:**
 
-- `raw/` - immutable copies of ingested material
-- `wiki/` - generated markdown pages, saved outputs, graph reports, context packs, and task notes
-- `state/graph.json` - the machine-readable knowledge graph
-- `state/retrieval/` - local search index
-- `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/` - copyable and visual first-run summaries
+- `swarmvault.config.json` at the project root
+- `<workspace_id>/raw/` - immutable copies of ingested material
+- `<workspace_id>/wiki/` - generated markdown pages, saved outputs, graph reports, context packs, and task notes
+- `<workspace_id>/state/graph.json` - the machine-readable knowledge graph
+- `<workspace_id>/state/retrieval/` - local search index
+- `<workspace_id>/wiki/graph/share-card.md`, `<workspace_id>/wiki/graph/share-card.svg`, and `<workspace_id>/wiki/graph/share-kit/` - copyable and visual first-run summaries
 
 ### Three-Layer Architecture
 
@@ -147,6 +149,7 @@ Run this from an empty folder or a scratch folder where you want the vault artif
 ```bash
 mkdir my-vault
 cd my-vault
+export SWARMVAULT_WORKSPACE_ID=main
 swarmvault quickstart ../your-repo
 swarmvault next
 ```
@@ -155,19 +158,23 @@ That is the easiest path for a new user. It does the same work as `swarmvault sc
 
 ```text
 my-vault/
-├── swarmvault.schema.md       user-editable vault instructions
-├── raw/                       immutable source files and localized assets
-├── wiki/                      compiled wiki: sources, concepts, entities, code, outputs, graph
-├── state/                     graph.json, retrieval/, embeddings, sessions, approvals
-├── .obsidian/                 optional Obsidian workspace config
-└── agent/                     generated agent-facing helpers
+├── swarmvault.config.json     root config shared by workspace ids
+└── main/
+    ├── swarmvault.schema.md   user-editable vault instructions
+    ├── raw/                   immutable source files and localized assets
+    ├── wiki/                  compiled wiki: sources, concepts, entities, code, outputs, graph
+    ├── state/                 graph.json, retrieval/, embeddings, sessions, approvals
+    ├── .obsidian/             optional Obsidian workspace config
+    └── agent/                 generated agent-facing helpers
 ```
 
-If you want to keep generated artifacts outside the source tree, run with `SWARMVAULT_OUT=.swarmvault-out`. `swarmvault.config.json` and `swarmvault.schema.md` stay in the project root; `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` resolve under the output directory.
+If you want to keep generated artifacts outside the source tree, run with `SWARMVAULT_OUT=.swarmvault-out`. `swarmvault.config.json` stays in the project root. Without `SWARMVAULT_WORKSPACE_ID`, `swarmvault.schema.md` stays at the root and `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` resolve under the output directory. With `SWARMVAULT_WORKSPACE_ID=<id>`, the schema and generated artifact directories resolve under `<artifact-base>/<id>`.
 
 ### Learn The Main Loop
 
 Once the fast path makes sense, the same workflow can be run step by step:
+
+The examples below assume `SWARMVAULT_WORKSPACE_ID=main` is still set; use `--workspace-id main` instead when you do not want to set an environment variable.
 
 ```bash
 swarmvault init --obsidian --profile personal-research
@@ -356,7 +363,7 @@ swarmvault install status --agent kilo --hook
 
 For hook-capable agents, the installed hooks guide graph-first reads, with enforcement as an opt-in. For Claude Code, `--hook` injects graph-first instructions at session start — answer code-understanding questions with the plain `swarmvault graph query|explain|path` commands (avoid `--json`, which produces much larger output), `swarmvault query`, `swarmvault context build`, or `wiki/graph/report.md`, and read source files only when editing them — along with a graph staleness note. `swarmvault graph query "<seed>"` prints the top matches with page paths plus an inline excerpt of the best-matching wiki page, so one command usually answers where-is/what-calls questions without follow-up file reads. For who-calls and impact-of-change questions, the hook guidance recommends `swarmvault graph callers <symbol>`, which lists every caller from graph call edges with exact file:line call-site evidence — scanning only the files the graph identifies as callers — instead of a repo-wide grep. By default the hook runs in advisory mode (`context`): the first broad Grep/Glob/Bash search per session gets a one-time guidance note pointing at those plain graph commands, and nothing is denied. Pass `--graph-first` at install time to opt in to enforcement, where the first broad search per session is denied once with a guided redirect to those plain graph commands and the inline excerpt they return (repeating the same search is then allowed, so work is never blocked). The flag accepts an optional value — `deny` (the default when the flag is passed), `context`, or `off` — and persists the chosen mode as `hooks.graphFirst` in `swarmvault.config.json`; `SWARMVAULT_GRAPH_FIRST=deny|context|off` still overrides per session. After Edit/Write tools the hook spawns a background `swarmvault graph update --file <path>` refresh so the graph tracks your edits. Searches scoped to vault artifact directories (`wiki/`, `raw/`, `state/`) or a single file are never intercepted, and search tools that merely filter piped output (e.g. `some-command | grep …`) do not count as broad searches. The Codex, Gemini, Copilot, OpenCode, and Kilo hooks carry the same graph-first guidance — a session note plus a one-time search redirect appropriate to each tool's hook API.
 
-`swarmvault install --agent claude --mcp` also registers the SwarmVault MCP server in the project's `.mcp.json` (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`). Claude installs additionally write a project skill bundle at `.claude/skills/swarmvault/SKILL.md`, and `--scope user` installs the skill, hook, and settings once under `~/.claude` for all repos — the hook no-ops in repos without a compiled graph report.
+`swarmvault install --agent claude --mcp` also registers the SwarmVault MCP server in the project's `.mcp.json` (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`). Start that server with `SWARMVAULT_WORKSPACE_ID=<id>` or add `--workspace-id <id>` to the client args, and include the same `workspace_id` in MCP tool calls. Claude installs additionally write a project skill bundle at `.claude/skills/swarmvault/SKILL.md`, and `--scope user` installs the skill, hook, and settings once under `~/.claude` for all repos — the hook no-ops in repos without a compiled graph report.
 
 `swarmvault install --agent <agent>` also keeps the host project clean: in git repos the vault artifact directories are appended to `.gitignore`, strict-JSON `tsconfig.json` files get the artifact directories added to `"exclude"` so stored source copies under `raw/` do not break the host typecheck (commented JSONC tsconfigs are left untouched with a warning, linter configs that still cover the artifact directories get an advisory warning, and everything is skipped when `SWARMVAULT_OUT` keeps artifacts outside the repo).
 
@@ -374,8 +381,10 @@ SwarmVault never writes these project-local rule files during `init`, `quickstar
 Or expose the vault directly over MCP:
 
 ```bash
-swarmvault mcp
+SWARMVAULT_WORKSPACE_ID=main swarmvault mcp
 ```
+
+MCP tools require a `workspace_id` argument on each call; use the same id as the server environment.
 
 Using OpenClaw or ClawHub? Install the packaged skill with:
 
@@ -464,7 +473,7 @@ That installs the published `SKILL.md` plus a ClawHub README, examples, referenc
 
 **Graph diff** - `swarmvault diff` compares the current knowledge graph against the last committed version, showing added/removed nodes, edges, and pages so you can see exactly what a compile changed.
 
-**Worktree artifact roots** - `SWARMVAULT_OUT=<dir>` relocates generated `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` artifacts while keeping `swarmvault.config.json` and `swarmvault.schema.md` in the project root. Use it for isolated smoke tests, shared source trees, and repo worktrees where generated vault state should not sit beside source files.
+**Worktree artifact roots** - `SWARMVAULT_OUT=<dir>` relocates generated `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` artifacts while keeping `swarmvault.config.json` in the project root. Without an active `SWARMVAULT_WORKSPACE_ID`, `swarmvault.schema.md` also stays at the root; with `SWARMVAULT_WORKSPACE_ID=<id>`, the schema and generated artifacts are nested under `<artifact-base>/<id>`. Use it for isolated smoke tests, shared source trees, and repo worktrees where generated vault state should not sit beside source files.
 
 **Obsidian graph export** - `graph export --obsidian` writes an Obsidian-friendly bundle that preserves wiki folders, appends graph connections with typed link frontmatter for Breadcrumbs/Juggl, emits community notes and orphan-node stubs, copies assets, generates Dataview dashboard pages, and includes a full `.obsidian` config with `types.json`, node-type color groups, and `cssclasses` on every page.
 
@@ -474,7 +483,7 @@ That installs the published `SKILL.md` plus a ClawHub README, examples, referenc
 
 **Agent integrations** - explicitly install rules for Codex, Claude Code, Cursor, Goose, Pi, Gemini CLI, OpenCode, Aider, GitHub Copilot CLI, Trae, Claw/OpenClaw, Droid, Kiro, Kilo, Hermes, Google Antigravity, VS Code Copilot Chat, Devin, and the extended skill-bundle roster. `init`, `quickstart`, `scan`, and `clone` leave project-local rule files alone unless you opt into configured installs. Optional graph-first hooks guide graph reads for supported agents — session-start graph guidance with staleness notes, a one-time advisory note on the first broad search (or, with the `--graph-first` enforcement opt-in, a deny-once redirect where retrying the same search is always allowed), and, for Claude Code, automatic background per-file graph refresh after edits, configurable with `SWARMVAULT_GRAPH_FIRST` or `hooks.graphFirst`. Antigravity installs under `.agents/rules/` and `.agents/workflows/`; older fully managed `.agent/` files are cleaned up during reinstall.
 
-**MCP server** - `swarmvault mcp` exposes the vault to any compatible agent client over stdio, including graph stats, read-only graph freshness (`graph_status`), code-only graph refresh (`update_graph`, optionally per-file), graph clustering refresh, community lookup, hyperedges, context-pack, task-ledger, compatibility memory-task, vault doctor, and retrieval health tools. The repository also ships Docker/registry metadata for MCP server registries that validate a stdio container entrypoint.
+**MCP server** - `swarmvault mcp` exposes the vault to any compatible agent client over stdio, including graph stats, read-only graph freshness (`graph_status`), code-only graph refresh (`update_graph`, optionally per-file), graph clustering refresh, community lookup, hyperedges, context-pack, task-ledger, compatibility memory-task, vault doctor, and retrieval health tools. Start it with `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>` and include `workspace_id` in MCP tool calls. The repository also ships Docker/registry metadata for MCP server registries that validate a stdio container entrypoint.
 
 **Built-in browser clipper** - `graph serve` exposes a local `/api/bookmarklet` page and `/api/clip` endpoint so a running vault can capture the current browser URL, page title, selected text, markdown, HTML excerpts, and tags from the workbench or bookmarklet. URL-only bookmarklet clips use normalized `add`; selected text is imported through the inbox path.
 
