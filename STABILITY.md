@@ -14,8 +14,8 @@ When a Stable surface is retired, it follows this deprecation window:
 
 1. **Announcement**: the retiring surface is marked `@deprecated` in code and annotated here with the target removal version. A `CHANGELOG.md` entry describes the replacement and the migration path.
 2. **Grace window**: **at least two minor releases** must pass before removal. If 1.0.0 deprecates something, the earliest it can be removed is 1.2.0.
-3. **Runtime warning**: `swarmvault lint` flags deprecated config keys and CLI usage so users see the warning during normal workflow.
-4. **Removal**: the surface is removed in the announced version. A migration is added to `swarmvault migrate` so existing vaults transition cleanly. `swarmvault migrate` handles the schema side; users update their own workflows.
+3. **Runtime warning**: `beehive lint` flags deprecated config keys and CLI usage so users see the warning during normal workflow.
+4. **Removal**: the surface is removed in the announced version. A migration is added to `beehive migrate` so existing vaults transition cleanly. `beehive migrate` handles the schema side; users update their own workflows.
 5. **Major bumps**: a `MAJOR` release may remove surfaces without the two-minor grace window, but the `CHANGELOG.md` and `MIGRATION.md` entries must still describe the replacement and migration path.
 
 Incompatible changes to Experimental surfaces do not follow this policy. They may change with a single `CHANGELOG.md` note in any minor release.
@@ -26,40 +26,40 @@ Stable:
 
 | Command | Status | Since |
 |---|---|---|
-| `swarmvault init [--obsidian] [--profile <preset>] [--lite]` | Stable | 0.1.0 |
-| `swarmvault demo [--port <n>] [--serve]` | Stable | 0.7.26 |
-| `swarmvault scan <dir> [--port <n>] [--serve]` | Stable | 0.7.x |
-| `swarmvault ingest <path\|url> [--guide\|--no-guide] [--review] [--commit] [--no-redact] [--resume <run-id>]` | Stable | 0.1.0 |
-| `swarmvault add <url> [--no-redact]` | Stable | 0.7.x |
-| `swarmvault source add\|list\|reload\|delete\|review\|guide\|session` | Stable | 0.7.x |
-| `swarmvault inbox import [dir]` | Stable | 0.7.x |
-| `swarmvault compile [--approve] [--commit] [--max-tokens <n>]` | Stable | 0.1.0 |
-| `swarmvault query <question> [--no-save] [--commit] [--format ...] [--gap-fill] [--task <id>] [--memory <id>]` | Stable | 0.1.0 (`--gap-fill` since 0.10.0, `--task` since 3.0.0) |
-| `swarmvault context build\|list\|show\|delete` | Stable | 1.5.0 (`--task` since 3.0.0) |
-| `swarmvault task start\|update\|finish\|list\|show\|resume` | Stable | 3.0.0 |
-| `swarmvault memory start\|update\|finish\|list\|show\|resume` | Stable compatibility alias | 2.0.0 |
-| `swarmvault retrieval status\|rebuild\|doctor [--repair]` | Stable | 3.0.0 |
-| `swarmvault doctor [--repair]` | Stable | 3.2.0 |
-| `swarmvault explore <question> [--steps <n>] [--format ...] [--gap-fill] [--task <id>] [--memory <id>]` | Stable | 0.7.x (`--gap-fill` since 0.10.0, `--task` since 3.0.0) |
-| `swarmvault lint [--deep\|--no-deep] [--web] [--conflicts] [--decay] [--tiers]` | Stable | 0.1.0 (`--decay`/`--tiers` since 0.10.0) |
-| `swarmvault review list\|show\|accept\|reject` | Stable | 0.7.x |
-| `swarmvault graph query\|path\|explain\|god-nodes\|blast\|share\|serve\|export\|push\|supersession` | Stable | 0.7.x (`supersession` since 0.10.0, `share` since 1.2.0, `graph share --svg` since 1.3.0, `graph share --bundle` since 1.4.0) |
-| `swarmvault candidate list\|promote\|archive\|auto-promote\|preview-scores` | Stable | 0.7.x |
-| `swarmvault watch [--lint] [--repo] [--once] [--code-only] [--debounce <ms>] [--root <path>]` | Stable | 0.7.x (`--root` since 0.11.0) |
-| `swarmvault watch list-roots\|add-root\|remove-root` | Stable | 0.11.0 |
-| `swarmvault watch status` / `swarmvault watch-status` | Stable | 0.7.x |
-| `swarmvault hook install\|uninstall\|status` | Stable | 0.7.x |
-| `swarmvault schedule list\|run\|serve` | Stable | 0.7.x |
-| `swarmvault diff` | Stable | 0.7.26 |
-| `swarmvault benchmark [--question <text...>]` | Stable | 0.7.x |
-| `swarmvault consolidate [--dry-run]` | Stable | 0.10.0 |
-| `swarmvault migrate [--target <version>] [--apply] [--dry-run]` | Stable | 0.12.0 |
-| `swarmvault install --agent <agent>` | Stable | 0.7.x |
-| `swarmvault mcp` | Stable | 0.7.x |
-| `swarmvault --json` (global) | Stable | 0.1.0 |
-| `swarmvault --version` | Stable | 0.1.0 |
+| `beehive init [--obsidian] [--profile <preset>] [--lite]` | Stable | 0.1.0 |
+| `beehive demo [--port <n>] [--serve]` | Stable | 0.7.26 |
+| `beehive scan <dir> [--port <n>] [--serve]` | Stable | 0.7.x |
+| `beehive ingest <path\|url> [--guide\|--no-guide] [--review] [--commit] [--no-redact] [--resume <run-id>]` | Stable | 0.1.0 |
+| `beehive add <url> [--no-redact]` | Stable | 0.7.x |
+| `beehive source add\|list\|reload\|delete\|review\|guide\|session` | Stable | 0.7.x |
+| `beehive inbox import [dir]` | Stable | 0.7.x |
+| `beehive compile [--approve] [--commit] [--max-tokens <n>]` | Stable | 0.1.0 |
+| `beehive query <question> [--no-save] [--commit] [--format ...] [--gap-fill] [--task <id>] [--memory <id>]` | Stable | 0.1.0 (`--gap-fill` since 0.10.0, `--task` since 3.0.0) |
+| `beehive context build\|list\|show\|delete` | Stable | 1.5.0 (`--task` since 3.0.0) |
+| `beehive task start\|update\|finish\|list\|show\|resume` | Stable | 3.0.0 |
+| `beehive memory start\|update\|finish\|list\|show\|resume` | Stable compatibility alias | 2.0.0 |
+| `beehive retrieval status\|rebuild\|doctor [--repair]` | Stable | 3.0.0 |
+| `beehive doctor [--repair]` | Stable | 3.2.0 |
+| `beehive explore <question> [--steps <n>] [--format ...] [--gap-fill] [--task <id>] [--memory <id>]` | Stable | 0.7.x (`--gap-fill` since 0.10.0, `--task` since 3.0.0) |
+| `beehive lint [--deep\|--no-deep] [--web] [--conflicts] [--decay] [--tiers]` | Stable | 0.1.0 (`--decay`/`--tiers` since 0.10.0) |
+| `beehive review list\|show\|accept\|reject` | Stable | 0.7.x |
+| `beehive graph query\|path\|explain\|god-nodes\|blast\|share\|serve\|export\|push\|supersession` | Stable | 0.7.x (`supersession` since 0.10.0, `share` since 1.2.0, `graph share --svg` since 1.3.0, `graph share --bundle` since 1.4.0) |
+| `beehive candidate list\|promote\|archive\|auto-promote\|preview-scores` | Stable | 0.7.x |
+| `beehive watch [--lint] [--repo] [--once] [--code-only] [--debounce <ms>] [--root <path>]` | Stable | 0.7.x (`--root` since 0.11.0) |
+| `beehive watch list-roots\|add-root\|remove-root` | Stable | 0.11.0 |
+| `beehive watch status` / `beehive watch-status` | Stable | 0.7.x |
+| `beehive hook install\|uninstall\|status` | Stable | 0.7.x |
+| `beehive schedule list\|run\|serve` | Stable | 0.7.x |
+| `beehive diff` | Stable | 0.7.26 |
+| `beehive benchmark [--question <text...>]` | Stable | 0.7.x |
+| `beehive consolidate [--dry-run]` | Stable | 0.10.0 |
+| `beehive migrate [--target <version>] [--apply] [--dry-run]` | Stable | 0.12.0 |
+| `beehive install --agent <agent>` | Stable | 0.7.x |
+| `beehive mcp` | Stable | 0.7.x |
+| `beehive --json` (global) | Stable | 0.1.0 |
+| `beehive --version` | Stable | 0.1.0 |
 
-## Config keys (`swarmvault.config.json`)
+## Config keys (`beehive.config.json`)
 
 Stable (all keys existing in 0.11.0 plus the new 0.12.0 additions):
 
@@ -86,11 +86,11 @@ Stable (all keys existing in 0.11.0 plus the new 0.12.0 additions):
 
 Deprecated stable aliases:
 
-- `search.{hybrid?, rerank?}` from 0.7.x through 2.x is migrated to `retrieval.{hybrid?, rerank?}` by `swarmvault migrate --target 3.0.0`.
+- `search.{hybrid?, rerank?}` from 0.7.x through 2.x is migrated to `retrieval.{hybrid?, rerank?}` by `beehive migrate --target 3.0.0`.
 
-Unknown keys are preserved by `swarmvault migrate` but are not covered by the stability promise; they may be read by experimental code paths that change.
+Unknown keys are preserved by `beehive migrate` but are not covered by the stability promise; they may be read by experimental code paths that change.
 
-## MCP tools (`swarmvault mcp`)
+## MCP tools (`beehive mcp`)
 
 Stable tools exposed over stdio:
 
@@ -98,7 +98,7 @@ Stable tools exposed over stdio:
 
 ## Page frontmatter fields
 
-Stable and **preserved** by `swarmvault migrate`:
+Stable and **preserved** by `beehive migrate`:
 
 - `page_id` (required)
 - `kind` (required): `index | source | module | concept | entity | output | insight | memory_task | graph_report | community_summary`
@@ -122,7 +122,7 @@ Stable and **preserved** by `swarmvault migrate`:
 - `context_pack_id`, `goal`, `target`, `budget_tokens`, `estimated_tokens`, `artifact_path` on generated context-pack output pages (since 1.5.0)
 - `task_id`, `task_status`, `memory_task_id`, `memory_status`, `context_pack_ids[]`, `related_page_ids[]`, `related_node_ids[]`, `related_source_ids[]`, `git_refs[]`, `changed_paths[]` on generated task pages (memory field names since 2.0.0, task aliases since 3.0.0)
 
-Additions to this list are `MINOR` changes. Removals require a `MAJOR` bump and a matching `swarmvault migrate` step.
+Additions to this list are `MINOR` changes. Removals require a `MAJOR` bump and a matching `beehive migrate` step.
 
 ## Graph artifact (`state/graph.json`)
 
@@ -146,7 +146,7 @@ Stable graph node types include `memory_task` and `decision` (since 2.0.0). Stab
 Stable file set in `state/`:
 
 - `graph.json` — compiled graph artifact (above)
-- `retrieval/` — retrieval index directory, including the local SQLite FTS shard and `manifest.json` health metadata (regenerated by compile or `swarmvault retrieval rebuild`; may be deleted without data loss)
+- `retrieval/` — retrieval index directory, including the local SQLite FTS shard and `manifest.json` health metadata (regenerated by compile or `beehive retrieval rebuild`; may be deleted without data loss)
 - `context-packs/` — saved agent context-pack JSON artifacts (since 1.5.0)
 - `memory/tasks/` — saved agent task JSON artifacts, retained under the existing path for compatibility (since 2.0.0)
 - `approvals/` — review bundles
@@ -164,13 +164,13 @@ These may change in any minor release. Use at your own risk.
 - Custom web-search adapter modules (`webSearch.providers.<id>.module`)
 - Orchestration command executors (`orchestration.roles.*.executor.command`)
 - `providers.<id>.type = "local-whisper"` and its extensions (`binaryPath`, `modelPath`, `extraArgs`, `threads`) — shelling out to a user-installed `whisper.cpp` binary; the discovery, config shape, and model-download behavior may evolve as the feature graduates to stable
-- `swarmvault provider setup` subcommand (added in 1.1.0) — options and prompts may change while the flow is being iterated
+- `beehive provider setup` subcommand (added in 1.1.0) — options and prompts may change while the flow is being iterated
 - Any CLI flag documented as `experimental` in `--help`
 
 ## Internal surfaces (not covered by this contract)
 
-- Module exports from `@swarmvaultai/engine` not listed in the `@swarmvaultai/engine` package's public API. The TypeScript definitions are documentation for stable exports only.
+- Module exports from `@beehive/engine` not listed in the `@beehive/engine` package's public API. The TypeScript definitions are documentation for stable exports only.
 - File layout inside `dist/` of any published package.
-- The viewer's React component tree (`@swarmvaultai/viewer` ships a minimal stable surface for embedding, but internal components may change).
+- The viewer's React component tree (`@beehive/viewer` ships a minimal stable surface for embedding, but internal components may change).
 - Test fixtures under `packages/*/test/` and `worked/`.
 - `docs/superpowers/specs/` and `wiki/outputs/` are local working documents and are not published.

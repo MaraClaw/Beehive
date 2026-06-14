@@ -36,8 +36,8 @@ See [docs/live-testing.md](./docs/live-testing.md) for the full live-testing wor
 ## Repo Structure
 
 - `packages/engine`: ingest, compile, query, lint, providers, and graph/search generation
-- `packages/cli`: the `swarmvault` command
-- `packages/viewer`: the local graph UI used by `swarmvault graph serve`
+- `packages/cli`: the `beehive` command
+- `packages/viewer`: the local graph UI used by `beehive graph serve`
 
 ## Issues
 
@@ -51,7 +51,7 @@ If you are filing a bug, include:
 
 ## Documentation Site
 
-The documentation website lives in a **separate repository**: `swarmclawai/swarmvault-site`.
+The documentation website lives in a **separate repository**: `beehive/beehive-site`.
 
 When you change CLI commands, add new features, or modify behavior:
 
@@ -59,7 +59,7 @@ When you change CLI commands, add new features, or modify behavior:
 - If you add a new command or page, also update the navigation in `web/src/lib/docs-nav.ts`
 - The docs site uses Next.js 16 with static export — run `npm run build` in `web/` to verify
 
-This sync is currently manual. Documentation PRs should be opened against the `swarmvault-site` repository.
+This sync is currently manual. Documentation PRs should be opened against the `beehive-site` repository.
 
 ## Design Notes
 

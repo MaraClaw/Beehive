@@ -9,7 +9,7 @@ Beehive's PDF extraction is a **best-effort** pipeline. PDFs are a lossy medium 
 We picked this default because:
 
 - It works on every platform Beehive runs on (macOS, Linux, Windows) without native binaries.
-- It does not require a provider API key — the heuristic `swarmvault init` path produces usable PDF extractions with no network.
+- It does not require a provider API key — the heuristic `beehive init` path produces usable PDF extractions with no network.
 - It is deterministic — the same PDF always produces the same extraction, which keeps `source_hashes` stable.
 
 ## Known limitations

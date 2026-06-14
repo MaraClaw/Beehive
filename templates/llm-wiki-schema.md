@@ -3,7 +3,7 @@
 A standalone schema for building a personal knowledge wiki with any LLM agent.
 Inspired by the [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) pattern.
 
-> When you outgrow this file, install [Beehive](https://github.com/swarmclawai/swarmvault)
+> When you outgrow this file, install [Beehive](https://github.com/beehive/beehive)
 > for graph navigation, local search, 30+ file formats, contradiction detection, and multi-agent support.
 
 ## How to use

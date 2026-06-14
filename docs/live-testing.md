@@ -2,7 +2,7 @@
 
 Beehive has a separate live-testing track for the **published npm package**, not just the source checkout.
 
-The goal is to verify the real user install path for `@swarmvaultai/cli` and the core vault flows against a temporary workspace.
+The goal is to verify the real user install path for `@beehive/cli` and the core vault flows against a temporary workspace.
 
 ## Local Commands
 
@@ -37,16 +37,16 @@ The runner loads `.env.local` from either the umbrella workspace root or the OSS
 ```bash
 OLLAMA_API_KEY=...
 ANTHROPIC_API_KEY=...
-SWARMVAULT_OLLAMA_MODEL=gpt-oss:20b-cloud
-SWARMVAULT_OLLAMA_BASE_URL=https://ollama.com/v1
-SWARMVAULT_OLLAMA_API_STYLE=chat
-SWARMVAULT_ANTHROPIC_MODEL=claude-sonnet-4-20250514
-SWARMVAULT_OPENCODE_OLLAMA_MODEL=gpt-oss:20b-cloud
-SWARMVAULT_RUN_CODEX_AGENT_SMOKE=1
-SWARMVAULT_RUN_OPENCODE_AGENT_SMOKE=1
-SWARMVAULT_RUN_LOCAL_EMBEDDINGS_SMOKE=1
-SWARMVAULT_LOCAL_EMBEDDINGS_MODEL=nomic-embed-text
-SWARMVAULT_LOCAL_EMBEDDINGS_BASE_URL=http://localhost:11434/v1
+BEEHIVE_OLLAMA_MODEL=gpt-oss:20b-cloud
+BEEHIVE_OLLAMA_BASE_URL=https://ollama.com/v1
+BEEHIVE_OLLAMA_API_STYLE=chat
+BEEHIVE_ANTHROPIC_MODEL=claude-sonnet-4-20250514
+BEEHIVE_OPENCODE_OLLAMA_MODEL=gpt-oss:20b-cloud
+BEEHIVE_RUN_CODEX_AGENT_SMOKE=1
+BEEHIVE_RUN_OPENCODE_AGENT_SMOKE=1
+BEEHIVE_RUN_LOCAL_EMBEDDINGS_SMOKE=1
+BEEHIVE_LOCAL_EMBEDDINGS_MODEL=nomic-embed-text
+BEEHIVE_LOCAL_EMBEDDINGS_BASE_URL=http://localhost:11434/v1
 ```
 
 The Neo4j live-smoke lane uses a local Docker-managed Neo4j container and does not require a hosted Neo4j account, but it does require a running Docker daemon.
@@ -62,9 +62,9 @@ Optional flags:
 
 ```bash
 node ./scripts/live-smoke.mjs --lane heuristic --version 0.7.26 --keep-artifacts
-node ./scripts/live-smoke.mjs --lane heuristic --install-spec /tmp/swarmvaultai-engine.tgz --install-spec /tmp/swarmvaultai-cli.tgz
+node ./scripts/live-smoke.mjs --lane heuristic --install-spec /tmp/beehive-engine.tgz --install-spec /tmp/beehive-cli.tgz
 node ./scripts/live-smoke.mjs --lane heuristic --browser-check
-node ./scripts/live-smoke.mjs --lane neo4j --install-spec /tmp/swarmvaultai-engine.tgz --install-spec /tmp/swarmvaultai-cli.tgz
+node ./scripts/live-smoke.mjs --lane neo4j --install-spec /tmp/beehive-engine.tgz --install-spec /tmp/beehive-cli.tgz
 node ./scripts/live-oss-corpus.mjs --lane heuristic --version 0.7.26 --keep-artifacts
 node ./scripts/live-oss-corpus.mjs --lane heuristic --repo ky --repo react-markdown
 node ./scripts/live-oss-corpus.mjs --lane heuristic --include-canary
@@ -74,7 +74,7 @@ Use `pnpm pack` for local tarball preflight installs. Raw `npm pack` preserves w
 
 `pnpm release:preflight` is the default local release gate. It runs `check`, `test`, `build`, the site build, the skill dry-run, then validates the installed-package path with local tarballs through heuristic smoke, browser smoke, and the OSS corpus.
 
-`pnpm release:publish` is the maintainer publish orchestrator. It verifies version sync and the pushed OSS tag, runs `release:preflight`, publishes `@swarmvaultai/viewer`, `@swarmvaultai/engine`, and `@swarmvaultai/cli` to npm, reruns the live npm-installed smoke lanes, publishes and inspects the ClawHub skill, refreshes/tags/pushes the desktop repo, and creates the GitHub release. Use a dry run to inspect the sequence before touching remote state:
+`pnpm release:publish` is the maintainer publish orchestrator. It verifies version sync and the pushed OSS tag, runs `release:preflight`, publishes `@beehive/viewer`, `@beehive/engine`, and `@beehive/cli` to npm, reruns the live npm-installed smoke lanes, publishes and inspects the ClawHub skill, refreshes/tags/pushes the desktop repo, and creates the GitHub release. Use a dry run to inspect the sequence before touching remote state:
 
 ```bash
 pnpm release:publish -- --dry-run --skip-preflight
@@ -98,7 +98,7 @@ That canary is not part of the default gated lane. It is there to exercise a mix
 
 ## ClawHub Skill Checks
 
-The ClawHub/OpenClaw skill is a separate published artifact under `skills/swarmvault/`.
+The ClawHub/OpenClaw skill is a separate published artifact under `skills/beehive/`.
 
 Before release:
 
@@ -145,7 +145,7 @@ Confirm the published skill includes `README.md` plus the expected examples, ref
 - start `graph serve` and verify HTML plus `/api/graph`, `/api/search`, `/api/page`, `/api/asset`, `/api/candidates`, and `/api/reviews`
 - promote a candidate through the viewer API and resolve a staged approval bundle through the CLI review commands
 - run `watch --lint`, `watch --repo --code-only --once`, and `graph update .` against the published install and verify `state/jobs.ndjson`, watch sessions, and the code-only refresh path; include one intentional shrink fixture that requires `graph update --force`
-- start `mcp` with `SWARMVAULT_WORKSPACE_ID` and call tools over stdio with `workspace_id`, including `search_pages` and chart-format `query_vault`
+- start `mcp` with `BEEHIVE_WORKSPACE_ID` and call tools over stdio with `workspace_id`, including `search_pages` and chart-format `query_vault`
 - run `install --agent codex --hook`
 - run `install --agent claude`
 - run `install --agent opencode --hook`
@@ -153,13 +153,13 @@ Confirm the published skill includes `README.md` plus the expected examples, ref
 - run `install --agent copilot --hook`
 - run `install --agent aider`
 - run `install --agent trae`, `install --agent claw`, and `install --agent droid`
-- verify the installed package writes `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CONVENTIONS.md`, `.aider.conf.yml`, `.github/copilot-instructions.md`, `.trae/rules/swarmvault.md`, `.claw/skills/swarmvault/SKILL.md`, `.factory/rules/swarmvault.md`, and the expected hook/plugin artifacts
-- verify the managed git hook block invokes `swarmvault watch --repo --once --code-only`
+- verify the installed package writes `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CONVENTIONS.md`, `.aider.conf.yml`, `.github/copilot-instructions.md`, `.trae/rules/beehive.md`, `.claw/skills/beehive/SKILL.md`, `.factory/rules/beehive.md`, and the expected hook/plugin artifacts
+- verify the managed git hook block invokes `beehive watch --repo --once --code-only`
 - when local binaries and credentials are available, run Claude Code against `CLAUDE.md` and Gemini CLI against `GEMINI.md`
-- run the Codex host-agent check only when `SWARMVAULT_RUN_CODEX_AGENT_SMOKE=1` is set, because it depends on the local Codex CLI configuration and model access rather than the installed Beehive artifact
-- run the OpenCode host-agent check only when `SWARMVAULT_RUN_OPENCODE_AGENT_SMOKE=1` is set, because it depends on an external model path and is not part of the required packaged-artifact release gate
-- run the Ollama local-embeddings check only when `SWARMVAULT_RUN_LOCAL_EMBEDDINGS_SMOKE=1` is set, because it depends on a reachable embedding-capable local model and is not part of the required packaged-artifact release gate
-- on live npm-installed runs, execute `swarmvault source add https://github.com/karpathy/micrograd` and verify the registry entry, compile artifacts, and source brief
+- run the Codex host-agent check only when `BEEHIVE_RUN_CODEX_AGENT_SMOKE=1` is set, because it depends on the local Codex CLI configuration and model access rather than the installed Beehive artifact
+- run the OpenCode host-agent check only when `BEEHIVE_RUN_OPENCODE_AGENT_SMOKE=1` is set, because it depends on an external model path and is not part of the required packaged-artifact release gate
+- run the Ollama local-embeddings check only when `BEEHIVE_RUN_LOCAL_EMBEDDINGS_SMOKE=1` is set, because it depends on a reachable embedding-capable local model and is not part of the required packaged-artifact release gate
+- on live npm-installed runs, execute `beehive source add https://github.com/karpathy/micrograd` and verify the registry entry, compile artifacts, and source brief
 
 ### OpenAI lane
 
@@ -182,7 +182,7 @@ The OpenAI lane is intentionally narrower. It is there to validate one real exte
 - run `query`
 - run `lint --deep`
 
-The default cloud model is `gpt-oss:20b-cloud`, and the runner defaults to `SWARMVAULT_OLLAMA_API_STYLE=chat`. You can override both values explicitly.
+The default cloud model is `gpt-oss:20b-cloud`, and the runner defaults to `BEEHIVE_OLLAMA_API_STYLE=chat`. You can override both values explicitly.
 
 ### Anthropic lane
 
@@ -193,7 +193,7 @@ The default cloud model is `gpt-oss:20b-cloud`, and the runner defaults to `SWAR
 - run `query`
 - run `lint --deep`
 
-The default Anthropic model is `claude-sonnet-4-20250514`, and you can override it with `SWARMVAULT_ANTHROPIC_MODEL`.
+The default Anthropic model is `claude-sonnet-4-20250514`, and you can override it with `BEEHIVE_ANTHROPIC_MODEL`.
 
 ### Neo4j lane
 
@@ -201,8 +201,8 @@ The default Anthropic model is `claude-sonnet-4-20250514`, and you can override 
 - initialize a fresh workspace
 - ingest and compile a markdown fixture
 - start a temporary local Neo4j container over Bolt
-- run `swarmvault graph push neo4j --dry-run`
-- run `swarmvault graph push neo4j`
+- run `beehive graph push neo4j --dry-run`
+- run `beehive graph push neo4j`
 - verify `SwarmNode`, relationship, `GROUP_MEMBER`, and `BeehiveSync` records exist for the pushed `vaultId`
 
 This lane is the direct-graph-sink validation path and complements the file-export checks from `graph export --cypher`.
@@ -225,9 +225,9 @@ Use `--keep-artifacts` or `KEEP_LIVE_SMOKE_ARTIFACTS=1` to preserve them during 
 These checks remain complementary manual gut-checks:
 
 1. Install the published package in a fresh directory on a real machine with Node 24.
-2. Run `SWARMVAULT_WORKSPACE_ID=live swarmvault graph serve` and confirm the viewer looks right in a real browser, beyond the automated headless browser check.
-3. Launch `SWARMVAULT_WORKSPACE_ID=live swarmvault mcp` from a real MCP client configuration and confirm tool discovery works; MCP tool calls should include `workspace_id: "live"`.
-4. Verify `swarmvault ingest <url>` localizes remote images as expected, including `--no-include-assets` and `--max-asset-size` behavior.
+2. Run `BEEHIVE_WORKSPACE_ID=live beehive graph serve` and confirm the viewer looks right in a real browser, beyond the automated headless browser check.
+3. Launch `BEEHIVE_WORKSPACE_ID=live beehive mcp` from a real MCP client configuration and confirm tool discovery works; MCP tool calls should include `workspace_id: "live"`.
+4. Verify `beehive ingest <url>` localizes remote images as expected, including `--no-include-assets` and `--max-asset-size` behavior.
 5. Compare heuristic output quality versus the Ollama and OpenAI lanes on the same fixture vault.
 
 ## CI Workflow
