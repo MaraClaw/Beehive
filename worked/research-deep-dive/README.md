@@ -27,7 +27,7 @@ The `raw/` directory contains four synthetic research note files that deliberate
 ### 1. Initialize the vault
 
 ```sh
-swarmvault init --profile personal-research
+beehive init --profile personal-research
 ```
 
 The `personal-research` profile tunes extraction toward thesis tracking, concept linking, and contradiction awareness.
@@ -37,10 +37,10 @@ The `personal-research` profile tunes extraction toward thesis tracking, concept
 Ingesting incrementally lets you watch the wiki evolve with each new source.
 
 ```sh
-swarmvault ingest raw/rag-survey-2024.md --guide
-swarmvault ingest raw/compiled-knowledge-karpathy.md --guide
-swarmvault ingest raw/hybrid-approaches-2025.md --guide
-swarmvault ingest raw/production-rag-lessons.md --guide
+beehive ingest raw/rag-survey-2024.md --guide
+beehive ingest raw/compiled-knowledge-karpathy.md --guide
+beehive ingest raw/hybrid-approaches-2025.md --guide
+beehive ingest raw/production-rag-lessons.md --guide
 ```
 
 The `--guide` flag walks you through extraction decisions and shows which concepts, entities, and claims are being created or updated.
@@ -48,7 +48,7 @@ The `--guide` flag walks you through extraction decisions and shows which concep
 ### 3. Compile the wiki
 
 ```sh
-swarmvault compile
+beehive compile
 ```
 
 This merges extracted claims, links shared concepts, and generates wiki pages. After compilation you should see:
@@ -60,8 +60,8 @@ This merges extracted claims, links shared concepts, and generates wiki pages. A
 ### 4. Query for synthesis
 
 ```sh
-swarmvault query "What are the main arguments for and against RAG?"
-swarmvault query "Where do the sources disagree on retrieval quality?"
+beehive query "What are the main arguments for and against RAG?"
+beehive query "Where do the sources disagree on retrieval quality?"
 ```
 
 Queries draw from the compiled wiki, not raw files, so answers reflect the merged knowledge graph.
@@ -69,7 +69,7 @@ Queries draw from the compiled wiki, not raw files, so answers reflect the merge
 ### 5. Lint for contradictions
 
 ```sh
-swarmvault lint --deep
+beehive lint --deep
 ```
 
 Deep linting compares claims across sources and flags contradictions. With these four sources you should see contradictions flagged around:

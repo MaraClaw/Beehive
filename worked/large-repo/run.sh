@@ -11,27 +11,27 @@ cd "$HERE"
 
 # Pick up the user's locally installed CLI if present; fall back to npx so
 # the script works in a fresh clone before `pnpm install`.
-if command -v swarmvault >/dev/null 2>&1; then
-  SV=(swarmvault)
+if command -v beehive >/dev/null 2>&1; then
+  SV=(beehive)
 else
-  SV=(npx --yes @swarmvaultai/cli)
+  SV=(npx --yes @beehive/cli)
 fi
 
-echo "[1/5] swarmvault init"
+echo "[1/5] beehive init"
 "${SV[@]}" init
 
 # The bundled config demonstrates the B.7 graph knobs
 # (`graph.similarityIdfFloor`, `graph.godNodeLimit`) and opens up every
 # source class via `repoAnalysis.extractClasses`.
-cp -f swarmvault.config.json ./swarmvault.config.json
+cp -f beehive.config.json ./beehive.config.json
 
-echo "[2/5] swarmvault ingest ./sources"
+echo "[2/5] beehive ingest ./sources"
 "${SV[@]}" ingest ./sources
 
-echo "[3/5] swarmvault compile"
+echo "[3/5] beehive compile"
 "${SV[@]}" compile
 
-echo "[4/5] swarmvault benchmark"
+echo "[4/5] beehive benchmark"
 "${SV[@]}" benchmark
 
 echo "[5/5] Per-source-class rows from state/benchmark.json"
