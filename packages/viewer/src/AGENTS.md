@@ -13,7 +13,7 @@ Viewer source is a domain-specific graph/workflow console driven by `/api/*`, ha
 | Workspace data | `hooks/workspaceStore.ts` | `useReducer`, guarded refresh, `Promise.all` API loads. |
 | Live updates | `hooks/useEventStream.ts` | `/api/events`, capped event log, reconnect backoff, refresh triggers. |
 | Deep links | `hooks/useHashRoute.ts` | `page`, `node`, `approval`, `memory`, `tag`, `tags` hash routes. |
-| Theme | `hooks/useTheme.ts` | `swarmvault.viewer.theme`, `data-theme` on root. |
+| Theme | `hooks/useTheme.ts` | `beehive.viewer.theme`, `data-theme` on root. |
 | Styling | `styles.css` | Tokens, shell grid, rails, panels, responsive drawers, reduced motion. |
 | Components | `components/AGENTS.md` | Component inventory and GraphCanvas-specific rules. |
 
@@ -38,8 +38,8 @@ Viewer source is a domain-specific graph/workflow console driven by `/api/*`, ha
 ## TESTS
 
 ```bash
-pnpm --filter @swarmvaultai/viewer test
-pnpm --filter @swarmvaultai/viewer typecheck
+pnpm --filter @beehive/viewer test
+pnpm --filter @beehive/viewer typecheck
 ```
 
 ## NOTES

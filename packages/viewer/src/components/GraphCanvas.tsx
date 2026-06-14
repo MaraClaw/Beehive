@@ -78,7 +78,7 @@ function buildHyperedgeHubElements(
 
 declare global {
   interface Window {
-    __SWARMVAULT_TEST__?: {
+    __BEEHIVE_TEST__?: {
       getNodeIds: () => string[];
       getConnectedNodePair: () => { from: string; to: string } | null;
       getRenderedNodePosition: (nodeId: string) => { x: number; y: number } | null;
@@ -90,7 +90,7 @@ declare global {
 
 function exposeTestApi(cy: Core): void {
   if (typeof window === "undefined") return;
-  window.__SWARMVAULT_TEST__ = {
+  window.__BEEHIVE_TEST__ = {
     getNodeIds: () => cy.nodes().map((node) => node.id()),
     getConnectedNodePair: () => {
       const edge = cy.edges()[0];
@@ -114,9 +114,9 @@ function exposeTestApi(cy: Core): void {
 }
 
 function clearTestApi(cy: Core, currentRef: Core | null): void {
-  if (typeof window === "undefined" || !window.__SWARMVAULT_TEST__) return;
+  if (typeof window === "undefined" || !window.__BEEHIVE_TEST__) return;
   if (currentRef === cy) {
-    delete window.__SWARMVAULT_TEST__;
+    delete window.__BEEHIVE_TEST__;
   }
 }
 

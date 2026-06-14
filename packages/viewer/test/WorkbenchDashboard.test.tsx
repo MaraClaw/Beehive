@@ -24,23 +24,23 @@ const report: ViewerDoctorReport = {
   },
   recommendations: [
     {
-      id: "graph:swarmvault compile",
+      id: "graph:beehive compile",
       label: "Fix Graph",
       summary: "Graph artifact is missing.",
       priority: "high",
       status: "error",
       sourceCheckId: "graph",
-      command: "swarmvault compile",
+      command: "beehive compile",
       description: "Compile sources into graph and wiki artifacts."
     },
     {
-      id: "retrieval:swarmvault retrieval doctor --repair",
+      id: "retrieval:beehive retrieval doctor --repair",
       label: "Fix Retrieval",
       summary: "Retrieval stale.",
       priority: "medium",
       status: "warning",
       sourceCheckId: "retrieval",
-      command: "swarmvault retrieval doctor --repair",
+      command: "beehive retrieval doctor --repair",
       description: "Rebuild retrieval artifacts.",
       safeAction: "doctor:repair"
     }
@@ -54,21 +54,21 @@ const report: ViewerDoctorReport = {
       status: "warning",
       summary: "Retrieval stale.",
       detail: "Manifest is older than graph.",
-      actions: [{ command: "swarmvault retrieval doctor --repair", description: "Rebuild retrieval artifacts." }]
+      actions: [{ command: "beehive retrieval doctor --repair", description: "Rebuild retrieval artifacts." }]
     },
     {
       id: "migration",
       label: "Migration",
       status: "warning",
       summary: "Migration preview available.",
-      actions: [{ command: "swarmvault migrate --dry-run", description: "Preview migration changes." }]
+      actions: [{ command: "beehive migrate --dry-run", description: "Preview migration changes." }]
     },
     {
       id: "review",
       label: "Review Queues",
       status: "warning",
       summary: "Approvals need review.",
-      actions: [{ command: "swarmvault review list", description: "Inspect staged approval bundles." }]
+      actions: [{ command: "beehive review list", description: "Inspect staged approval bundles." }]
     },
     { id: "watch", label: "Watch", status: "ok", summary: "No pending refresh entries." }
   ],
@@ -130,9 +130,9 @@ describe("WorkbenchDashboard", () => {
     expect(text).toContain("Fix Graph");
     expect(text).toContain("Fix Retrieval");
     expect(text).toContain("Manifest is older than graph.");
-    expect(text).toContain("swarmvault retrieval doctor --repair");
-    expect(text).toContain("swarmvault migrate --dry-run");
-    expect(text).toContain("swarmvault review list");
+    expect(text).toContain("beehive retrieval doctor --repair");
+    expect(text).toContain("beehive migrate --dry-run");
+    expect(text).toContain("beehive review list");
     expect(text).toContain("Watch");
 
     const captureUrl = handle.container.querySelector<HTMLInputElement>('input[aria-label="Capture URL"]');

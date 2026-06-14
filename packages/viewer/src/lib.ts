@@ -448,7 +448,7 @@ export type ViewerGraphReport = {
 
 declare global {
   interface Window {
-    __SWARMVAULT_EMBEDDED_DATA__?: {
+    __BEEHIVE_EMBEDDED_DATA__?: {
       graph: ViewerGraphArtifact;
       pages: ViewerGraphPage[];
       report?: ViewerGraphReport;
@@ -457,7 +457,7 @@ declare global {
 }
 
 function embeddedData() {
-  return typeof window !== "undefined" ? window.__SWARMVAULT_EMBEDDED_DATA__ : undefined;
+  return typeof window !== "undefined" ? window.__BEEHIVE_EMBEDDED_DATA__ : undefined;
 }
 
 function normalizeGraphTarget(value: string): string {

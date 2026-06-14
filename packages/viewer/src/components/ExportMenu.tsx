@@ -35,7 +35,7 @@ export function ExportMenu({ cyRef, graph, selectedNodeIds, pageMarkdown }: Expo
     const cy = cyRef.current;
     if (!cy) return;
     const data = exportCanvasImage(cy, "png");
-    if (data) downloadDataUrl(`swarmvault-graph-${Date.now()}.png`, data);
+    if (data) downloadDataUrl(`beehive-graph-${Date.now()}.png`, data);
     setOpen(false);
   };
 
@@ -43,7 +43,7 @@ export function ExportMenu({ cyRef, graph, selectedNodeIds, pageMarkdown }: Expo
     const cy = cyRef.current;
     if (!cy) return;
     const svg = exportCanvasSvg(cy);
-    if (svg) downloadText(`swarmvault-graph-${Date.now()}.svg`, svg, "image/svg+xml");
+    if (svg) downloadText(`beehive-graph-${Date.now()}.svg`, svg, "image/svg+xml");
     setOpen(false);
   };
 
@@ -51,7 +51,7 @@ export function ExportMenu({ cyRef, graph, selectedNodeIds, pageMarkdown }: Expo
     if (!graph) return;
     const ids = selectedNodeIds.length ? selectedNodeIds : graph.nodes.map((node) => node.id);
     const payload = buildSubgraphExport(graph, ids);
-    downloadText(`swarmvault-subgraph-${Date.now()}.json`, JSON.stringify(payload, null, 2), "application/json");
+    downloadText(`beehive-subgraph-${Date.now()}.json`, JSON.stringify(payload, null, 2), "application/json");
     setOpen(false);
   };
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 export type ThemeChoice = "light" | "dark" | "system";
-const STORAGE_KEY = "swarmvault.viewer.theme";
+const STORAGE_KEY = "beehive.viewer.theme";
 
 function readStoredTheme(): ThemeChoice {
   if (typeof window === "undefined") return "system";

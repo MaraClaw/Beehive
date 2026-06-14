@@ -24,7 +24,7 @@ export function ActivityFeed({ events, connected, error }: ActivityFeedProps) {
         <p className="text-muted text-sm">
           {connected
             ? "Waiting for ingest, compile, lint, or watch events."
-            : "No activity stream available. Run `swarmvault watch` to see live events."}
+            : "No activity stream available. Run `beehive watch` to see live events."}
         </p>
       ) : (
         <div className="activity-feed" role="log" aria-live="polite">

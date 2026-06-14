@@ -26,7 +26,7 @@ export function LintFindings({ findings, error, onOpenPage }: LintFindingsProps)
       <section className="panel" aria-label="Lint findings">
         <h3 className="panel-heading">Lint Findings</h3>
         <p className="text-muted text-sm">
-          No lint findings. Run <code>swarmvault lint --deep</code> for a fresh sweep.
+          No lint findings. Run <code>beehive lint --deep</code> for a fresh sweep.
         </p>
       </section>
     );

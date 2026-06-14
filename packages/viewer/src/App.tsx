@@ -46,7 +46,7 @@ import {
   type ViewerSearchResult
 } from "./lib";
 
-const RECENT_SEARCH_KEY = "swarmvault.viewer.recentSearches";
+const RECENT_SEARCH_KEY = "beehive.viewer.recentSearches";
 const MAX_RECENT_SEARCHES = 6;
 
 function uniqueStrings(values: string[]): string[] {
