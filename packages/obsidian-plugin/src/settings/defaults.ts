@@ -3,6 +3,7 @@ import type { CliOutputMode } from "../types";
 export interface SwarmVaultSettings {
   cliBinary: string;
   workspaceRootOverride: string;
+  workspaceId: string;
   defaultQueryOutputMode: CliOutputMode;
   autoCompileOnRawChange: boolean;
   deepLintOnSave: boolean;
@@ -13,6 +14,7 @@ export interface SwarmVaultSettings {
 export const DEFAULT_SETTINGS: SwarmVaultSettings = {
   cliBinary: "",
   workspaceRootOverride: "",
+  workspaceId: "default",
   defaultQueryOutputMode: "append-note",
   autoCompileOnRawChange: false,
   deepLintOnSave: false,

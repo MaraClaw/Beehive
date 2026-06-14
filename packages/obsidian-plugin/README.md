@@ -9,7 +9,7 @@ Drive your SwarmVault workspace from inside Obsidian — ingest, compile, query,
   ```sh
   npm i -g @swarmvaultai/cli
   ```
-- A SwarmVault workspace (any folder that contains `swarmvault.schema.md` at its root). Open that folder as an Obsidian vault, or open a descendant folder — the plugin walks up to find the workspace root.
+- A SwarmVault workspace (a folder with `swarmvault.config.json`, or a legacy folder with root `swarmvault.schema.md`). Open that folder as an Obsidian vault, or open a descendant folder — the plugin walks up to find the workspace root.
 
 ## Install
 
@@ -21,6 +21,7 @@ Open `Settings → Community plugins → SwarmVault`:
 - **CLI binary path** — leave blank to use `swarmvault` from PATH, or point at a specific binary.
 - **Verify CLI** — runs `swarmvault --version --json` and confirms the version matches the plugin's minimum.
 - **Workspace root** — leave blank to auto-detect, or override.
+- **Workspace ID** — the slug passed to the CLI as `SWARMVAULT_WORKSPACE_ID`; generated graph artifacts are read from `<workspace root>/<workspace id>/`.
 - **Default query output mode** — where answers from `Query from current note` land by default.
 
 ## Commands

@@ -10,7 +10,7 @@ declare const Bun: {
   file(input: string): { arrayBuffer(): Promise<ArrayBuffer> };
 };
 
-const reportRelativePath = path.join("wiki", "graph", "report.md");
+const workspaceIdPattern = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
 
 interface OpencodePluginContext {
   client?: {
@@ -31,12 +31,23 @@ interface OpencodeToolInput extends OpencodeSessionInput {
 
 export const name = "swarmvault-graph-first";
 
+function artifactRootDir(cwd: string): string {
+  const override = process.env.SWARMVAULT_OUT?.trim();
+  const baseDir = !override ? path.resolve(cwd) : path.isAbsolute(override) ? path.resolve(override) : path.resolve(cwd, override);
+  const workspaceId = process.env.SWARMVAULT_WORKSPACE_ID?.trim();
+  return workspaceId && workspaceIdPattern.test(workspaceId) ? path.join(baseDir, workspaceId) : baseDir;
+}
+
+function reportPath(cwd: string): string {
+  return path.join(artifactRootDir(cwd), "wiki", "graph", "report.md");
+}
+
 export default async function swarmvaultGraphFirst({ client }: OpencodePluginContext) {
   let reportSeen = false;
 
   async function hasReport(cwd: string): Promise<boolean> {
     try {
-      await Bun.file(path.join(cwd, reportRelativePath)).arrayBuffer();
+      await Bun.file(reportPath(cwd)).arrayBuffer();
       return true;
     } catch {
       return false;

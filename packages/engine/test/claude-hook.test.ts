@@ -68,6 +68,22 @@ describe("claude graph-first hook", () => {
     expect(String(specific.additionalContext)).toContain("Read source files directly only");
   });
 
+  it("resolves the graph report under SWARMVAULT_WORKSPACE_ID", async () => {
+    const scoped = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-claude-hook-workspace-"));
+    try {
+      await fs.mkdir(path.join(scoped, "alpha", "wiki", "graph"), { recursive: true });
+      await fs.writeFile(path.join(scoped, "alpha", "wiki", "graph", "report.md"), "# Scoped graph report\n", "utf8");
+      await fs.writeFile(path.join(scoped, "swarmvault.config.json"), `${JSON.stringify({ hooks: { graphFirst: "deny" } })}\n`, "utf8");
+
+      const result = await runHook("session-start", { hook_event_name: "SessionStart", cwd: scoped }, { SWARMVAULT_WORKSPACE_ID: "alpha" });
+      const specific = hookOutput(result);
+      expect(specific.hookEventName).toBe("SessionStart");
+      expect(String(specific.additionalContext)).toContain("swarmvault graph query");
+    } finally {
+      await fs.rm(scoped, { recursive: true, force: true });
+    }
+  });
+
   it("includes pending semantic refresh counts in the session note", async () => {
     const watchDir = path.join(workspace, "state", "watch");
     await fs.mkdir(watchDir, { recursive: true });

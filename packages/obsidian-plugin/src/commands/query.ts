@@ -2,6 +2,7 @@ import { MarkdownView, Notice, TFile } from "obsidian";
 import { rewriteCitations } from "../citations/rewrite";
 import type SwarmVaultPlugin from "../main";
 import { QueryModal, type QueryModalResult } from "../modals/QueryModal";
+import { workspaceArtifactRoot } from "../workspace/artifacts";
 import { loadPageIdIndex } from "../workspace/page-id-index";
 import { executeCli } from "./execute";
 
@@ -54,7 +55,7 @@ async function executeQuery(plugin: SwarmVaultPlugin, req: QueryModalResult): Pr
 
     let answerMarkdown = json.answer;
     if (plugin.workspaceRoot) {
-      const index = await loadPageIdIndex(plugin.workspaceRoot);
+      const index = await loadPageIdIndex(workspaceArtifactRoot(plugin.workspaceRoot, plugin.settings));
       answerMarkdown = rewriteCitations(answerMarkdown, index);
     }
 

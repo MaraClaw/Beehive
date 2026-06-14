@@ -272,11 +272,12 @@ function kiloUserCommandPath(): string {
 }
 
 const SWARMVAULT_RULE_BULLETS = [
-  "- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.",
+  "- Read the active `swarmvault.schema.md` before compile or query style work. It is at the project root by default and under `<artifact-base>/<SWARMVAULT_WORKSPACE_ID>/` when a workspace id is active.",
   "- Treat `raw/` as immutable source input.",
   "- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.",
-  "- If `SWARMVAULT_OUT` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under that directory.",
-  "- Read `wiki/graph/report.md` before broad file searching when it exists; otherwise start with `wiki/index.md`.",
+  "- If `SWARMVAULT_OUT` or `SWARMVAULT_WORKSPACE_ID` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under the active artifact root (`<artifact-base>/<workspace_id>` when a workspace id is active).",
+  "- Run SwarmVault behavior commands with `--workspace-id <id>` or set `SWARMVAULT_WORKSPACE_ID` so CLI, MCP, and generated artifacts use the same workspace.",
+  "- Read `wiki/graph/report.md` before broad file searching when it exists under the active artifact root; otherwise start with `wiki/index.md`.",
   "- For code and graph questions (where is X, what calls Y, structure, impact), prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.",
   "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
   "- When asked for durable research, reviews, or handoff artifacts, save the answer into `wiki/outputs/`; answer quick questions directly in chat without writing files.",
@@ -296,6 +297,16 @@ const PRE_GRAPH_FIRST_RULE_BULLETS = SWARMVAULT_RULE_BULLETS.map((bullet) => {
 });
 
 const LEGACY_SWARMVAULT_RULE_BULLETS = PRE_GRAPH_FIRST_RULE_BULLETS.filter((bullet) => !bullet.includes("SWARMVAULT_OUT"));
+const PRE_WORKSPACE_RULE_BULLETS = [
+  "- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.",
+  "- Treat `raw/` as immutable source input.",
+  "- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.",
+  "- Read `wiki/graph/report.md` before broad file searching when it exists; otherwise start with `wiki/index.md`.",
+  PRE_GRAPH_FIRST_BULLET,
+  "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
+  PRE_GRAPH_FIRST_SAVE_BULLET,
+  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks."
+];
 
 function buildManagedBlock(target: keyof typeof agentFileKinds): string {
   const heading =
@@ -327,7 +338,7 @@ function buildSkillBody(): string {
   return [
     "# SwarmVault",
     "",
-    "SwarmVault compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json`.",
+    "SwarmVault compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json` under the active artifact root.",
     "",
     "## Rules",
     "",
@@ -357,6 +368,24 @@ function buildKiroSteeringFile(): string {
 }
 
 function buildAntigravityRulesFile(ruleBullets = SWARMVAULT_RULE_BULLETS): string {
+  const frontmatter = YAML.stringify({
+    alwaysApply: true,
+    description: "SwarmVault graph-first repository rules."
+  }).trimEnd();
+  return [
+    "---",
+    frontmatter,
+    "---",
+    "",
+    "# SwarmVault Rules",
+    "",
+    ...ruleBullets,
+    "",
+    "> MCP navigation hint: SwarmVault exposes a local MCP server via `SWARMVAULT_WORKSPACE_ID=<id> swarmvault mcp`. Wire it into your Antigravity MCP config and include the same `workspace_id` in tool calls to query the graph without shelling out."
+  ].join("\n");
+}
+
+function buildLegacyAntigravityRulesFile(ruleBullets: string[]): string {
   const frontmatter = YAML.stringify({
     alwaysApply: true,
     description: "SwarmVault graph-first repository rules."
@@ -406,7 +435,7 @@ function buildKiloCommandFile(): string {
     "Use SwarmVault's graph-first workflow in the current project.",
     "",
     "1. If no vault exists, run `swarmvault init`.",
-    "2. Read `wiki/graph/report.md` before broad source search when it exists.",
+    "2. Read `wiki/graph/report.md` under the active artifact root before broad source search when it exists.",
     "3. Prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` for structure questions.",
     "4. Run `swarmvault compile` after adding or refreshing sources.",
     ""
@@ -424,7 +453,7 @@ function buildKiloPluginFile(): string {
     "      const root = project?.root ?? process.cwd();",
     "      return {",
     "        message: `SwarmVault graph-first: from $" +
-      "{root}, answer structure questions with swarmvault graph query/explain/path or swarmvault query instead of broad search; wiki/graph/report.md has the orientation report. Read source files only when editing them or when the graph lacks detail.`",
+      "{root}, answer structure questions with swarmvault graph query/explain/path or swarmvault query instead of broad search; wiki/graph/report.md under the active artifact root has the orientation report. Read source files only when editing them or when the graph lacks detail.`",
     "      };",
     "    }",
     "  };",
@@ -447,7 +476,7 @@ function buildVscodeChatmodeFile(): string {
     "",
     "You are working inside a SwarmVault vault. Follow these rules before other actions:",
     "",
-    "For any question about this repo's architecture, structure, components, relationships, or where/how to add or modify code, first read `wiki/graph/report.md` when it exists. If `SWARMVAULT_OUT` is set, read `$SWARMVAULT_OUT/wiki/graph/report.md` instead.",
+    "For any question about this repo's architecture, structure, components, relationships, or where/how to add or modify code, first read `wiki/graph/report.md` under the active artifact root when it exists. If `SWARMVAULT_OUT` or `SWARMVAULT_WORKSPACE_ID` is set, include those path segments when resolving the report.",
     "",
     ...SWARMVAULT_RULE_BULLETS,
     "",
@@ -674,7 +703,8 @@ async function cleanupLegacyAntigravityFiles(rootDir: string): Promise<string[]>
       [
         buildAntigravityRulesFile(),
         buildAntigravityRulesFile(PRE_GRAPH_FIRST_RULE_BULLETS),
-        buildAntigravityRulesFile(LEGACY_SWARMVAULT_RULE_BULLETS)
+        buildAntigravityRulesFile(LEGACY_SWARMVAULT_RULE_BULLETS),
+        buildLegacyAntigravityRulesFile(PRE_WORKSPACE_RULE_BULLETS)
       ],
       "Legacy Antigravity rules file"
     ),

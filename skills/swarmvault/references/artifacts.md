@@ -2,6 +2,8 @@
 
 SwarmVault is save-first. The files on disk are the product.
 
+Paths below are relative to the active artifact root. By default that is the vault root or `SWARMVAULT_OUT`; when `SWARMVAULT_WORKSPACE_ID=<id>` is active, it is `<artifact-base>/<id>`. `swarmvault.config.json` stays at the project root.
+
 ## Canonical Inputs
 
 - `swarmvault.schema.md` - vault instructions, naming rules, exclusions, freshness rules

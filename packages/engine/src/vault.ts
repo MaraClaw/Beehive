@@ -22,7 +22,7 @@ import {
 } from "./candidate-promotion.js";
 import { buildCodeIndex, enrichResolvedCodeImports, modulePageTitle } from "./code-analysis.js";
 import { conflictConfidence, edgeConfidence, nodeConfidence } from "./confidence.js";
-import { defaultVaultSchema, initWorkspace, loadVaultConfig, PRIMARY_SCHEMA_FILENAME } from "./config.js";
+import { defaultVaultConfig, defaultVaultSchema, initWorkspace, loadVaultConfig, resolvePaths } from "./config.js";
 import { runConsolidation } from "./consolidate.js";
 import { runDeepLint } from "./deep-lint.js";
 import { embeddingSimilarityEdges, filterGraphBySourceClass, semanticGraphMatches, semanticPageSearch } from "./embeddings.js";
@@ -4994,8 +4994,8 @@ export async function archiveCandidate(rootDir: string, target: string): Promise
 }
 
 async function ensureObsidianWorkspace(rootDir: string): Promise<void> {
-  const { config } = await loadVaultConfig(rootDir);
-  const obsidianDir = path.join(rootDir, ".obsidian");
+  const { config, paths } = await loadVaultConfig(rootDir);
+  const obsidianDir = path.join(paths.artifactRootDir, ".obsidian");
   const projectIds = projectEntries(config).map((project) => project.id);
   await ensureDir(obsidianDir);
   await Promise.all([
@@ -5071,13 +5071,14 @@ async function ensureObsidianWorkspace(rootDir: string): Promise<void> {
 }
 
 async function initLiteVault(rootDir: string, options: InitOptions): Promise<void> {
-  const rawDir = path.join(rootDir, "raw");
-  const wikiDir = path.join(rootDir, "wiki");
-  const schemaPath = path.join(rootDir, PRIMARY_SCHEMA_FILENAME);
+  const paths = resolvePaths(rootDir, defaultVaultConfig());
+  const rawDir = paths.rawDir;
+  const wikiDir = paths.wikiDir;
+  const schemaPath = paths.schemaPath;
   const indexPath = path.join(wikiDir, "index.md");
   const logPath = path.join(wikiDir, "log.md");
 
-  await Promise.all([ensureDir(rawDir), ensureDir(wikiDir)]);
+  await Promise.all([ensureDir(rawDir), ensureDir(wikiDir), ensureDir(path.dirname(schemaPath))]);
 
   if (!(await fileExists(schemaPath))) {
     await fs.writeFile(schemaPath, defaultVaultSchema("default"), "utf8");
@@ -5161,7 +5162,7 @@ async function initLiteVault(rootDir: string, options: InitOptions): Promise<voi
   }
 
   if (options.obsidian) {
-    const obsidianDir = path.join(rootDir, ".obsidian");
+    const obsidianDir = path.join(paths.artifactRootDir, ".obsidian");
     await ensureDir(obsidianDir);
   }
 }

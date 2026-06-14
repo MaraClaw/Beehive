@@ -34,10 +34,11 @@ Start in an empty folder or scratch folder:
 ```bash
 mkdir my-vault
 cd my-vault
+export SWARMVAULT_WORKSPACE_ID=main
 swarmvault quickstart ../your-repo
 ```
 
-That single command initializes a vault, ingests the input, compiles the wiki and graph, writes share artifacts, and opens the local graph viewer. It is the beginner-friendly alias for `swarmvault scan`.
+That single command initializes a vault, ingests the input, compiles the wiki and graph, writes share artifacts, and opens the local graph viewer. It is the beginner-friendly alias for `swarmvault scan`. Behavior commands require a workspace id; set `SWARMVAULT_WORKSPACE_ID` once per shell or pass `--workspace-id <id>` on each command.
 
 No input ready yet?
 
@@ -58,6 +59,8 @@ swarmvault candidate list
 `swarmvault next` is read-only. It detects whether the current folder needs init, ingest, compile, graph refresh, review, or query work and prints the safest next commands.
 
 Use the step-by-step flow when you want more control:
+
+These examples assume `SWARMVAULT_WORKSPACE_ID=main` is set; use `--workspace-id main` if you prefer command-local flags.
 
 ```bash
 swarmvault init --obsidian --profile personal-research
@@ -96,12 +99,12 @@ Create a workspace with:
 - `state/sessions/`
 - `agent/`
 - `swarmvault.config.json`
-- `swarmvault.schema.md`
-- optional `.obsidian/` workspace files when `--obsidian` is passed
+- `<workspace_id>/swarmvault.schema.md`
+- optional `<workspace_id>/.obsidian/` workspace files when `--obsidian` is passed
 
 The schema file is the vault-specific instruction layer. Edit it to define naming rules, categories, grounding expectations, and exclusions before a serious compile.
 
-Set `SWARMVAULT_OUT=<dir>` when generated artifacts should be isolated from the project root. Config and schema files stay at the root; relative `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` workspace directories resolve under the output root.
+Set `SWARMVAULT_OUT=<dir>` when generated artifacts should be isolated from the project root. `swarmvault.config.json` stays at the root. Without `SWARMVAULT_WORKSPACE_ID`, `swarmvault.schema.md` stays at the root and relative `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` workspace directories resolve under the output root. With `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>`, the schema and generated artifact directories resolve under `<artifact-base>/<id>`.
 
 `--profile` accepts `default`, `personal-research`, or a comma-separated preset list such as `reader,timeline`. For fully custom vault behavior, edit the `profile` block in `swarmvault.config.json`; that deterministic profile layer works alongside the human-written `swarmvault.schema.md`. The `personal-research` preset also sets `profile.guidedIngestDefault: true` and `profile.deepLintDefault: true`, so guided ingest/source and lint flows are on by default until you override them with `--no-guide` or `--no-deep`.
 
@@ -129,7 +132,7 @@ Quick-start a scratch vault from a local file, directory, or public GitHub repo 
 - writes `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/`, then prints the paths
 - starts `graph serve` unless you pass `--no-serve` or `--no-viz`
 - `--no-viz` is a compatibility alias for `--no-serve`
-- `--mcp` starts the MCP stdio server after compile instead of the graph viewer
+- `--mcp` starts the MCP stdio server after compile instead of the graph viewer; MCP tool calls still include `workspace_id`
 - respects `--port` when you want a specific viewer port
 - for GitHub repo URLs, supports `--branch`, `--ref`, and `--checkout-dir`
 - `--install-agent-rules` installs the configured `agents` targets during initialization
@@ -584,7 +587,7 @@ The installed hooks run `swarmvault watch --repo --once --code-only` from the va
 
 ### `swarmvault mcp`
 
-Run SwarmVault as a local MCP server over stdio. This exposes the vault to compatible clients and agents through tools and resources such as:
+Run SwarmVault as a local MCP server over stdio. Start it with `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>` so resources resolve to the intended workspace; MCP tool calls must include the same `workspace_id`. This exposes the vault to compatible clients and agents through tools and resources such as:
 
 - `workspace_info`
 - `search_pages`

@@ -56,7 +56,7 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Workspace root override")
-      .setDesc("Leave blank to auto-detect by walking up for `swarmvault.schema.md`.")
+      .setDesc("Leave blank to auto-detect by walking up for `swarmvault.config.json` or legacy `swarmvault.schema.md`.")
       .addText((text) =>
         text
           .setPlaceholder("/absolute/path/to/workspace")
@@ -64,6 +64,20 @@ export class SwarmVaultSettingsTab extends PluginSettingTab {
           .onChange(async (value) => {
             plugin.settings.workspaceRootOverride = value.trim();
             await plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Workspace ID")
+      .setDesc("Workspace slug passed to the CLI as SWARMVAULT_WORKSPACE_ID and used for generated artifacts.")
+      .addText((text) =>
+        text
+          .setPlaceholder("default")
+          .setValue(plugin.settings.workspaceId)
+          .onChange(async (value) => {
+            plugin.settings.workspaceId = value.trim();
+            await plugin.saveSettings();
+            await plugin.refreshFreshness();
           })
       );
 

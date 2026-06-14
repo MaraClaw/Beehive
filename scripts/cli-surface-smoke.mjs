@@ -137,6 +137,7 @@ const SURFACE_MANIFEST = {
 const args = parseArgs(process.argv.slice(2));
 const cliPath = args.cli ? path.resolve(args.cli) : defaultCliPath;
 const tempDirs = [];
+const WORKSPACE_ID = "surface";
 const summary = {
   cliPath,
   commandCount: 0,
@@ -331,10 +332,15 @@ async function runBehaviorSmoke() {
     "utf8"
   );
 
+  await runCliExpectFailure(["--json", "next"], workspaceDir, "missing workspace id", /workspace-id|SWARMVAULT_WORKSPACE_ID|workspace/i);
+
   const nextEmptyWorkspace = await makeTempDir("swarmvault-cli-surface-next-empty-");
   await runJsonCheck(["next"], nextEmptyWorkspace, "next uninitialized", (result) => {
     assert.equal(result.status, "uninitialized", "next did not identify an uninitialized workspace");
-    assert.ok(result.recommendations.some((entry) => entry.command.startsWith("swarmvault quickstart")), "next did not recommend quickstart");
+    assert.ok(
+      result.recommendations.some((entry) => entry.command.startsWith(`swarmvault --workspace-id ${WORKSPACE_ID} quickstart`)),
+      "next did not recommend quickstart"
+    );
   });
 
   const init = await runJson(["init"], workspaceDir);
@@ -342,7 +348,7 @@ async function runBehaviorSmoke() {
 
   await runJsonCheck(["next"], workspaceDir, "next initialized", (result) => {
     assert.equal(result.status, "initialized", "next did not identify an initialized workspace before compile");
-    assert.ok(result.recommendations.some((entry) => entry.command === "swarmvault compile"), "next did not recommend compile");
+    assert.ok(result.recommendations.some((entry) => entry.command === `swarmvault --workspace-id ${WORKSPACE_ID} compile`), "next did not recommend compile");
   });
 
   const ingested = await runJson(["ingest", sourceDir, "--repo-root", sourceDir], workspaceDir);
@@ -489,7 +495,7 @@ async function runBehaviorSmoke() {
   await runJsonCheck(["graph", "blast", "app.ts"], workspaceDir, "graph blast", (result) => {
     assert.ok(typeof result.summary === "string", "graph blast did not return a summary");
   });
-  const graphPath = path.join(workspaceDir, "state", "graph.json");
+  const graphPath = path.join(workspaceDir, WORKSPACE_ID, "state", "graph.json");
   await runJsonCheck(["graph", "merge", graphPath, graphPath, "--out", path.join(workspaceDir, "exports", "merged.json")], workspaceDir, "graph merge", (result) => {
     assert.ok(result.outputPath.endsWith("merged.json"), "graph merge returned the wrong output path");
   });
@@ -681,16 +687,19 @@ async function runBehaviorSmoke() {
 
   const quickstartHumanWorkspace = path.join(scanDir, "quickstart-human-workspace");
   await fs.mkdir(quickstartHumanWorkspace, { recursive: true });
-  const quickstartHuman = await runCli(["quickstart", scanInput, "--no-serve"], {
+  const quickstartHuman = await runCli(["--workspace-id", WORKSPACE_ID, "quickstart", scanInput, "--no-serve"], {
     cwd: quickstartHumanWorkspace,
     label: "quickstart human"
   });
-  assert.ok(quickstartHuman.stdout.trim().endsWith("swarmvault next"), "quickstart human output should end with swarmvault next");
+  assert.ok(
+    quickstartHuman.stdout.trim().endsWith(`swarmvault --workspace-id ${WORKSPACE_ID} next`),
+    "quickstart human output should end with swarmvault next"
+  );
   summary.behaviorChecks.push("quickstart human next");
 
   const initHumanWorkspace = path.join(scanDir, "init-human-workspace");
   await fs.mkdir(initHumanWorkspace, { recursive: true });
-  const initHuman = await runCli(["init"], {
+  const initHuman = await runCli(["--workspace-id", WORKSPACE_ID, "init"], {
     cwd: initHumanWorkspace,
     label: "init human"
   });
@@ -722,13 +731,38 @@ async function runJsonCheck(commandArgs, cwd, label, validate) {
 }
 
 async function runJson(commandArgs, cwd) {
-  const result = await runCli(["--json", ...commandArgs], { cwd, label: `json:${commandArgs.join(" ")}` });
+  const result = await runCli(["--workspace-id", WORKSPACE_ID, "--json", ...commandArgs], { cwd, label: `json:${commandArgs.join(" ")}` });
   const lines = result.stdout
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
   assert.ok(lines.length > 0, `no JSON output for command: ${commandArgs.join(" ")}`);
   return JSON.parse(lines.at(-1));
+}
+
+async function runCliExpectFailure(commandArgs, cwd, label, stderrPattern) {
+  const command = cliPath.endsWith(".js") ? process.execPath : cliPath;
+  const argsForCli = cliPath.endsWith(".js") ? [cliPath, ...commandArgs] : commandArgs;
+  const child = spawn(command, argsForCli, {
+    cwd,
+    env: { ...process.env, SWARMVAULT_NO_NOTICES: "1" },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+  let stdout = "";
+  let stderr = "";
+  child.stdout.on("data", (chunk) => {
+    stdout += chunk.toString("utf8");
+  });
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk.toString("utf8");
+  });
+  const exit = await new Promise((resolve, reject) => {
+    child.on("error", reject);
+    child.on("close", (code, signal) => resolve({ code, signal }));
+  });
+  assert.notEqual(exit.code, 0, `${label} should fail without a workspace id`);
+  assert.match(`${stdout}\n${stderr}`, stderrPattern, `${label} should mention workspace id`);
+  summary.behaviorChecks.push(label);
 }
 
 async function runCli(commandArgs, options) {

@@ -2,6 +2,7 @@ import { Notice } from "obsidian";
 import type SwarmVaultPlugin from "../main";
 import { CliInvocationError, CliNotFoundError } from "../types";
 import type { RunLogEntry } from "../views/RunLogView";
+import { workspaceCliEnv } from "../workspace/artifacts";
 
 export interface ExecuteOptions {
   args: readonly string[];
@@ -46,6 +47,7 @@ export async function executeCli<T = unknown>(plugin: SwarmVaultPlugin, options:
     const result = await plugin.cliRunner.invoke<T>(plugin.settings.cliBinary, {
       args: options.args,
       cwd: options.cwd ?? plugin.workspaceRoot ?? undefined,
+      env: workspaceCliEnv(plugin.settings),
       timeoutMs: options.timeoutMs,
       signal: linkedSignal,
       onStdoutLine: (line) => runLog.appendStdout(id, line),

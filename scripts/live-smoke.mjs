@@ -37,6 +37,8 @@ const artifactDir =
   args.artifactDir ??
   path.join(repoRoot, ".live-smoke-artifacts", `${lane}-${new Date().toISOString().replaceAll(":", "-")}`);
 const workspaceDir = path.join(artifactDir, "workspace");
+const WORKSPACE_ID = "live";
+const artifactRootDir = path.join(workspaceDir, WORKSPACE_ID);
 const prefixDir = path.join(artifactDir, "global-prefix");
 const npmCacheDir = path.join(artifactDir, "npm-cache");
 const logsDir = path.join(artifactDir, "logs");
@@ -67,6 +69,18 @@ const MINIMAL_DOCX = Buffer.from(
   "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",
   "base64"
 );
+
+function artifactRootFor(rootDir = workspaceDir) {
+  return rootDir === workspaceDir ? artifactRootDir : path.join(rootDir, WORKSPACE_ID);
+}
+
+function artifactPath(...segments) {
+  return path.join(artifactRootDir, ...segments);
+}
+
+function artifactPathFor(rootDir, ...segments) {
+  return path.join(artifactRootFor(rootDir), ...segments);
+}
 
 function manifestsFromIngestSummary(summary) {
   return [...(summary.created ?? []), ...(summary.updated ?? []), ...(summary.unchanged ?? [])];
@@ -117,10 +131,10 @@ try {
     await fs.mkdir(workspaceDir, { recursive: true });
     await runCliJson(["init"]);
     await assertExists(path.join(workspaceDir, "swarmvault.config.json"));
-    await assertExists(path.join(workspaceDir, "swarmvault.schema.md"));
-    await assertExists(path.join(workspaceDir, "inbox"));
-    await assertExists(path.join(workspaceDir, "wiki"));
-    await assertExists(path.join(workspaceDir, "state"));
+    await assertExists(artifactPath("swarmvault.schema.md"));
+    await assertExists(artifactPath("inbox"));
+    await assertExists(artifactPath("wiki"));
+    await assertExists(artifactPath("state"));
   });
 
   if (lane === "openai" || lane === "ollama" || lane === "anthropic") {
@@ -166,10 +180,10 @@ try {
     assert.ok(typeof manifest.sourceId === "string" && manifest.sourceId.length > 0, "ingest did not return a sourceId");
     const compile = await runCliJson(["compile"]);
     assert.ok(compile.sourceCount >= 1, "compile did not report any sources");
-    await assertExists(path.join(workspaceDir, "state", "graph.json"));
-    await assertExists(path.join(workspaceDir, "state", "retrieval", "fts-000.sqlite"));
-    await assertExists(path.join(workspaceDir, "state", "retrieval", "manifest.json"));
-    await assertExists(path.join(workspaceDir, "wiki", "index.md"));
+    await assertExists(artifactPath("state", "graph.json"));
+    await assertExists(artifactPath("state", "retrieval", "fts-000.sqlite"));
+    await assertExists(artifactPath("state", "retrieval", "manifest.json"));
+    await assertExists(artifactPath("wiki", "index.md"));
     const checkUpdate = await runCliJson(["check-update"]);
     assert.equal(checkUpdate.graphExists, true, "check-update did not find the compiled graph");
     const graphStats = await runCliJson(["graph", "stats"]);
@@ -179,13 +193,13 @@ try {
     assert.equal(graphValidation.errorCount, 0, "graph validate --strict reported errors");
     const clusterOnly = await runCliJson(["cluster-only"]);
     assert.ok(clusterOnly.nodeCount > 0, "cluster-only did not report graph nodes");
-    const defaultShareSvgPath = path.join(workspaceDir, "wiki", "graph", "share-card.svg");
+    const defaultShareSvgPath = artifactPath("wiki", "graph", "share-card.svg");
     await assertExists(defaultShareSvgPath);
     const regeneratedShare = await runCliJson(["graph", "share", "--svg"]);
     assert.equal(regeneratedShare.svgPath, defaultShareSvgPath, "graph share --svg did not report the default SVG path");
     const shareSvg = await fs.readFile(defaultShareSvgPath, "utf8");
     assert.ok(shareSvg.includes('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"'), "visual share card is not a 1200x630 SVG");
-    const defaultShareKitPath = path.join(workspaceDir, "wiki", "graph", "share-kit");
+    const defaultShareKitPath = artifactPath("wiki", "graph", "share-kit");
     const defaultShareKit = await runCliJson(["graph", "share", "--bundle"]);
     assert.equal(defaultShareKit.bundlePath, defaultShareKitPath, "graph share --bundle did not report the default bundle path");
     assert.deepEqual(Object.keys(defaultShareKit.bundleFiles).sort(), [
@@ -218,7 +232,7 @@ try {
       `${bundleConflict.stdout}\n${bundleConflict.stderr}`.includes("Choose one graph share output mode"),
       "graph share --post --bundle did not return the expected conflict error"
     );
-    const sourcePage = await fs.readFile(path.join(workspaceDir, "wiki", "sources", `${manifest.sourceId}.md`), "utf8");
+    const sourcePage = await fs.readFile(artifactPath("wiki", "sources", `${manifest.sourceId}.md`), "utf8");
     assert.ok(sourcePage.includes("title: Durable Research Vaults"), "markdown source page did not keep the manifest title");
     assert.ok(sourcePage.includes("# Durable Research Vaults"), "markdown source page did not keep a clean heading");
     assert.ok(
@@ -346,8 +360,8 @@ try {
       assert.equal(deleted.removed.id, addedNoBrief.source.id, "source delete removed the wrong managed source");
       const afterDelete = await runCliJson(["source", "list"]);
       assert.ok(!afterDelete.some((entry) => entry.id === addedNoBrief.source.id), "source delete left the managed source in the registry");
-      await assertExists(path.join(workspaceDir, "raw"));
-      await assertExists(path.join(workspaceDir, "wiki"));
+      await assertExists(artifactPath("raw"));
+      await assertExists(artifactPath("wiki"));
     });
 
     await runStep("managed-source-docs-crawl", async () => {
@@ -401,7 +415,7 @@ try {
         assert.equal(docsSource.source.kind, "crawl_url", "docs source add did not classify the docs URL as a crawl source");
         assert.equal(docsSource.briefGenerated, true, "docs source add did not generate a source brief");
         await assertExists(docsSource.source.briefPath);
-        const manifestsDir = path.join(workspaceDir, "state", "manifests");
+        const manifestsDir = artifactPath("state", "manifests");
         const manifestNames = await fs.readdir(manifestsDir);
         const docsManifests = await Promise.all(
           manifestNames.map(async (name) => JSON.parse(await fs.readFile(path.join(manifestsDir, name), "utf8")))
@@ -503,25 +517,25 @@ try {
       const emailManifest = (ingested.ingest.imported ?? []).find((manifest) => manifest.sourceKind === "email");
       assert.ok(transcriptManifest?.sourceId, "personal knowledge ingest did not produce a transcript manifest");
       assert.ok(emailManifest?.sourceId, "personal knowledge ingest did not produce an email manifest");
-      const transcriptPage = await fs.readFile(path.join(workspaceDir, "wiki", "sources", `${transcriptManifest.sourceId}.md`), "utf8");
-      const emailPage = await fs.readFile(path.join(workspaceDir, "wiki", "sources", `${emailManifest.sourceId}.md`), "utf8");
+      const transcriptPage = await fs.readFile(artifactPath("wiki", "sources", `${transcriptManifest.sourceId}.md`), "utf8");
+      const emailPage = await fs.readFile(artifactPath("wiki", "sources", `${emailManifest.sourceId}.md`), "utf8");
       assert.ok(transcriptPage.includes("# call"), "transcript source page did not keep a clean title");
       assert.ok(!transcriptPage.includes("# call Format:"), "transcript source page title leaked extraction metadata into the heading");
       assert.ok(emailPage.includes("# Research follow-up"), "email source page did not keep the subject as the title");
       assert.ok(!emailPage.includes("# Research follow-up Date:"), "email source page title leaked extraction metadata into the heading");
 
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "index.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "reading-log.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "timeline.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "recent-sources.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "source-sessions.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "source-guides.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "dashboards", "research-map.md"));
-      const timelinePage = await fs.readFile(path.join(workspaceDir, "wiki", "dashboards", "timeline.md"), "utf8");
+      await assertExists(artifactPath("wiki", "dashboards", "index.md"));
+      await assertExists(artifactPath("wiki", "dashboards", "reading-log.md"));
+      await assertExists(artifactPath("wiki", "dashboards", "timeline.md"));
+      await assertExists(artifactPath("wiki", "dashboards", "recent-sources.md"));
+      await assertExists(artifactPath("wiki", "dashboards", "source-sessions.md"));
+      await assertExists(artifactPath("wiki", "dashboards", "source-guides.md"));
+      await assertExists(artifactPath("wiki", "dashboards", "research-map.md"));
+      const timelinePage = await fs.readFile(artifactPath("wiki", "dashboards", "timeline.md"), "utf8");
       assert.ok(timelinePage.includes("Research sync") || timelinePage.includes("call"), "dashboard timeline did not include personal knowledge sources");
-      const sourceSessionsPage = await fs.readFile(path.join(workspaceDir, "wiki", "dashboards", "source-sessions.md"), "utf8");
+      const sourceSessionsPage = await fs.readFile(artifactPath("wiki", "dashboards", "source-sessions.md"), "utf8");
       assert.ok(sourceSessionsPage.includes("Pending Guided Bundles"), "source sessions dashboard did not render the pending guided bundle section");
-      const sourceGuidesPage = await fs.readFile(path.join(workspaceDir, "wiki", "dashboards", "source-guides.md"), "utf8");
+      const sourceGuidesPage = await fs.readFile(artifactPath("wiki", "dashboards", "source-guides.md"), "utf8");
       assert.ok(sourceGuidesPage.includes("Pending Guided Bundles"), "source guides dashboard did not render the pending guided bundle section");
 
       const managedFile = await runCliJson(["source", "add", path.join(personalDir, "call.srt"), "--guide"]);
@@ -550,9 +564,9 @@ try {
         assert.equal(githubSource.source.kind, "github_repo", "public GitHub source add did not classify the repo URL correctly");
         assert.equal(githubSource.source.status, "ready", "public GitHub source add did not finish in a ready state");
         assert.ok(Array.isArray(githubSource.source.sourceIds) && githubSource.source.sourceIds.length > 0, "public GitHub source add did not track any source ids");
-        await assertExists(path.join(workspaceDir, "state", "graph.json"));
-        await assertExists(path.join(workspaceDir, "state", "retrieval", "fts-000.sqlite"));
-        await assertExists(path.join(workspaceDir, "state", "retrieval", "manifest.json"));
+        await assertExists(artifactPath("state", "graph.json"));
+        await assertExists(artifactPath("state", "retrieval", "fts-000.sqlite"));
+        await assertExists(artifactPath("state", "retrieval", "manifest.json"));
         await assertExists(githubSource.source.briefPath);
         const listed = await runCliJson(["source", "list"]);
         const entry = listed.find((item) => item.id === githubSource.source.id);
@@ -818,7 +832,7 @@ try {
       assert.ok(epubExtract.includes("EPUB chapters should stay searchable."), "epub extraction did not preserve chapter text");
 
       await runCliJson(["compile"]);
-      const imageAnalysis = JSON.parse(await fs.readFile(path.join(workspaceDir, "state", "analyses", `${imageManifest.sourceId}.json`), "utf8"));
+      const imageAnalysis = JSON.parse(await fs.readFile(artifactPath("state", "analyses", `${imageManifest.sourceId}.json`), "utf8"));
       assert.ok(imageAnalysis.summary.includes("queue-backed workflow"), "image analysis did not use the vision extraction summary");
     });
 
@@ -837,7 +851,7 @@ try {
 
       await runCliJson(["compile"]);
 
-      const manifestDir = path.join(workspaceDir, "state", "manifests");
+      const manifestDir = artifactPath("state", "manifests");
       const manifests = await Promise.all(
         (await fs.readdir(manifestDir)).map(async (name) => JSON.parse(await fs.readFile(path.join(manifestDir, name), "utf8")))
       );
@@ -850,7 +864,7 @@ try {
         assert.ok(manifests.some((manifest) => manifest.sourceKind === sourceKind), `heuristic lane did not preserve any ${sourceKind} source manifest`);
       }
 
-      const codeIndex = JSON.parse(await fs.readFile(path.join(workspaceDir, "state", "code-index.json"), "utf8"));
+      const codeIndex = JSON.parse(await fs.readFile(artifactPath("state", "code-index.json"), "utf8"));
       const tinySourceIds = new Set(tinyManifests.map((manifest) => manifest.sourceId));
       const indexedLanguages = new Set(
         codeIndex.entries
@@ -915,7 +929,7 @@ try {
       assert.equal(pptxArtifact.extractor, "pptx_text", "tiny matrix pptx did not use pptx_text extraction");
       const epubManifests = manifests.filter((manifest) => manifest.sourceKind === "epub");
       assert.equal(epubManifests.length, 2, "tiny matrix epub did not split into chapter manifests");
-      const htmlSourcePagePath = path.join(workspaceDir, "wiki", "sources", `${htmlManifest.sourceId}.md`);
+      const htmlSourcePagePath = artifactPath("wiki", "sources", `${htmlManifest.sourceId}.md`);
       const htmlSourcePage = await fs.readFile(htmlSourcePagePath, "utf8");
       assert.ok(htmlSourcePage.includes("Source Kind: `code`"), "tiny matrix source page did not preserve the html code kind");
       assert.ok(htmlSourcePage.includes("Language: `html`"), "tiny matrix source page did not preserve the html language");
@@ -927,7 +941,7 @@ try {
     assert.ok(typeof result.savedPath === "string" && result.savedPath.length > 0, "query did not return a saved path");
     assert.ok(result.citations.length > 0, "query returned no citations");
     await assertExists(result.savedPath);
-    const outputsIndex = await fs.readFile(path.join(workspaceDir, "wiki", "outputs", "index.md"), "utf8");
+    const outputsIndex = await fs.readFile(artifactPath("wiki", "outputs", "index.md"), "utf8");
     assert.ok(outputsIndex.includes(path.basename(result.savedPath, ".md")), "outputs index did not include saved output");
   });
 
@@ -944,13 +958,13 @@ try {
   });
 
   await runStep("benchmark", async () => {
-    const autoBenchmarkPath = path.join(workspaceDir, "state", "benchmark.json");
+    const autoBenchmarkPath = artifactPath("state", "benchmark.json");
     await assertExists(autoBenchmarkPath);
     const autoBenchmark = JSON.parse(await fs.readFile(autoBenchmarkPath, "utf8"));
     assert.ok(autoBenchmark.graphHash, "compile did not write graphHash into benchmark.json");
     assert.ok(Number.isFinite(autoBenchmark.summary?.reductionRatio), "compile benchmark summary missing reduction ratio");
 
-    const graphReportJsonPath = path.join(workspaceDir, "wiki", "graph", "report.json");
+    const graphReportJsonPath = artifactPath("wiki", "graph", "report.json");
     await assertExists(graphReportJsonPath);
     const graphReportArtifact = JSON.parse(await fs.readFile(graphReportJsonPath, "utf8"));
     assert.equal(graphReportArtifact.benchmark?.stale, true, "graph report benchmark should go stale after query-save changes the graph");
@@ -958,7 +972,7 @@ try {
 
     const result = await runCliJson(["benchmark", "--question", "How does this vault describe durable outputs?"]);
     assert.ok(result.avgQueryTokens > 0, "benchmark did not compute avgQueryTokens");
-    const graphReport = await fs.readFile(path.join(workspaceDir, "wiki", "graph", "report.md"), "utf8");
+    const graphReport = await fs.readFile(artifactPath("wiki", "graph", "report.md"), "utf8");
     assert.ok(graphReport.includes("## Benchmark Summary"), "graph report did not include benchmark summary");
     assert.ok(graphReport.includes("## Suggested Questions"), "graph report did not include suggested questions");
     const refreshedGraphReportArtifact = JSON.parse(await fs.readFile(graphReportJsonPath, "utf8"));
@@ -971,14 +985,14 @@ try {
       assert.equal(chart.outputFormat, "chart", "chart query did not report the chart format");
       assert.ok(Array.isArray(chart.outputAssets) && chart.outputAssets.length > 0, "chart query did not return output assets");
       await assertExists(chart.savedPath);
-      await assertExists(path.join(workspaceDir, "wiki", chart.outputAssets[0].path));
+      await assertExists(artifactPath("wiki", chart.outputAssets[0].path));
       chartPrimaryAssetPath = chart.outputAssets.find((asset) => asset.role === "primary")?.path ?? chart.outputAssets[0].path;
 
       const image = await runCliJson(["query", "Show this vault as an image", "--format", "image"]);
       assert.equal(image.outputFormat, "image", "image query did not report the image format");
       assert.ok(Array.isArray(image.outputAssets) && image.outputAssets.length > 0, "image query did not return output assets");
       await assertExists(image.savedPath);
-      await assertExists(path.join(workspaceDir, "wiki", image.outputAssets[0].path));
+      await assertExists(artifactPath("wiki", image.outputAssets[0].path));
     });
 
     await runStep("projects-and-code", async () => {
@@ -1188,21 +1202,21 @@ try {
       await runCliJson(["compile"]);
 
       widgetModulePath = `code/${widget.sourceId}.md`;
-      await assertExists(path.join(workspaceDir, "wiki", widgetModulePath));
-      await assertExists(path.join(workspaceDir, "state", "code-index.json"));
-      await assertExists(path.join(workspaceDir, "wiki", "projects", "index.md"));
-      await assertExists(path.join(workspaceDir, "wiki", "projects", "alpha", "index.md"));
-      const modulePage = await fs.readFile(path.join(workspaceDir, "wiki", widgetModulePath), "utf8");
+      await assertExists(artifactPath("wiki", widgetModulePath));
+      await assertExists(artifactPath("state", "code-index.json"));
+      await assertExists(artifactPath("wiki", "projects", "index.md"));
+      await assertExists(artifactPath("wiki", "projects", "alpha", "index.md"));
+      const modulePage = await fs.readFile(artifactPath("wiki", widgetModulePath), "utf8");
       assert.ok(modulePage.includes("Repo Path: `apps/alpha/src/widget.ts`"), "module page did not include repo-relative path metadata");
       assert.ok(modulePage.includes("## Imports"), "module page did not include imports");
       assert.ok(modulePage.includes("formatLabel"), "module page did not include imported symbol");
       assert.ok(modulePage.includes(`[[code/${util.sourceId}|`), "module page did not link the resolved local import");
 
       for (const manifest of [python, csharp, php, cSource, cppSource]) {
-        await assertExists(path.join(workspaceDir, "wiki", "code", `${manifest.sourceId}.md`));
+        await assertExists(artifactPath("wiki", "code", `${manifest.sourceId}.md`));
       }
 
-      const codeIndex = JSON.parse(await fs.readFile(path.join(workspaceDir, "state", "code-index.json"), "utf8"));
+      const codeIndex = JSON.parse(await fs.readFile(artifactPath("state", "code-index.json"), "utf8"));
       assert.ok(Array.isArray(codeIndex.entries), "code-index did not contain entries");
       assert.ok(
         codeIndex.entries.some((entry) => entry.repoRelativePath === "apps/alpha/src/widget.ts" && entry.language === "typescript"),
@@ -1214,14 +1228,14 @@ try {
       assert.ok(codeIndex.entries.some((entry) => entry.language === "c"), "code-index did not record the C module");
       assert.ok(codeIndex.entries.some((entry) => entry.language === "cpp"), "code-index did not record the C++ module");
 
-      const graphReportArtifact = JSON.parse(await fs.readFile(path.join(workspaceDir, "wiki", "graph", "report.json"), "utf8"));
+      const graphReportArtifact = JSON.parse(await fs.readFile(artifactPath("wiki", "graph", "report.json"), "utf8"));
       assert.ok(graphReportArtifact.firstPartyOverview.nodes < graphReportArtifact.overview.nodes, "graph report did not focus first-party content separately");
       assert.ok(graphReportArtifact.sourceClassBreakdown.third_party.sources > 0, "graph report did not count third-party sources");
       assert.ok(graphReportArtifact.sourceClassBreakdown.resource.sources > 0, "graph report did not count resource sources");
       assert.ok(graphReportArtifact.sourceClassBreakdown.generated.sources > 0, "graph report did not count generated sources");
       assert.ok(Array.isArray(graphReportArtifact.warnings) && graphReportArtifact.warnings.length > 0, "graph report did not emit large-repo/source-class warnings");
 
-      const graphConfig = JSON.parse(await fs.readFile(path.join(workspaceDir, ".obsidian", "graph.json"), "utf8"));
+      const graphConfig = JSON.parse(await fs.readFile(artifactPath(".obsidian", "graph.json"), "utf8"));
       assert.ok(
         Array.isArray(graphConfig.colorGroups) && graphConfig.colorGroups.some((group) => group.query === "tag:#project/alpha"),
         "obsidian graph config did not include project tag colors"
@@ -1284,8 +1298,8 @@ try {
       await runCliJson(["ingest", "semantic-beta.md"]);
       await runCliJson(["compile"]);
 
-      await assertExists(path.join(workspaceDir, "state", "embeddings.json"));
-      const graph = JSON.parse(await fs.readFile(path.join(workspaceDir, "state", "graph.json"), "utf8"));
+      await assertExists(artifactPath("state", "embeddings.json"));
+      const graph = JSON.parse(await fs.readFile(artifactPath("state", "graph.json"), "utf8"));
       assert.ok(
         graph.edges.some((edge) => edge.relation === "semantically_similar_to" && edge.similarityBasis === "embeddings"),
         "compile did not record an embedding-backed similarity edge"
@@ -1332,8 +1346,8 @@ try {
         await runCliJson(["ingest", "local-embedding-beta.md"]);
         await runCliJson(["compile"]);
 
-        await assertExists(path.join(workspaceDir, "state", "embeddings.json"));
-        const graph = JSON.parse(await fs.readFile(path.join(workspaceDir, "state", "graph.json"), "utf8"));
+        await assertExists(artifactPath("state", "embeddings.json"));
+        const graph = JSON.parse(await fs.readFile(artifactPath("state", "graph.json"), "utf8"));
         assert.ok(
           graph.edges.some((edge) => edge.relation === "semantically_similar_to" && edge.similarityBasis === "embeddings"),
           "local embeddings smoke did not record embedding-backed similarity edges"
@@ -1408,7 +1422,7 @@ try {
       const candidates = await runCliJson(["candidate", "list"]);
       assert.ok(Array.isArray(candidates) && candidates.length > 0, "candidate list did not report staged candidates");
       assert.ok(candidates.some((entry) => entry.pageId === "concept:candidate-concept"), "candidate concept missing from candidate list");
-      await assertExists(path.join(workspaceDir, "wiki", "candidates", "concepts", "candidate-concept.md"));
+      await assertExists(artifactPath("wiki", "candidates", "concepts", "candidate-concept.md"));
     });
 
     await runStep("explore", async () => {
@@ -1450,7 +1464,7 @@ try {
       assert.equal(treeAlias.outputPath, treeAliasPath, "tree alias returned an unexpected output path");
       await assertExists(treeAliasPath);
 
-      const graphPath = path.join(workspaceDir, "state", "graph.json");
+      const graphPath = artifactPath("state", "graph.json");
       const mergedAliasPath = path.join(exportDir, "merged-alias.json");
       const mergedAlias = await runCliJson(["merge-graphs", graphPath, graphPath, "--out", mergedAliasPath]);
       assert.equal(mergedAlias.outputPath, mergedAliasPath, "merge-graphs alias returned an unexpected output path");
@@ -1523,7 +1537,7 @@ try {
       const run = await runCliJson(["schedule", "run", "nightly-chart"]);
       assert.equal(run.success, true, "schedule run did not succeed");
       assert.ok(typeof run.approvalId === "string" && run.approvalId.length > 0, "schedule run did not stage an approval");
-      await assertMissing(path.join(workspaceDir, "wiki", "outputs", "show-this-vault-as-a-chart-on-schedule.md"));
+      await assertMissing(artifactPath("wiki", "outputs", "show-this-vault-as-a-chart-on-schedule.md"));
     });
 
     await runStep("graph-serve", async () => {
@@ -1543,7 +1557,7 @@ try {
         body: JSON.stringify({ target: "concept:candidate-concept" })
       });
       assert.equal(promoted.pageId, "concept:candidate-concept", "candidate API returned the wrong promoted page");
-      await assertExists(path.join(workspaceDir, "wiki", "concepts", "candidate-concept.md"));
+      await assertExists(artifactPath("wiki", "concepts", "candidate-concept.md"));
 
       await fs.writeFile(path.join(workspaceDir, "approval.md"), "# Approval Source\n\nApproval content.", "utf8");
       await runCliJson(["ingest", "approval.md"]);
@@ -1635,27 +1649,27 @@ try {
 
       const rejected = await runCliJson(["review", "reject", pendingApprovalId, "concept:approval-concept"]);
       assert.ok(Array.isArray(rejected.updatedEntries) && rejected.updatedEntries.length === 1, "review reject did not update exactly one entry");
-      await assertMissing(path.join(workspaceDir, "wiki", "concepts", "approval-concept.md"));
+      await assertMissing(artifactPath("wiki", "concepts", "approval-concept.md"));
 
       const stagedAgain = await runCliJson(["compile", "--approve"]);
       const accepted = await runCliJson(["review", "accept", stagedAgain.approvalId]);
       assert.ok(Array.isArray(accepted.updatedEntries) && accepted.updatedEntries.length > 0, "review accept did not apply staged entries");
-      await assertExists(path.join(workspaceDir, "wiki", "concepts", "approval-concept.md"));
-      await assertMissing(path.join(workspaceDir, "wiki", "candidates", "concepts", "approval-concept.md"));
+      await assertExists(artifactPath("wiki", "concepts", "approval-concept.md"));
+      await assertMissing(artifactPath("wiki", "candidates", "concepts", "approval-concept.md"));
     });
 
     await runStep("watch", async () => {
       const watchServer = await startCliServer("watch", ["watch", "--lint", "--debounce", "150"], workspaceDir);
       try {
         await fs.writeFile(
-          path.join(workspaceDir, "inbox", "watch.md"),
+          artifactPath("inbox", "watch.md"),
           ["# Watch Note", "", "SwarmVault should import and compile this file when watch mode is running."].join("\n"),
           "utf8"
         );
 
         await waitFor(async () => {
-          const jobsPath = path.join(workspaceDir, "state", "jobs.ndjson");
-          const sessionsDir = path.join(workspaceDir, "state", "sessions");
+          const jobsPath = artifactPath("state", "jobs.ndjson");
+          const sessionsDir = artifactPath("state", "sessions");
           const jobs = await fs.readFile(jobsPath, "utf8").catch(() => "");
           const sessions = await fs.readdir(sessionsDir).catch(() => []);
           return jobs.includes('"success":true') && jobs.includes('"importedCount":1') && sessions.some((file) => file.includes("-watch-"));
@@ -1745,11 +1759,11 @@ try {
         (result.pendingSemanticRefreshPaths ?? []).some((entry) => entry.endsWith("guide.md")),
         "graph update should preserve the pending non-code semantic refresh entry"
       );
-      const codeIndex = JSON.parse(await fs.readFile(path.join(updateWorkspaceDir, "state", "code-index.json"), "utf8"));
+      const codeIndex = JSON.parse(await fs.readFile(artifactPathFor(updateWorkspaceDir, "state", "code-index.json"), "utf8"));
       const updatedWidget = codeIndex.entries?.find((entry) => entry.repoRelativePath === "src/widget.ts");
       assert.ok(updatedWidget?.sourceId, "graph update did not refresh the widget code-index entry");
       const updateWidgetModulePath = `code/${updatedWidget.sourceId}.md`;
-      await assertExists(path.join(updateWorkspaceDir, "wiki", updateWidgetModulePath));
+      await assertExists(artifactPathFor(updateWorkspaceDir, "wiki", updateWidgetModulePath));
       const updateAlias = await runCliJson(["update", ".", "--force"], { cwd: updateWorkspaceDir });
       assert.ok(Array.isArray(updateAlias.watchedRepoRoots), "update alias did not return watched roots");
     });
@@ -1761,7 +1775,7 @@ try {
         command: installedCli.command,
         args: [...installedCli.args, "mcp"],
         cwd: workspaceDir,
-        env: inheritedEnv(),
+        env: { ...inheritedEnv(), SWARMVAULT_WORKSPACE_ID: WORKSPACE_ID },
         stderr: "pipe"
       });
       const stderrPath = path.join(logsDir, "mcp.stderr.log");
@@ -1781,36 +1795,32 @@ try {
         assert.ok(tools.tools.some((tool) => tool.name === "graph_stats"), "graph_stats MCP tool missing");
         assert.ok(tools.tools.some((tool) => tool.name === "get_community"), "get_community MCP tool missing");
 
-        const workspaceInfo = await client.callTool({ name: "workspace_info", arguments: {} });
+        const callTool = async (name, toolArgs = {}) => await client.callTool({ name, arguments: { workspace_id: WORKSPACE_ID, ...toolArgs } });
+
+        const workspaceInfo = await callTool("workspace_info");
         const workspaceJson = JSON.parse(readToolText(workspaceInfo));
         assert.equal(await fs.realpath(workspaceJson.rootDir), await fs.realpath(workspaceDir), "workspace_info rootDir mismatch");
 
-        const graphStats = await client.callTool({ name: "graph_stats", arguments: {} });
+        const graphStats = await callTool("graph_stats");
         const graphStatsJson = JSON.parse(readToolText(graphStats));
         assert.ok(graphStatsJson.counts.nodes > 0, "MCP graph_stats returned no graph nodes");
 
-        const graphArtifact = JSON.parse(await fs.readFile(path.join(workspaceDir, "state", "graph.json"), "utf8"));
+        const graphArtifact = JSON.parse(await fs.readFile(artifactPath("state", "graph.json"), "utf8"));
         const firstCommunity = graphArtifact.communities?.[0];
         assert.ok(firstCommunity?.id, "compiled graph did not include a community for MCP get_community smoke");
-        const community = await client.callTool({ name: "get_community", arguments: { target: firstCommunity.id, limit: 5 } });
+        const community = await callTool("get_community", { target: firstCommunity.id, limit: 5 });
         const communityJson = JSON.parse(readToolText(community));
         assert.ok(Array.isArray(communityJson.nodes) && communityJson.nodes.length > 0, "MCP get_community returned no members");
 
-        const searchResults = await client.callTool({ name: "search_pages", arguments: { query: "renderWidget", limit: 25 } });
+        const searchResults = await callTool("search_pages", { query: "renderWidget", limit: 25 });
         const searchJson = JSON.parse(readToolText(searchResults));
         assert.ok(Array.isArray(searchJson) && searchJson.some((entry) => entry.path === widgetModulePath), "MCP search_pages did not return the module page");
 
-        const queryResult = await client.callTool({
-          name: "query_vault",
-          arguments: { question: "What is this vault about?", save: false }
-        });
+        const queryResult = await callTool("query_vault", { question: "What is this vault about?", save: false });
         const queryJson = JSON.parse(readToolText(queryResult));
         assert.ok(typeof queryJson.answer === "string" && queryJson.answer.length > 0, "MCP query returned no answer");
 
-        const chartQuery = await client.callTool({
-          name: "query_vault",
-          arguments: { question: "Show this vault as a chart", save: false, format: "chart" }
-        });
+        const chartQuery = await callTool("query_vault", { question: "Show this vault as a chart", save: false, format: "chart" });
         const chartJson = JSON.parse(readToolText(chartQuery));
         assert.equal(chartJson.outputFormat, "chart", "MCP chart query did not return chart output");
       } finally {
@@ -2138,7 +2148,7 @@ async function runStep(name, fn) {
 async function runCliJson(args, options = {}) {
   const result = await runInstalledCliCommand(args.join("-").replaceAll(path.sep, "_"), ["--json", ...args], {
     cwd: options.cwd ?? workspaceDir,
-    env: { ...inheritedEnv(), ...(options.env ?? {}) }
+    env: { ...inheritedEnv(), SWARMVAULT_WORKSPACE_ID: WORKSPACE_ID, ...(options.env ?? {}) }
   });
   const lines = result.stdout
     .split("\n")
@@ -2508,8 +2518,8 @@ function readEmbeddedViewerData(html) {
 }
 
 async function withOverviewFixture(fn) {
-  const graphPath = path.join(workspaceDir, "state", "graph.json");
-  const reportPath = path.join(workspaceDir, "wiki", "graph", "report.json");
+  const graphPath = artifactPath("state", "graph.json");
+  const reportPath = artifactPath("wiki", "graph", "report.json");
   const [originalGraph, originalReport] = await Promise.all([
     fs.readFile(graphPath, "utf8"),
     fs.readFile(reportPath, "utf8").catch(() => null)
@@ -2668,7 +2678,7 @@ async function runCommand(label, command, args, options = {}) {
 
 async function copyInboxBundle() {
   const sourceDir = path.join(fixturesDir, "inbox-bundle");
-  const targetDir = path.join(workspaceDir, "inbox");
+  const targetDir = artifactPath("inbox");
   await fs.cp(sourceDir, targetDir, { recursive: true });
 }
 
@@ -2809,7 +2819,7 @@ async function startCliServer(label, args, cwd) {
   assert.ok(installedCli, "installed CLI has not been resolved yet");
   const child = spawn(installedCli.command, [...installedCli.args, "--json", ...args], {
     cwd,
-    env: inheritedEnv(),
+    env: { ...inheritedEnv(), SWARMVAULT_WORKSPACE_ID: WORKSPACE_ID },
     stdio: ["ignore", "pipe", "pipe"]
   });
 

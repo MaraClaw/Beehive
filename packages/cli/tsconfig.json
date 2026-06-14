@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "outDir": "dist",
+    "rootDir": "..",
     "paths": {
       "@swarmvaultai/engine": ["../engine/src/index.ts"]
     }

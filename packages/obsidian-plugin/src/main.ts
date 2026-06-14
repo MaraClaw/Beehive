@@ -10,6 +10,7 @@ import { SwarmVaultSettingsTab } from "./settings/SettingsTab";
 import { CliNotFoundError, type FreshnessLevel } from "./types";
 import { StatusBar } from "./ui/StatusBar";
 import { RunLogView } from "./views/RunLogView";
+import { workspaceArtifactRoot } from "./workspace/artifacts";
 import { readFreshness } from "./workspace/freshness";
 import { resolveWorkspaceRoot } from "./workspace/resolve-root";
 
@@ -92,8 +93,15 @@ export default class SwarmVaultPlugin extends Plugin {
       this.renderStatusBar();
       return;
     }
-    const reading = await readFreshness(this.workspaceRoot);
-    this.freshness = reading.level;
+    try {
+      const reading = await readFreshness(workspaceArtifactRoot(this.workspaceRoot, this.settings));
+      this.freshness = reading.level;
+    } catch (err) {
+      this.freshness = "unknown";
+      if (!(err instanceof Error && err.message.startsWith("Invalid SwarmVault workspace ID"))) {
+        throw err;
+      }
+    }
     this.renderStatusBar();
   }
 

@@ -14,6 +14,7 @@ const manifestPath = path.join(repoRoot, "validation", "oss-corpus.json");
 const packageJsonPath = path.join(repoRoot, "packages", "cli", "package.json");
 const DEFAULT_TIMEOUT_MS = 120_000;
 const DEFAULT_INSTALL_TIMEOUT_MS = 180_000;
+const CORPUS_WORKSPACE_ID = "corpus";
 
 await loadEnvFile(path.join(workspaceRoot, ".env.local"));
 await loadEnvFile(path.join(repoRoot, ".env.local"));
@@ -106,6 +107,10 @@ try {
     const repoLogsDir = path.join(repoArtifactDir, "logs");
     const cloneDir = path.join(repoArtifactDir, "clone");
     const vaultDir = path.join(repoArtifactDir, "vault");
+    const workspaceArtifactRoot = path.join(vaultDir, CORPUS_WORKSPACE_ID);
+    const workspaceGraphPath = path.join(workspaceArtifactRoot, "state", "graph.json");
+    const workspaceReportPath = path.join(workspaceArtifactRoot, "wiki", "graph", "report.json");
+    const workspaceBenchmarkPath = path.join(workspaceArtifactRoot, "state", "benchmark.json");
     const exportsDir = path.join(vaultDir, "exports");
     const repoSummaryPath = path.join(repoArtifactDir, "result.json");
     const repoSummaryMarkdownPath = path.join(repoArtifactDir, "result.md");
@@ -131,7 +136,7 @@ try {
       await clonePinnedRepo(repo, cloneDir, repoLogsDir);
 
       console.log(`[oss-corpus][${repo.id}] init`);
-      await runInstalledCliCommand(`${repo.id}-init`, ["--json", "init"], {
+      await runInstalledCliCommand(`${repo.id}-init`, workspaceArgs(["--json", "init"]), {
         cwd: vaultDir,
         logsDir: repoLogsDir,
         timeoutMs: 30_000
@@ -142,7 +147,7 @@ try {
       }
 
       const repoInputPath = repo.subdir ? path.join(cloneDir, repo.subdir) : cloneDir;
-      const ingestArgs = ["--json", "ingest", repoInputPath, "--repo-root", cloneDir, ...(repo.ingestArgs ?? [])];
+      const ingestArgs = workspaceArgs(["--json", "ingest", repoInputPath, "--repo-root", cloneDir, ...(repo.ingestArgs ?? [])]);
       console.log(`[oss-corpus][${repo.id}] ingest ${repoInputPath}`);
       const ingest = JSON.parse(
         (await runInstalledCliCommand(`${repo.id}-ingest`, ingestArgs, { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: DEFAULT_TIMEOUT_MS }))
@@ -160,7 +165,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] compile`);
       const compile = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-compile`, ["--json", "compile"], {
+          await runInstalledCliCommand(`${repo.id}-compile`, workspaceArgs(["--json", "compile"]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: repo.compileTimeoutMs ?? DEFAULT_TIMEOUT_MS
@@ -170,7 +175,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] check-update`);
       const checkUpdate = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-check-update`, ["--json", "check-update"], {
+          await runInstalledCliCommand(`${repo.id}-check-update`, workspaceArgs(["--json", "check-update"]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: 30_000
@@ -182,7 +187,7 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-benchmark`,
-            ["--json", "benchmark", "--question", repo.prompts.graph],
+            workspaceArgs(["--json", "benchmark", "--question", repo.prompts.graph]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
@@ -192,7 +197,7 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-graph-query`,
-            ["--json", "graph", "query", repo.prompts.graph],
+            workspaceArgs(["--json", "graph", "query", repo.prompts.graph]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
@@ -200,7 +205,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] graph stats`);
       const graphStats = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-graph-stats`, ["--json", "graph", "stats"], {
+          await runInstalledCliCommand(`${repo.id}-graph-stats`, workspaceArgs(["--json", "graph", "stats"]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: 30_000
@@ -210,7 +215,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] graph validate`);
       const graphValidation = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-graph-validate`, ["--json", "graph", "validate", "--strict"], {
+          await runInstalledCliCommand(`${repo.id}-graph-validate`, workspaceArgs(["--json", "graph", "validate", "--strict"]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: 30_000
@@ -220,7 +225,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] cluster-only`);
       const clusterOnly = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-cluster-only`, ["--json", "cluster-only"], {
+          await runInstalledCliCommand(`${repo.id}-cluster-only`, workspaceArgs(["--json", "cluster-only"]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: 30_000
@@ -230,7 +235,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] query`);
       const query = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-query`, ["--json", "query", repo.prompts.query], {
+          await runInstalledCliCommand(`${repo.id}-query`, workspaceArgs(["--json", "query", repo.prompts.query]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: 60_000
@@ -240,7 +245,7 @@ try {
       console.log(`[oss-corpus][${repo.id}] chat`);
       const chat = JSON.parse(
         (
-          await runInstalledCliCommand(`${repo.id}-chat`, ["--json", "chat", repo.prompts.query], {
+          await runInstalledCliCommand(`${repo.id}-chat`, workspaceArgs(["--json", "chat", repo.prompts.query]), {
             cwd: vaultDir,
             logsDir: repoLogsDir,
             timeoutMs: 60_000
@@ -252,7 +257,7 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-graph-export`,
-            ["--json", "graph", "export", "--html", result.exportPath],
+            workspaceArgs(["--json", "graph", "export", "--html", result.exportPath]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
@@ -261,7 +266,7 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-graph-export-neo4j`,
-            ["--json", "graph", "export", "--neo4j", path.join(repoArtifactDir, "graph.cypher")],
+            workspaceArgs(["--json", "graph", "export", "--neo4j", path.join(repoArtifactDir, "graph.cypher")]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
@@ -270,7 +275,7 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-tree-alias`,
-            ["--json", "tree", "--output", path.join(repoArtifactDir, "tree.html")],
+            workspaceArgs(["--json", "tree", "--output", path.join(repoArtifactDir, "tree.html")]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
@@ -279,14 +284,14 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-merge-graphs`,
-            [
+            workspaceArgs([
               "--json",
               "merge-graphs",
-              path.join(vaultDir, "state", "graph.json"),
-              path.join(vaultDir, "state", "graph.json"),
+              workspaceGraphPath,
+              workspaceGraphPath,
               "--out",
               path.join(repoArtifactDir, "merged.json")
-            ],
+            ]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
@@ -295,15 +300,15 @@ try {
         (
           await runInstalledCliCommand(
             `${repo.id}-ai-export`,
-            ["--json", "export", "ai", "--out", path.join(repoArtifactDir, "ai")],
+            workspaceArgs(["--json", "export", "ai", "--out", path.join(repoArtifactDir, "ai")]),
             { cwd: vaultDir, logsDir: repoLogsDir, timeoutMs: 60_000 }
           )
         ).stdout
       );
 
-      const graph = await readJson(path.join(vaultDir, "state", "graph.json"));
-      const report = await readJson(path.join(vaultDir, "wiki", "graph", "report.json"));
-      const benchmarkArtifact = await readJson(path.join(vaultDir, "state", "benchmark.json"));
+      const graph = await readJson(workspaceGraphPath);
+      const report = await readJson(workspaceReportPath);
+      const benchmarkArtifact = await readJson(workspaceBenchmarkPath);
 
       const counts = summarizeGraph(graph);
       const graphQueryPages = graphQuery.pageIds
@@ -682,6 +687,10 @@ async function readJson(filePath) {
 async function runInstalledCliCommand(label, args, options = {}) {
   assert.ok(installedCli, "installed CLI has not been resolved yet");
   return runCommand(options.logsDir, label, installedCli.command, [...installedCli.args, ...args], options);
+}
+
+function workspaceArgs(args) {
+  return ["--workspace-id", CORPUS_WORKSPACE_ID, ...args];
 }
 
 function assertNoSqliteExperimentalWarning(stderr, label) {

@@ -4,7 +4,7 @@ import type { Readable, Writable } from "node:stream";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { loadVaultConfig } from "./config.js";
+import { getActiveWorkspaceId, loadVaultConfig, validateWorkspaceId, withWorkspaceId } from "./config.js";
 import { buildContextPack, listContextPacks, readContextPack } from "./context-packs.js";
 import { doctorVault } from "./doctor.js";
 import { listGraphCallers } from "./graph-callers.js";
@@ -47,6 +47,10 @@ import {
 import { getWatchStatus, runWatchCycle } from "./watch.js";
 
 const SERVER_VERSION = "3.20.0";
+const workspaceIdSchema = z.string().min(1).describe("Workspace id to run this tool against");
+type WorkspaceToolShape<Shape extends z.ZodRawShape> = Shape & { workspace_id: typeof workspaceIdSchema };
+type FlexibleToolHandler<Args> = { run(args: Args): Promise<unknown> }["run"];
+type McpToolResult = ReturnType<typeof asToolText> | ReturnType<typeof asToolError>;
 const codeLanguageSchema = z.enum([
   "javascript",
   "jsx",
@@ -91,8 +95,55 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     version: SERVER_VERSION,
     websiteUrl: "https://www.swarmvault.ai"
   });
+  const serverWorkspaceId = getActiveWorkspaceId();
+  const runWithServerWorkspace = async <T>(run: () => Promise<T>): Promise<T> =>
+    serverWorkspaceId ? await withWorkspaceId(serverWorkspaceId, run) : await run();
 
-  server.registerTool(
+  function bindServerWorkspace<Args extends unknown[], Result>(
+    handler: (...args: Args) => Promise<Result>
+  ): (...args: Args) => Promise<Result> {
+    return async (...args) => await runWithServerWorkspace(async () => await handler(...args));
+  }
+
+  function registerWorkspaceTool<Shape extends z.ZodRawShape>(
+    name: string,
+    config: { description?: string; inputSchema?: Shape },
+    handler: FlexibleToolHandler<z.infer<z.ZodObject<Shape>>>
+  ): void {
+    const baseInputSchema = config.inputSchema ?? ({} as Shape);
+    const inputSchema: WorkspaceToolShape<Shape> = {
+      ...baseInputSchema,
+      workspace_id: workspaceIdSchema
+    };
+    const callback = (async (args: unknown): Promise<McpToolResult> => {
+      const { workspace_id, ...toolArgs } = args as { workspace_id?: unknown } & Record<string, unknown>;
+      if (typeof workspace_id !== "string") {
+        return asToolError("MCP tool calls require workspace_id.");
+      }
+      let workspaceId: string;
+      try {
+        workspaceId = validateWorkspaceId(workspace_id);
+      } catch (error) {
+        return asToolError(error instanceof Error ? error.message : String(error));
+      }
+      if (serverWorkspaceId && workspaceId !== serverWorkspaceId) {
+        return asToolError(
+          `MCP workspace_id "${workspaceId}" does not match server workspace "${serverWorkspaceId}". Restart the MCP server with the matching workspace id.`
+        );
+      }
+      return await withWorkspaceId(workspaceId, async () => (await handler(toolArgs as z.infer<z.ZodObject<Shape>>)) as McpToolResult);
+    }) as Parameters<McpServer["registerTool"]>[2];
+    server.registerTool(
+      name,
+      {
+        ...config,
+        inputSchema
+      },
+      callback
+    );
+  }
+
+  registerWorkspaceTool(
     "workspace_info",
     {
       description: "Return the current SwarmVault workspace paths and high-level counts."
@@ -103,7 +154,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "search_pages",
     {
       description: "Search compiled wiki pages using the local full-text index.",
@@ -118,7 +169,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "retrieval_status",
     {
       description: "Read SwarmVault retrieval index health and configuration."
@@ -128,7 +179,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "rebuild_retrieval",
     {
       description: "Rebuild the local retrieval index from the current graph."
@@ -138,7 +189,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "doctor_retrieval",
     {
       description: "Diagnose retrieval index problems and optionally repair them.",
@@ -151,7 +202,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "doctor_vault",
     {
       description: "Diagnose vault health across graph, retrieval, review queues, watch state, and migrations.",
@@ -164,7 +215,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "read_page",
     {
       description: "Read a generated wiki page by its path relative to wiki/.",
@@ -182,7 +233,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "list_sources",
     {
       description: "List source manifests in the current workspace.",
@@ -196,7 +247,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "query_graph",
     {
       description: "Traverse the local graph from search seeds without calling a model provider.",
@@ -236,7 +287,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "graph_report",
     {
       description: "Return the machine-readable graph report and trust artifact."
@@ -246,7 +297,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "graph_stats",
     {
       description: "Return lightweight counts for graph nodes, evidence classes, source classes, communities, pages, and edges."
@@ -256,7 +307,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "cluster_graph",
     {
       description:
@@ -270,7 +321,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "get_node",
     {
       description: "Explain a graph node, its page, community, neighbors, and group patterns.",
@@ -283,7 +334,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "get_community",
     {
       description: "Return members, pages, and top evidence edges for a graph community by id or label.",
@@ -297,7 +348,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "get_hyperedges",
     {
       description: "List graph hyperedges, optionally filtered to a node or page target.",
@@ -311,7 +362,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "get_neighbors",
     {
       description: "Return the neighbors of a graph node or page target.",
@@ -325,7 +376,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "shortest_path",
     {
       description: "Find the shortest graph path between two targets.",
@@ -339,7 +390,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "god_nodes",
     {
       description: "List the highest-connectivity graph nodes.",
@@ -352,7 +403,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "blast_radius",
     {
       description: "Analyze the impact of changing a file or module by tracing reverse import edges.",
@@ -366,7 +417,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "query_vault",
     {
       description: "Ask a question against the compiled vault and optionally save the answer.",
@@ -386,7 +437,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "build_context_pack",
     {
       description: "Build a cited, token-bounded context pack for an agent task.",
@@ -403,7 +454,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "list_context_packs",
     {
       description: "List saved SwarmVault context packs."
@@ -413,7 +464,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "read_context_pack",
     {
       description: "Read a saved SwarmVault context pack by id.",
@@ -430,7 +481,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "start_memory_task",
     {
       description: "Start a durable SwarmVault agent memory task and build its initial context pack.",
@@ -447,7 +498,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "update_memory_task",
     {
       description: "Append a note, decision, path, context pack, or status change to a SwarmVault memory task.",
@@ -470,7 +521,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "finish_memory_task",
     {
       description: "Finish a SwarmVault memory task with an outcome and optional follow-up.",
@@ -485,7 +536,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "list_memory_tasks",
     {
       description: "List saved SwarmVault agent memory tasks."
@@ -495,7 +546,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "read_memory_task",
     {
       description: "Read a saved SwarmVault agent memory task by id.",
@@ -512,7 +563,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "resume_memory_task",
     {
       description: "Render a saved SwarmVault memory task as a next-agent handoff.",
@@ -526,7 +577,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "start_task",
     {
       description: "Start a durable SwarmVault agent task and build its initial context pack.",
@@ -543,7 +594,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "update_task",
     {
       description: "Append a note, decision, path, context pack, or status change to a SwarmVault task.",
@@ -566,7 +617,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "finish_task",
     {
       description: "Finish a SwarmVault task with an outcome and optional follow-up.",
@@ -581,7 +632,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "list_tasks",
     {
       description: "List saved SwarmVault agent tasks."
@@ -591,7 +642,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "read_task",
     {
       description: "Read a saved SwarmVault agent task by id.",
@@ -608,7 +659,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "resume_task",
     {
       description: "Render a saved SwarmVault task as a next-agent handoff.",
@@ -622,7 +673,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "ingest_input",
     {
       description: "Ingest a local file path or URL into the SwarmVault workspace.",
@@ -636,7 +687,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "compile_vault",
     {
       description: "Compile source manifests into wiki pages, graph data, and search index.",
@@ -651,7 +702,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "lint_vault",
     {
       description: "Run anti-drift and vault health checks."
@@ -662,7 +713,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "list_approvals",
     {
       description: "List staged approval bundles awaiting review."
@@ -673,7 +724,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "read_approval",
     {
       description: "Read the details and structured diffs for an approval bundle.",
@@ -688,7 +739,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "promote_candidate",
     {
       description: "Promote a staged candidate into its active concept or entity page.",
@@ -702,7 +753,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "archive_candidate",
     {
       description: "Archive a staged candidate without promoting it.",
@@ -716,7 +767,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "preview_candidate_scores",
     {
       description: "Score staged candidates against the configured auto-promotion rules without promoting."
@@ -727,7 +778,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "auto_promote_candidates",
     {
       description: "Apply configured auto-promotion rules to staged candidates. Requires candidate.autoPromote.enabled in config.",
@@ -741,7 +792,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "review_decision",
     {
       description: "Accept or reject approval bundle entries from a staged compile.",
@@ -759,7 +810,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "watch_status",
     {
       description: "Return the current watch-mode status: watched repos, last run summary, and pending semantic refreshes."
@@ -770,7 +821,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "graph_callers",
     {
       description: "List the callers of a symbol with file:line call-site evidence derived from graph call edges.",
@@ -784,7 +835,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "graph_status",
     {
       description:
@@ -799,7 +850,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "update_graph",
     {
       description:
@@ -820,7 +871,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "consolidate",
     {
       description:
@@ -835,7 +886,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
     })
   );
 
-  server.registerTool(
+  registerWorkspaceTool(
     "migrate",
     {
       description: "Detect the vault's version and preview the migration plan to the current SwarmVault version.",
@@ -857,10 +908,10 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "The resolved SwarmVault config file.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       const { config } = await loadVaultConfig(rootDir);
       return asTextResource("swarmvault://config", JSON.stringify(config, null, 2));
-    }
+    })
   );
 
   server.registerResource(
@@ -871,14 +922,14 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "The compiled graph artifact for the current workspace.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       const { paths } = await loadVaultConfig(rootDir);
       const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
       return asTextResource(
         "swarmvault://graph",
         JSON.stringify(graph ?? { error: "Graph artifact not found. Run `swarmvault compile` first." }, null, 2)
       );
-    }
+    })
   );
 
   server.registerResource(
@@ -889,10 +940,10 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "All source manifests in the workspace.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       const manifests = await listManifests(rootDir);
       return asTextResource("swarmvault://manifests", JSON.stringify(manifests, null, 2));
-    }
+    })
   );
 
   server.registerResource(
@@ -903,10 +954,10 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "The vault schema file that guides compile and query behavior.",
       mimeType: "text/markdown"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       const schema = await loadVaultSchema(rootDir);
       return asTextResource("swarmvault://schema", schema.content);
-    }
+    })
   );
 
   server.registerResource(
@@ -917,14 +968,14 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "Canonical session artifacts for compile, query, explore, lint, and watch runs.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       const { paths } = await loadVaultConfig(rootDir);
       const files = (await listFilesRecursive(paths.sessionsDir))
         .filter((filePath) => filePath.endsWith(".md"))
         .map((filePath) => toPosix(path.relative(paths.sessionsDir, filePath)))
         .sort();
       return asTextResource("swarmvault://sessions", JSON.stringify(files, null, 2));
-    }
+    })
   );
 
   server.registerResource(
@@ -935,9 +986,9 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "Saved token-bounded context packs for agent tasks.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       return asTextResource("swarmvault://context-packs", JSON.stringify(await listContextPacks(rootDir), null, 2));
-    }
+    })
   );
 
   server.registerResource(
@@ -948,9 +999,9 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "Saved git-backed agent memory task ledger entries.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       return asTextResource("swarmvault://memory-tasks", JSON.stringify(await listMemoryTasks(rootDir), null, 2));
-    }
+    })
   );
 
   server.registerResource(
@@ -961,15 +1012,15 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "Saved git-backed agent task ledger entries.",
       mimeType: "application/json"
     },
-    async () => {
+    bindServerWorkspace(async () => {
       return asTextResource("swarmvault://tasks", JSON.stringify(await listMemoryTasks(rootDir), null, 2));
-    }
+    })
   );
 
   server.registerResource(
     "swarmvault-pages",
     new ResourceTemplate("swarmvault://pages/{path}", {
-      list: async () => {
+      list: bindServerWorkspace(async () => {
         const pages = await listPages(rootDir);
         return {
           resources: pages.map((page) => ({
@@ -980,14 +1031,14 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
             mimeType: "text/markdown"
           }))
         };
-      }
+      })
     }),
     {
       title: "SwarmVault Pages",
       description: "Generated wiki pages exposed as MCP resources.",
       mimeType: "text/markdown"
     },
-    async (_uri, variables) => {
+    bindServerWorkspace(async (_uri, variables) => {
       const encodedPath = typeof variables.path === "string" ? variables.path : "";
       const relativePath = decodeURIComponent(encodedPath);
       const page = await readPage(rootDir, relativePath);
@@ -998,13 +1049,13 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       const { paths } = await loadVaultConfig(rootDir);
       const absolutePath = path.resolve(paths.wikiDir, relativePath);
       return asTextResource(`swarmvault://pages/${encodedPath}`, await fs.readFile(absolutePath, "utf8"));
-    }
+    })
   );
 
   server.registerResource(
     "swarmvault-session-files",
     new ResourceTemplate("swarmvault://sessions/{path}", {
-      list: async () => {
+      list: bindServerWorkspace(async () => {
         const { paths } = await loadVaultConfig(rootDir);
         const files = (await listFilesRecursive(paths.sessionsDir))
           .filter((filePath) => filePath.endsWith(".md"))
@@ -1019,14 +1070,14 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
             mimeType: "text/markdown"
           }))
         };
-      }
+      })
     }),
     {
       title: "SwarmVault Session Files",
       description: "Session artifacts exposed as MCP resources.",
       mimeType: "text/markdown"
     },
-    async (_uri, variables) => {
+    bindServerWorkspace(async (_uri, variables) => {
       const { paths } = await loadVaultConfig(rootDir);
       const encodedPath = typeof variables.path === "string" ? variables.path : "";
       const relativePath = decodeURIComponent(encodedPath);
@@ -1036,7 +1087,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       }
 
       return asTextResource(`swarmvault://sessions/${encodedPath}`, await fs.readFile(absolutePath, "utf8"));
-    }
+    })
   );
 
   return server;
