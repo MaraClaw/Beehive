@@ -46,7 +46,7 @@ import {
 } from "./vault.js";
 import { getWatchStatus, runWatchCycle } from "./watch.js";
 
-const SERVER_VERSION = "3.20.0";
+const SERVER_VERSION = "3.21.0";
 const workspaceIdSchema = z.string().min(1).describe("Workspace id to run this tool against");
 type WorkspaceToolShape<Shape extends z.ZodRawShape> = Shape & { workspace_id: typeof workspaceIdSchema };
 type FlexibleToolHandler<Args> = { run(args: Args): Promise<unknown> }["run"];

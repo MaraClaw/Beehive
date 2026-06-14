@@ -1,6 +1,6 @@
 {
   "name": "@swarmvaultai/obsidian-plugin",
-  "version": "3.20.0",
+  "version": "3.21.0",
   "description": "Drive your SwarmVault workspace from inside Obsidian.",
   "private": true,
   "type": "module",
@@ -24,11 +24,11 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^24.6.0",
-    "esbuild": "^0.25.0",
-    "obsidian": "^1.7.2",
+    "@types/node": "^25.9.3",
+    "esbuild": "^0.28.1",
+    "obsidian": "^1.13.1",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }

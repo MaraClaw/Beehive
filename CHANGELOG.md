@@ -2,10 +2,10 @@
 
 ## Unreleased
 
-## 3.20.0
+## 3.21.0
 
 - Added declaration line ranges to code symbols: the TypeScript/JavaScript analyzer records `startLine`/`endLine` for functions, classes, and variables, the ranges travel through `CodeSymbol` onto graph symbol nodes, and `graph callers` scans only each caller's own declaration range so call sites are attributed to the correct caller even when several callers share a file. Symbols without ranges (other languages, older graphs) keep the previous per-file behavior.
-- Bumped OSS packages, viewer, Obsidian plugin metadata, MCP-facing version, ClawHub skill metadata, and desktop package metadata to `3.20.0`.
+- Bumped OSS packages, viewer, Obsidian plugin metadata, MCP-facing version, ClawHub skill metadata, and desktop package metadata to `3.21.0`.
 
 ## 3.19.0
 
