@@ -131,10 +131,9 @@ export async function hasReport(cwd: string): Promise<boolean> {
 
 function artifactRootDir(cwd: string): string {
   const override = process.env.SWARMVAULT_OUT?.trim();
-  if (!override) {
-    return path.resolve(cwd);
-  }
-  return path.isAbsolute(override) ? path.resolve(override) : path.resolve(cwd, override);
+  const baseDir = !override ? path.resolve(cwd) : path.isAbsolute(override) ? path.resolve(override) : path.resolve(cwd, override);
+  const workspaceId = process.env.SWARMVAULT_WORKSPACE_ID?.trim();
+  return workspaceId && /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(workspaceId) ? path.join(baseDir, workspaceId) : baseDir;
 }
 
 function reportPath(cwd: string): string {
@@ -373,14 +372,14 @@ export async function readHookInput(): Promise<unknown> {
 }
 
 export const REPORT_NOTE =
-  "SwarmVault graph report exists at wiki/graph/report.md, or at $SWARMVAULT_OUT/wiki/graph/report.md when SWARMVAULT_OUT is set. Read it before broad grep/glob searching.";
+  "SwarmVault graph report exists at wiki/graph/report.md, at $SWARMVAULT_OUT/wiki/graph/report.md when only SWARMVAULT_OUT is set, or under <artifact-base>/$SWARMVAULT_WORKSPACE_ID/wiki/graph/report.md when a workspace id is active. Read it before broad grep/glob searching.";
 
 const GRAPH_FIRST_COMMANDS = [
   '- `swarmvault graph query "<seed>"` — top matches with page paths plus an inline excerpt of the best page; usually answers where-is/what-calls in one command',
   '- `swarmvault graph explain "<node>"` — compact node summary with neighbors and its wiki page',
   '- `swarmvault graph callers "<symbol>"` — exact caller list with file:line call sites; use for who-calls/impact questions instead of grep',
   "- `swarmvault graph blast <target>` — reverse-import impact analysis for change-impact questions",
-  "- `wiki/graph/report.md` — orientation report (architecture, communities, key nodes)",
+  "- `wiki/graph/report.md` under the active artifact root — orientation report (architecture, communities, key nodes)",
   "Do not add `--json` to these — the plain output is far smaller and already structured.",
   "Trust the graph/wiki answer for orientation questions; verify in source only when you are about to edit or the evidence conflicts. Answer directly in chat — do not write answer files unless asked for a durable artifact."
 ];
