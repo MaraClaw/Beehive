@@ -85,7 +85,7 @@ const requiredSubstrings = [
   "https://www.beehive.ai/docs/providers",
   "https://www.beehive.ai/docs/getting-started/troubleshooting",
   "https://www.npmjs.com/package/@beehive/cli",
-  "https://github.com/beehive/beehive",
+  "https://github.com/MaraClaw/Beehive",
   "wiki/outputs/source-sessions/",
   "worked/book-reading/",
   "worked/research-deep-dive/",
