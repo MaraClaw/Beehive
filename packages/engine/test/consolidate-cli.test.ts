@@ -9,7 +9,7 @@ import { compileVault, consolidateVault, initVault, lintVault } from "../src/ind
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-consolidate-cli-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-consolidate-cli-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -60,7 +60,7 @@ async function writeInsight(
   await fs.writeFile(path.join(insightsDir, `${params.slug}.md`), matter.stringify(body, frontmatter), "utf8");
 }
 
-describe("swarmvault consolidate CLI surface", () => {
+describe("beehive consolidate CLI surface", () => {
   it("consolidateVault invokes the engine and writes tier pages", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
@@ -106,7 +106,7 @@ describe("swarmvault consolidate CLI surface", () => {
   });
 });
 
-describe("swarmvault lint --tiers surface", () => {
+describe("beehive lint --tiers surface", () => {
   it("flags working-tier insight pages older than the session window", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);

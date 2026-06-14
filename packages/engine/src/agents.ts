@@ -55,14 +55,14 @@ async function readBuiltHook(hookFile: string): Promise<string> {
   } catch (error) {
     throw new Error(
       `Beehive hook bundle not found at ${hookPath}. ` +
-        `Run 'pnpm --filter @swarmvaultai/engine build' so the hook scripts are emitted to dist/hooks/. ` +
+        `Run 'pnpm --filter @beehive/engine build' so the hook scripts are emitted to dist/hooks/. ` +
         `Underlying error: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
 
-const managedStart = "<!-- swarmvault:managed:start -->";
-const managedEnd = "<!-- swarmvault:managed:end -->";
+const managedStart = "<!-- beehive:managed:start -->";
+const managedEnd = "<!-- beehive:managed:end -->";
 const legacyManagedStart = "<!-- vault:managed:start -->";
 const legacyManagedEnd = "<!-- vault:managed:end -->";
 
@@ -154,27 +154,27 @@ const agentFileKinds = {
   agents: "AGENTS.md",
   claude: "CLAUDE.md",
   gemini: "GEMINI.md",
-  cursor: ".cursor/rules/swarmvault.mdc",
+  cursor: ".cursor/rules/beehive.mdc",
   aider: "CONVENTIONS.md",
   copilot: ".github/copilot-instructions.md",
-  trae: ".trae/rules/swarmvault.md",
-  claw: ".claw/skills/swarmvault/SKILL.md",
-  droid: ".factory/rules/swarmvault.md",
-  kiro: ".kiro/skills/swarmvault/SKILL.md",
-  kiroSteering: ".kiro/steering/swarmvault.md",
-  antigravityRules: ".agents/rules/swarmvault.md",
-  antigravityWorkflow: ".agents/workflows/swarmvault.md",
-  devinRules: ".windsurf/rules/swarmvault.md",
-  vscode: ".github/chatmodes/swarmvault.chatmode.md"
+  trae: ".trae/rules/beehive.md",
+  claw: ".claw/skills/beehive/SKILL.md",
+  droid: ".factory/rules/beehive.md",
+  kiro: ".kiro/skills/beehive/SKILL.md",
+  kiroSteering: ".kiro/steering/beehive.md",
+  antigravityRules: ".agents/rules/beehive.md",
+  antigravityWorkflow: ".agents/workflows/beehive.md",
+  devinRules: ".windsurf/rules/beehive.md",
+  vscode: ".github/chatmodes/beehive.chatmode.md"
 } as const;
 
 const legacyAntigravityFileKinds = {
-  antigravityRules: ".agent/rules/swarmvault.md",
-  antigravityWorkflow: ".agent/workflows/swarmvault.md"
+  antigravityRules: ".agent/rules/beehive.md",
+  antigravityWorkflow: ".agent/workflows/beehive.md"
 } as const;
 
 // Project-level skill bundle directories for agents that follow the
-// swarmskills convention (rooted at <project>/<dir>/swarmvault/SKILL.md).
+// swarmskills convention (rooted at <project>/<dir>/beehive/SKILL.md).
 // Paths mirror swarmskills' adapter table so a vault installed for these
 // agents lines up with skill bundles managed by swarmskills.
 const SKILL_BUNDLE_AGENTS: Record<string, string> = {
@@ -245,11 +245,11 @@ const USER_SKILL_TARGETS: Partial<Record<AgentType, string>> = {
 function skillBundleTarget(rootDir: string, agent: AgentType): string | null {
   const relativeSkillsDir = SKILL_BUNDLE_AGENTS[agent];
   if (!relativeSkillsDir) return null;
-  return path.join(rootDir, relativeSkillsDir, "swarmvault", "SKILL.md");
+  return path.join(rootDir, relativeSkillsDir, "beehive", "SKILL.md");
 }
 
 function skillBundlePath(baseDir: string, relativeSkillsDir: string): string {
-  return path.join(baseDir, relativeSkillsDir, "swarmvault", "SKILL.md");
+  return path.join(baseDir, relativeSkillsDir, "beehive", "SKILL.md");
 }
 
 function projectSkillTargets(rootDir: string, agent: AgentType): string[] {
@@ -261,51 +261,51 @@ function userSkillTarget(agent: AgentType): string | null {
   return relativeSkillsDir ? skillBundlePath(os.homedir(), relativeSkillsDir) : null;
 }
 
-const hermesUserSkillRelative = path.join(".hermes", "skills", "swarmvault", "SKILL.md");
+const hermesUserSkillRelative = path.join(".hermes", "skills", "beehive", "SKILL.md");
 
 function hermesUserSkillPath(): string {
   return path.join(os.homedir(), hermesUserSkillRelative);
 }
 
 function kiloUserCommandPath(): string {
-  return path.join(os.homedir(), ".config", "kilo", "command", "swarmvault.md");
+  return path.join(os.homedir(), ".config", "kilo", "command", "beehive.md");
 }
 
-const SWARMVAULT_RULE_BULLETS = [
-  "- Read the active `swarmvault.schema.md` before compile or query style work. It is at the project root by default and under `<artifact-base>/<SWARMVAULT_WORKSPACE_ID>/` when a workspace id is active.",
+const BEEHIVE_RULE_BULLETS = [
+  "- Read the active `beehive.schema.md` before compile or query style work. It is at the project root by default and under `<artifact-base>/<BEEHIVE_WORKSPACE_ID>/` when a workspace id is active.",
   "- Treat `raw/` as immutable source input.",
   "- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.",
-  "- If `SWARMVAULT_OUT` or `SWARMVAULT_WORKSPACE_ID` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under the active artifact root (`<artifact-base>/<workspace_id>` when a workspace id is active).",
-  "- Run Beehive behavior commands with `--workspace-id <id>` or set `SWARMVAULT_WORKSPACE_ID` so CLI, MCP, and generated artifacts use the same workspace.",
+  "- If `BEEHIVE_OUT` or `BEEHIVE_WORKSPACE_ID` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under the active artifact root (`<artifact-base>/<workspace_id>` when a workspace id is active).",
+  "- Run Beehive behavior commands with `--workspace-id <id>` or set `BEEHIVE_WORKSPACE_ID` so CLI, MCP, and generated artifacts use the same workspace.",
   "- Read `wiki/graph/report.md` before broad file searching when it exists under the active artifact root; otherwise start with `wiki/index.md`.",
-  "- For code and graph questions (where is X, what calls Y, structure, impact), prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.",
+  "- For code and graph questions (where is X, what calls Y, structure, impact), prefer `beehive graph query`, `beehive graph path`, and `beehive graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.",
   "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
   "- When asked for durable research, reviews, or handoff artifacts, save the answer into `wiki/outputs/`; answer quick questions directly in chat without writing files.",
-  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for Beehive maintenance tasks."
+  "- Prefer `beehive ingest`, `beehive compile`, `beehive query`, and `beehive lint` for Beehive maintenance tasks."
 ];
 
 // Frozen pre-3.17 wording of changed bullets, kept only so legacy-file
 // cleanup can still recognize content written by older releases.
 const PRE_GRAPH_FIRST_BULLET =
-  "- For graph questions, prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` before broad grep/glob searching.";
+  "- For graph questions, prefer `beehive graph query`, `beehive graph path`, and `beehive graph explain` before broad grep/glob searching.";
 const PRE_GRAPH_FIRST_SAVE_BULLET = "- Save high-value answers back into `wiki/outputs/` instead of leaving them only in chat.";
 
-const PRE_GRAPH_FIRST_RULE_BULLETS = SWARMVAULT_RULE_BULLETS.map((bullet) => {
+const PRE_GRAPH_FIRST_RULE_BULLETS = BEEHIVE_RULE_BULLETS.map((bullet) => {
   if (bullet.startsWith("- For code and graph questions")) return PRE_GRAPH_FIRST_BULLET;
   if (bullet.startsWith("- When asked for durable research")) return PRE_GRAPH_FIRST_SAVE_BULLET;
   return bullet;
 });
 
-const LEGACY_SWARMVAULT_RULE_BULLETS = PRE_GRAPH_FIRST_RULE_BULLETS.filter((bullet) => !bullet.includes("SWARMVAULT_OUT"));
+const LEGACY_BEEHIVE_RULE_BULLETS = PRE_GRAPH_FIRST_RULE_BULLETS.filter((bullet) => !bullet.includes("BEEHIVE_OUT"));
 const PRE_WORKSPACE_RULE_BULLETS = [
-  "- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.",
+  "- Read `beehive.schema.md` before compile or query style work. It is the canonical schema path.",
   "- Treat `raw/` as immutable source input.",
   "- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.",
   "- Read `wiki/graph/report.md` before broad file searching when it exists; otherwise start with `wiki/index.md`.",
   PRE_GRAPH_FIRST_BULLET,
   "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
   PRE_GRAPH_FIRST_SAVE_BULLET,
-  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for Beehive maintenance tasks."
+  "- Prefer `beehive ingest`, `beehive compile`, `beehive query`, and `beehive lint` for Beehive maintenance tasks."
 ];
 
 function buildManagedBlock(target: keyof typeof agentFileKinds): string {
@@ -320,15 +320,15 @@ function buildManagedBlock(target: keyof typeof agentFileKinds): string {
       : target === "claude"
         ? [
             "",
-            'For architecture, structure, where-is, what-calls, or impact questions, query the graph first: `swarmvault graph query "<seed>"` (top matches + inline page excerpt), `swarmvault graph explain "<node>"`, or `swarmvault graph blast <target>` for impact. Avoid `--json` — the plain output is far smaller. Trust the graph answer for orientation; read source files only when you are editing them or the graph lacks the detail you need. Check freshness with `swarmvault graph status` and refresh with `swarmvault graph update` (add `--file <path>` for single files).'
+            'For architecture, structure, where-is, what-calls, or impact questions, query the graph first: `beehive graph query "<seed>"` (top matches + inline page excerpt), `beehive graph explain "<node>"`, or `beehive graph blast <target>` for impact. Avoid `--json` — the plain output is far smaller. Trust the graph answer for orientation; read source files only when you are editing them or the graph lacks the detail you need. Check freshness with `beehive graph status` and refresh with `beehive graph update` (add `--file <path>` for single files).'
           ]
         : [];
-  return [managedStart, heading, "", ...SWARMVAULT_RULE_BULLETS, ...extra, managedEnd, ""].join("\n");
+  return [managedStart, heading, "", ...BEEHIVE_RULE_BULLETS, ...extra, managedEnd, ""].join("\n");
 }
 
 function buildSkillFrontmatter(): string {
   const frontmatter = YAML.stringify({
-    name: "swarmvault",
+    name: "beehive",
     description: "Beehive graph-first workflow. Use to read the compiled wiki and query the knowledge graph before broad file search."
   }).trimEnd();
   return ["---", frontmatter, "---"].join("\n");
@@ -342,15 +342,15 @@ function buildSkillBody(): string {
     "",
     "## Rules",
     "",
-    ...SWARMVAULT_RULE_BULLETS,
+    ...BEEHIVE_RULE_BULLETS,
     "",
     "## Entry points",
     "",
-    "- `swarmvault ingest <path>` — register a new source",
-    "- `swarmvault compile` — refresh wiki pages and graph",
-    '- `swarmvault query "<question>"` — save-first multi-step query',
-    "- `swarmvault graph query|path|explain` — deterministic graph traversal",
-    "- `swarmvault lint` — wiki health and contradiction checks",
+    "- `beehive ingest <path>` — register a new source",
+    "- `beehive compile` — refresh wiki pages and graph",
+    '- `beehive query "<question>"` — save-first multi-step query',
+    "- `beehive graph query|path|explain` — deterministic graph traversal",
+    "- `beehive lint` — wiki health and contradiction checks",
     ""
   ].join("\n");
 }
@@ -364,10 +364,10 @@ function buildKiroSteeringFile(): string {
     inclusion: "always",
     description: "Always-on Beehive rules."
   }).trimEnd();
-  return ["---", frontmatter, "---", "", "# Beehive Rules", "", ...SWARMVAULT_RULE_BULLETS, ""].join("\n");
+  return ["---", frontmatter, "---", "", "# Beehive Rules", "", ...BEEHIVE_RULE_BULLETS, ""].join("\n");
 }
 
-function buildAntigravityRulesFile(ruleBullets = SWARMVAULT_RULE_BULLETS): string {
+function buildAntigravityRulesFile(ruleBullets = BEEHIVE_RULE_BULLETS): string {
   const frontmatter = YAML.stringify({
     alwaysApply: true,
     description: "Beehive graph-first repository rules."
@@ -381,7 +381,7 @@ function buildAntigravityRulesFile(ruleBullets = SWARMVAULT_RULE_BULLETS): strin
     "",
     ...ruleBullets,
     "",
-    "> MCP navigation hint: Beehive exposes a local MCP server via `SWARMVAULT_WORKSPACE_ID=<id> swarmvault mcp`. Wire it into your Antigravity MCP config and include the same `workspace_id` in tool calls to query the graph without shelling out."
+    "> MCP navigation hint: Beehive exposes a local MCP server via `BEEHIVE_WORKSPACE_ID=<id> beehive mcp`. Wire it into your Antigravity MCP config and include the same `workspace_id` in tool calls to query the graph without shelling out."
   ].join("\n");
 }
 
@@ -399,13 +399,13 @@ function buildLegacyAntigravityRulesFile(ruleBullets: string[]): string {
     "",
     ...ruleBullets,
     "",
-    "> MCP navigation hint: Beehive exposes a local MCP server via `swarmvault mcp`. Wire it into your Antigravity MCP config to query the graph without shelling out."
+    "> MCP navigation hint: Beehive exposes a local MCP server via `beehive mcp`. Wire it into your Antigravity MCP config to query the graph without shelling out."
   ].join("\n");
 }
 
 function buildAntigravityWorkflowFile(): string {
   const frontmatter = YAML.stringify({
-    command: "swarmvault",
+    command: "beehive",
     description: "Compile, query, and lint the Beehive vault."
   }).trimEnd();
   return [
@@ -413,16 +413,16 @@ function buildAntigravityWorkflowFile(): string {
     frontmatter,
     "---",
     "",
-    "# /swarmvault",
+    "# /beehive",
     "",
     "Run Beehive against the current directory.",
     "",
     "## Steps",
     "",
-    "1. If no vault exists, run `swarmvault init`.",
-    "2. For new sources, run `swarmvault ingest <path>`.",
-    "3. Run `swarmvault compile` to refresh the wiki and graph.",
-    "4. For follow-up questions, prefer `swarmvault query`, `swarmvault graph query`, `swarmvault graph path`, `swarmvault graph explain`.",
+    "1. If no vault exists, run `beehive init`.",
+    "2. For new sources, run `beehive ingest <path>`.",
+    "3. Run `beehive compile` to refresh the wiki and graph.",
+    "4. For follow-up questions, prefer `beehive query`, `beehive graph query`, `beehive graph path`, `beehive graph explain`.",
     "5. Save high-value answers to `wiki/outputs/`.",
     ""
   ].join("\n");
@@ -430,14 +430,14 @@ function buildAntigravityWorkflowFile(): string {
 
 function buildKiloCommandFile(): string {
   return [
-    "# /swarmvault",
+    "# /beehive",
     "",
     "Use Beehive's graph-first workflow in the current project.",
     "",
-    "1. If no vault exists, run `swarmvault init`.",
+    "1. If no vault exists, run `beehive init`.",
     "2. Read `wiki/graph/report.md` under the active artifact root before broad source search when it exists.",
-    "3. Prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` for structure questions.",
-    "4. Run `swarmvault compile` after adding or refreshing sources.",
+    "3. Prefer `beehive graph query`, `beehive graph path`, and `beehive graph explain` for structure questions.",
+    "4. Run `beehive compile` after adding or refreshing sources.",
     ""
   ].join("\n");
 }
@@ -446,14 +446,14 @@ function buildKiloPluginFile(): string {
   return [
     "export default async function BeehivePlugin({ project }) {",
     "  return {",
-    "    name: 'swarmvault-graph-first',",
+    "    name: 'beehive-graph-first',",
     "    async beforeToolUse(event) {",
     "      const toolName = event?.tool?.name ?? event?.toolName ?? '';",
     "      if (!['bash', 'shell', 'terminal', 'search', 'grep', 'glob'].includes(String(toolName).toLowerCase())) return;",
     "      const root = project?.root ?? process.cwd();",
     "      return {",
     "        message: `Beehive graph-first: from $" +
-      "{root}, answer structure questions with swarmvault graph query/explain/path or swarmvault query instead of broad search; wiki/graph/report.md under the active artifact root has the orientation report. Read source files only when editing them or when the graph lacks detail.`",
+      "{root}, answer structure questions with beehive graph query/explain/path or beehive query instead of broad search; wiki/graph/report.md under the active artifact root has the orientation report. Read source files only when editing them or when the graph lacks detail.`",
     "      };",
     "    }",
     "  };",
@@ -476,11 +476,11 @@ function buildVscodeChatmodeFile(): string {
     "",
     "You are working inside a Beehive vault. Follow these rules before other actions:",
     "",
-    "For any question about this repo's architecture, structure, components, relationships, or where/how to add or modify code, first read `wiki/graph/report.md` under the active artifact root when it exists. If `SWARMVAULT_OUT` or `SWARMVAULT_WORKSPACE_ID` is set, include those path segments when resolving the report.",
+    "For any question about this repo's architecture, structure, components, relationships, or where/how to add or modify code, first read `wiki/graph/report.md` under the active artifact root when it exists. If `BEEHIVE_OUT` or `BEEHIVE_WORKSPACE_ID` is set, include those path segments when resolving the report.",
     "",
-    ...SWARMVAULT_RULE_BULLETS,
+    ...BEEHIVE_RULE_BULLETS,
     "",
-    "Use the terminal tool to run `swarmvault` commands. Prefer graph queries over broad grep/glob. Read source files after the graph when you are modifying/debugging specific code, the graph lacks needed detail, or the graph is stale.",
+    "Use the terminal tool to run `beehive` commands. Prefer graph queries over broad grep/glob. Read source files after the graph when you are modifying/debugging specific code, the graph lacks needed detail, or the graph is stale.",
     ""
   ].join("\n");
 }
@@ -550,17 +550,17 @@ function primaryTargetPathForAgent(rootDir: string, agent: AgentType, options: I
 function hookScriptPathForAgent(rootDir: string, agent: AgentType): string | null {
   switch (agent) {
     case "codex":
-      return path.join(rootDir, ".codex", "hooks", "swarmvault-graph-first.js");
+      return path.join(rootDir, ".codex", "hooks", "beehive-graph-first.js");
     case "claude":
-      return path.join(rootDir, ".claude", "hooks", "swarmvault-graph-first.js");
+      return path.join(rootDir, ".claude", "hooks", "beehive-graph-first.js");
     case "opencode":
-      return path.join(rootDir, ".opencode", "plugins", "swarmvault-graph-first.js");
+      return path.join(rootDir, ".opencode", "plugins", "beehive-graph-first.js");
     case "kilo":
-      return path.join(rootDir, ".kilo", "plugins", "swarmvault.js");
+      return path.join(rootDir, ".kilo", "plugins", "beehive.js");
     case "gemini":
-      return path.join(rootDir, ".gemini", "hooks", "swarmvault-graph-first.js");
+      return path.join(rootDir, ".gemini", "hooks", "beehive-graph-first.js");
     case "copilot":
-      return path.join(rootDir, ".github", "hooks", "swarmvault-graph-first.js");
+      return path.join(rootDir, ".github", "hooks", "beehive-graph-first.js");
     default:
       return null;
   }
@@ -579,7 +579,7 @@ function hookConfigPathForAgent(rootDir: string, agent: AgentType): string | nul
     case "kilo":
       return path.join(rootDir, ".kilo", "kilo.json");
     case "copilot":
-      return path.join(rootDir, ".github", "hooks", "swarmvault-graph-first.json");
+      return path.join(rootDir, ".github", "hooks", "beehive-graph-first.json");
     default:
       return null;
   }
@@ -703,7 +703,7 @@ async function cleanupLegacyAntigravityFiles(rootDir: string): Promise<string[]>
       [
         buildAntigravityRulesFile(),
         buildAntigravityRulesFile(PRE_GRAPH_FIRST_RULE_BULLETS),
-        buildAntigravityRulesFile(LEGACY_SWARMVAULT_RULE_BULLETS),
+        buildAntigravityRulesFile(LEGACY_BEEHIVE_RULE_BULLETS),
         buildLegacyAntigravityRulesFile(PRE_WORKSPACE_RULE_BULLETS)
       ],
       "Legacy Antigravity rules file"
@@ -824,8 +824,11 @@ function withPluginEntry(config: PluginConfig, pluginEntry: string): PluginConfi
   };
 }
 
-function isSwarmvaultClaudeEntry(entry: ClaudeHookEntry): boolean {
-  return JSON.stringify(entry).includes("swarmvault-graph-first.js");
+const CLAUDE_MANAGED_HOOK_SCRIPTS = ["beehive-graph-first.js"];
+
+function isBeehiveClaudeEntry(entry: ClaudeHookEntry): boolean {
+  const serialized = JSON.stringify(entry);
+  return CLAUDE_MANAGED_HOOK_SCRIPTS.some((scriptName) => serialized.includes(scriptName));
 }
 
 /**
@@ -840,7 +843,7 @@ function mergeClaudeHookSettings(settings: ClaudeSettings, scriptCommandPath: st
   const postEditCommand = `node "${scriptCommandPath}" post-edit`;
 
   const hooks = settings.hooks ?? {};
-  const keepForeign = (entries: ClaudeHookEntry[] | undefined) => (entries ?? []).filter((entry) => !isSwarmvaultClaudeEntry(entry));
+  const keepForeign = (entries: ClaudeHookEntry[] | undefined) => (entries ?? []).filter((entry) => !isBeehiveClaudeEntry(entry));
 
   const sessionStart = keepForeign(hooks.SessionStart);
   for (const matcher of claudeSessionMatchers) {
@@ -860,7 +863,7 @@ function mergeClaudeHookSettings(settings: ClaudeSettings, scriptCommandPath: st
 
 async function installClaudeHook(rootDir: string): Promise<{ path: string; warnings: string[] }> {
   const settingsPath = path.join(rootDir, ".claude", "settings.json");
-  const scriptPath = path.join(rootDir, ".claude", "hooks", "swarmvault-graph-first.js");
+  const scriptPath = path.join(rootDir, ".claude", "hooks", "beehive-graph-first.js");
   await writeOwnedFile(scriptPath, await readBuiltHook("claude.js"), true);
   await ensureDir(path.dirname(settingsPath));
 
@@ -869,7 +872,7 @@ async function installClaudeHook(rootDir: string): Promise<{ path: string; warni
     return { path: settingsPath, warnings };
   }
 
-  const merged = mergeClaudeHookSettings(settings, "$CLAUDE_PROJECT_DIR/.claude/hooks/swarmvault-graph-first.js");
+  const merged = mergeClaudeHookSettings(settings, "$CLAUDE_PROJECT_DIR/.claude/hooks/beehive-graph-first.js");
   await fs.writeFile(settingsPath, `${JSON.stringify(merged, null, 2)}\n`, "utf8");
   return { path: settingsPath, warnings: [] };
 }
@@ -879,7 +882,7 @@ function claudeUserSettingsPath(): string {
 }
 
 function claudeUserHookScriptPath(): string {
-  return path.join(os.homedir(), ".claude", "hooks", "swarmvault-graph-first.js");
+  return path.join(os.homedir(), ".claude", "hooks", "beehive-graph-first.js");
 }
 
 /**
@@ -897,13 +900,13 @@ async function installClaudeUserHook(): Promise<{ paths: string[]; warnings: str
     return { paths: [settingsPath, scriptPath], warnings };
   }
 
-  const merged = mergeClaudeHookSettings(settings, "$HOME/.claude/hooks/swarmvault-graph-first.js");
+  const merged = mergeClaudeHookSettings(settings, "$HOME/.claude/hooks/beehive-graph-first.js");
   await fs.writeFile(settingsPath, `${JSON.stringify(merged, null, 2)}\n`, "utf8");
   return { paths: [settingsPath, scriptPath], warnings: [] };
 }
 
 const ARTIFACT_DIRS = ["raw", "wiki", "state", "agent", "inbox"];
-const GITIGNORE_HYGIENE_MARKER = "# swarmvault artifacts";
+const GITIGNORE_HYGIENE_MARKER = "# beehive artifacts";
 
 /**
  * Keep vault artifacts from breaking the host project: stored source copies
@@ -915,7 +918,7 @@ async function ensureHostProjectHygiene(rootDir: string): Promise<{ notices: str
   const notices: string[] = [];
   const warnings: string[] = [];
 
-  if (process.env.SWARMVAULT_OUT?.trim()) {
+  if (process.env.BEEHIVE_OUT?.trim()) {
     return { notices, warnings };
   }
 
@@ -924,7 +927,7 @@ async function ensureHostProjectHygiene(rootDir: string): Promise<{ notices: str
     const gitignorePath = path.join(rootDir, ".gitignore");
     const existing = (await fileExists(gitignorePath)) ? await fs.readFile(gitignorePath, "utf8") : "";
     if (!existing.includes(GITIGNORE_HYGIENE_MARKER)) {
-      const block = `\n${GITIGNORE_HYGIENE_MARKER}\n${ARTIFACT_DIRS.map((dir) => `${dir}/`).join("\n")}\nswarmvault.config.json\nswarmvault.schema.md\n`;
+      const block = `\n${GITIGNORE_HYGIENE_MARKER}\n${ARTIFACT_DIRS.map((dir) => `${dir}/`).join("\n")}\nbeehive.config.json\nbeehive.schema.md\n`;
       await fs.writeFile(gitignorePath, `${existing.replace(/\n*$/, "\n")}${block}`, "utf8");
       notices.push("Added Beehive artifact directories to .gitignore.");
     }
@@ -990,14 +993,14 @@ async function ensureHostProjectHygiene(rootDir: string): Promise<{ notices: str
 }
 
 /**
- * Persist the graph-first hook mode into swarmvault.config.json so the
+ * Persist the graph-first hook mode into beehive.config.json so the
  * installed hooks pick it up. Enforcement ("deny") is an explicit install-time
  * opt-in; without it the hooks stay advisory ("context").
  */
 async function persistGraphFirstMode(rootDir: string, mode: "deny" | "context" | "off"): Promise<{ warnings: string[] }> {
-  const configPath = path.join(rootDir, "swarmvault.config.json");
+  const configPath = path.join(rootDir, "beehive.config.json");
   if (!(await fileExists(configPath))) {
-    return { warnings: [`No swarmvault.config.json at ${rootDir}; run swarmvault init or set hooks.graphFirst manually.`] };
+    return { warnings: [`No beehive.config.json at ${rootDir}; run beehive init or set hooks.graphFirst manually.`] };
   }
   try {
     const parsed = JSON.parse(await fs.readFile(configPath, "utf8")) as Record<string, unknown>;
@@ -1011,7 +1014,7 @@ async function persistGraphFirstMode(rootDir: string, mode: "deny" | "context" |
     await fs.writeFile(configPath, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
     return { warnings: [] };
   } catch {
-    return { warnings: ["Could not update swarmvault.config.json; set hooks.graphFirst manually."] };
+    return { warnings: ["Could not update beehive.config.json; set hooks.graphFirst manually."] };
   }
 }
 
@@ -1023,8 +1026,8 @@ async function installClaudeMcp(rootDir: string): Promise<{ path: string; warnin
     return { path: mcpConfigPath, warnings };
   }
   const mcpServers = config.mcpServers ?? {};
-  if (!mcpServers.swarmvault) {
-    mcpServers.swarmvault = { command: "swarmvault", args: ["mcp"] };
+  if (!mcpServers.beehive) {
+    mcpServers.beehive = { command: "beehive", args: ["mcp"] };
   }
   await writeOwnedFile(mcpConfigPath, `${JSON.stringify({ ...config, mcpServers }, null, 2)}\n`);
   return { path: mcpConfigPath, warnings: [] };
@@ -1032,7 +1035,7 @@ async function installClaudeMcp(rootDir: string): Promise<{ path: string; warnin
 
 async function installGeminiHook(rootDir: string): Promise<{ paths: string[]; warnings: string[] }> {
   const settingsPath = path.join(rootDir, ".gemini", "settings.json");
-  const scriptPath = path.join(rootDir, ".gemini", "hooks", "swarmvault-graph-first.js");
+  const scriptPath = path.join(rootDir, ".gemini", "hooks", "beehive-graph-first.js");
   await writeOwnedFile(scriptPath, await readBuiltHook("gemini.js"), true);
 
   const { data: settings, warnings } = await readJsonWithWarnings<GeminiSettings>(settingsPath, {}, ".gemini/settings.json");
@@ -1043,22 +1046,20 @@ async function installGeminiHook(rootDir: string): Promise<{ paths: string[]; wa
   const hooks = settings.hooks ?? {};
   const sessionStart = hooks.SessionStart ?? [];
   const beforeTool = hooks.BeforeTool ?? [];
-  const sessionCommand = "node .gemini/hooks/swarmvault-graph-first.js session-start";
-  const beforeToolCommand = "node .gemini/hooks/swarmvault-graph-first.js before-tool";
+  const sessionCommand = "node .gemini/hooks/beehive-graph-first.js session-start";
+  const beforeToolCommand = "node .gemini/hooks/beehive-graph-first.js before-tool";
 
-  if (
-    !sessionStart.some((entry) => entry.matcher === geminiSessionMatcher && JSON.stringify(entry).includes("swarmvault-graph-first.js"))
-  ) {
+  if (!sessionStart.some((entry) => entry.matcher === geminiSessionMatcher && JSON.stringify(entry).includes("beehive-graph-first.js"))) {
     sessionStart.push({
       matcher: geminiSessionMatcher,
-      hooks: [{ name: "swarmvault-graph-first", type: "command", command: sessionCommand }]
+      hooks: [{ name: "beehive-graph-first", type: "command", command: sessionCommand }]
     });
   }
 
-  if (!beforeTool.some((entry) => entry.matcher === geminiSearchMatcher && JSON.stringify(entry).includes("swarmvault-graph-first.js"))) {
+  if (!beforeTool.some((entry) => entry.matcher === geminiSearchMatcher && JSON.stringify(entry).includes("beehive-graph-first.js"))) {
     beforeTool.push({
       matcher: geminiSearchMatcher,
-      hooks: [{ name: "swarmvault-graph-first", type: "command", command: beforeToolCommand }]
+      hooks: [{ name: "beehive-graph-first", type: "command", command: beforeToolCommand }]
     });
   }
 
@@ -1074,7 +1075,7 @@ async function installGeminiHook(rootDir: string): Promise<{ paths: string[]; wa
 
 async function installCodexHook(rootDir: string): Promise<{ paths: string[]; warnings: string[] }> {
   const settingsPath = path.join(rootDir, ".codex", "hooks.json");
-  const scriptPath = path.join(rootDir, ".codex", "hooks", "swarmvault-graph-first.js");
+  const scriptPath = path.join(rootDir, ".codex", "hooks", "beehive-graph-first.js");
   await writeOwnedFile(scriptPath, await readBuiltHook("codex.js"), true);
 
   const { data: settings, warnings } = await readJsonWithWarnings<CodexSettings>(settingsPath, {}, ".codex/hooks.json");
@@ -1085,16 +1086,16 @@ async function installCodexHook(rootDir: string): Promise<{ paths: string[]; war
   const hooks = settings.hooks ?? {};
   const sessionStart = hooks.SessionStart ?? [];
   const preToolUse = hooks.PreToolUse ?? [];
-  const sessionCommand = "node .codex/hooks/swarmvault-graph-first.js session-start";
-  const preToolUseCommand = "node .codex/hooks/swarmvault-graph-first.js pre-tool-use";
+  const sessionCommand = "node .codex/hooks/beehive-graph-first.js session-start";
+  const preToolUseCommand = "node .codex/hooks/beehive-graph-first.js pre-tool-use";
 
-  if (!sessionStart.some((entry) => JSON.stringify(entry).includes("swarmvault-graph-first.js"))) {
+  if (!sessionStart.some((entry) => JSON.stringify(entry).includes("beehive-graph-first.js"))) {
     sessionStart.push({
       hooks: [{ type: "command", command: sessionCommand }]
     });
   }
 
-  if (!preToolUse.some((entry) => entry.matcher === codexSearchMatcher && JSON.stringify(entry).includes("swarmvault-graph-first.js"))) {
+  if (!preToolUse.some((entry) => entry.matcher === codexSearchMatcher && JSON.stringify(entry).includes("beehive-graph-first.js"))) {
     preToolUse.push({
       matcher: codexSearchMatcher,
       hooks: [{ type: "command", command: preToolUseCommand }]
@@ -1152,8 +1153,8 @@ async function mergeAiderConfig(rootDir: string): Promise<{ path: string; warnin
 
 async function installCopilotHook(rootDir: string): Promise<{ paths: string[]; warnings: string[] }> {
   const hooksDir = path.join(rootDir, ".github", "hooks");
-  const scriptPath = path.join(hooksDir, "swarmvault-graph-first.js");
-  const configPath = path.join(hooksDir, "swarmvault-graph-first.json");
+  const scriptPath = path.join(hooksDir, "beehive-graph-first.js");
+  const configPath = path.join(hooksDir, "beehive-graph-first.json");
   await writeOwnedFile(scriptPath, await readBuiltHook("copilot.js"), true);
 
   const config: CopilotHookConfig = {
@@ -1162,8 +1163,8 @@ async function installCopilotHook(rootDir: string): Promise<{ paths: string[]; w
       sessionStart: [
         {
           type: "command",
-          bash: "node .github/hooks/swarmvault-graph-first.js session-start",
-          powershell: "node .github/hooks/swarmvault-graph-first.js session-start",
+          bash: "node .github/hooks/beehive-graph-first.js session-start",
+          powershell: "node .github/hooks/beehive-graph-first.js session-start",
           cwd: ".",
           timeoutSec: 10
         }
@@ -1172,8 +1173,8 @@ async function installCopilotHook(rootDir: string): Promise<{ paths: string[]; w
         {
           matcher: "glob|grep",
           type: "command",
-          bash: "node .github/hooks/swarmvault-graph-first.js pre-tool-use",
-          powershell: "node .github/hooks/swarmvault-graph-first.js pre-tool-use",
+          bash: "node .github/hooks/beehive-graph-first.js pre-tool-use",
+          powershell: "node .github/hooks/beehive-graph-first.js pre-tool-use",
           cwd: ".",
           timeoutSec: 10
         }
@@ -1186,19 +1187,19 @@ async function installCopilotHook(rootDir: string): Promise<{ paths: string[]; w
 }
 
 async function installOpenCodeHook(rootDir: string): Promise<{ paths: string[]; warnings: string[] }> {
-  const pluginPath = path.join(rootDir, ".opencode", "plugins", "swarmvault-graph-first.js");
+  const pluginPath = path.join(rootDir, ".opencode", "plugins", "beehive-graph-first.js");
   const configPath = path.join(rootDir, ".opencode", "opencode.json");
   await writeOwnedFile(pluginPath, await readBuiltHook("opencode.js"));
   const { data: config, warnings } = await readJsonWithWarnings<PluginConfig>(configPath, {}, ".opencode/opencode.json");
   if (warnings.length > 0 && (await fileExists(configPath))) {
     return { paths: [pluginPath, configPath], warnings };
   }
-  await writeOwnedFile(configPath, `${JSON.stringify(withPluginEntry(config, "./plugins/swarmvault-graph-first.js"), null, 2)}\n`);
+  await writeOwnedFile(configPath, `${JSON.stringify(withPluginEntry(config, "./plugins/beehive-graph-first.js"), null, 2)}\n`);
   return { paths: [pluginPath, configPath], warnings: [] };
 }
 
 async function installKiloHook(rootDir: string): Promise<{ paths: string[]; warnings: string[] }> {
-  const pluginPath = path.join(rootDir, ".kilo", "plugins", "swarmvault.js");
+  const pluginPath = path.join(rootDir, ".kilo", "plugins", "beehive.js");
   const configPath = path.join(rootDir, ".kilo", "kilo.json");
   const jsoncPath = path.join(rootDir, ".kilo", "kilo.jsonc");
   await writeOwnedFile(pluginPath, buildKiloPluginFile());
@@ -1211,7 +1212,7 @@ async function installKiloHook(rootDir: string): Promise<{ paths: string[]; warn
   if (warnings.length > 0 && ((await fileExists(configPath)) || (await fileExists(jsoncPath)))) {
     return { paths: [pluginPath, configPath], warnings };
   }
-  await writeOwnedFile(configPath, `${JSON.stringify(withPluginEntry(config, "./plugins/swarmvault.js"), null, 2)}\n`);
+  await writeOwnedFile(configPath, `${JSON.stringify(withPluginEntry(config, "./plugins/beehive.js"), null, 2)}\n`);
   return { paths: [pluginPath, configPath], warnings: [] };
 }
 

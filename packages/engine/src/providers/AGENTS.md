@@ -33,9 +33,9 @@ Provider adapters are capability-driven boundaries between Beehive tasks and mod
 ## TESTS
 
 ```bash
-pnpm --filter @swarmvaultai/engine test -- provider
-pnpm --filter @swarmvaultai/engine test -- openai-provider
-pnpm --filter @swarmvaultai/engine test -- local-whisper
+pnpm --filter @beehive/engine test -- provider
+pnpm --filter @beehive/engine test -- openai-provider
+pnpm --filter @beehive/engine test -- local-whisper
 ```
 
 ## NOTES

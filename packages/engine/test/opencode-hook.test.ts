@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import swarmvaultGraphFirst from "../src/hooks/opencode.js";
+import beehiveGraphFirst from "../src/hooks/opencode.js";
 
 type BunRuntime = {
   file(input: string): { arrayBuffer(): Promise<ArrayBuffer> };
@@ -17,8 +17,8 @@ let previousWorkspaceId: string | undefined;
 beforeEach(() => {
   hadBun = Reflect.has(globalThis, "Bun");
   previousBun = hadBun ? (Reflect.get(globalThis, "Bun") as BunRuntime) : undefined;
-  previousOut = process.env.SWARMVAULT_OUT;
-  previousWorkspaceId = process.env.SWARMVAULT_WORKSPACE_ID;
+  previousOut = process.env.BEEHIVE_OUT;
+  previousWorkspaceId = process.env.BEEHIVE_WORKSPACE_ID;
   Object.defineProperty(globalThis, "Bun", {
     configurable: true,
     writable: true,
@@ -46,14 +46,14 @@ afterEach(async () => {
     Reflect.deleteProperty(globalThis, "Bun");
   }
   if (previousOut === undefined) {
-    delete process.env.SWARMVAULT_OUT;
+    delete process.env.BEEHIVE_OUT;
   } else {
-    process.env.SWARMVAULT_OUT = previousOut;
+    process.env.BEEHIVE_OUT = previousOut;
   }
   if (previousWorkspaceId === undefined) {
-    delete process.env.SWARMVAULT_WORKSPACE_ID;
+    delete process.env.BEEHIVE_WORKSPACE_ID;
   } else {
-    process.env.SWARMVAULT_WORKSPACE_ID = previousWorkspaceId;
+    process.env.BEEHIVE_WORKSPACE_ID = previousWorkspaceId;
   }
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
 });
@@ -68,11 +68,11 @@ describe("OpenCode graph-first hook", () => {
     expect(messages.join("\n")).toContain("Beehive graph-first");
   });
 
-  it("resolves the graph report under SWARMVAULT_OUT and SWARMVAULT_WORKSPACE_ID", async () => {
+  it("resolves the graph report under BEEHIVE_OUT and BEEHIVE_WORKSPACE_ID", async () => {
     const rootDir = await createTempWorkspace();
-    process.env.SWARMVAULT_OUT = ".swarmvault-out";
-    process.env.SWARMVAULT_WORKSPACE_ID = "qa";
-    await writeReport(path.join(rootDir, ".swarmvault-out", "qa", "wiki", "graph", "report.md"));
+    process.env.BEEHIVE_OUT = ".beehive-out";
+    process.env.BEEHIVE_WORKSPACE_ID = "qa";
+    await writeReport(path.join(rootDir, ".beehive-out", "qa", "wiki", "graph", "report.md"));
 
     const messages = await collectSessionMessages(rootDir);
 
@@ -89,7 +89,7 @@ describe("OpenCode graph-first hook", () => {
 });
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-opencode-hook-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-opencode-hook-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -101,7 +101,7 @@ async function writeReport(filePath: string): Promise<void> {
 
 async function collectSessionMessages(cwd: string): Promise<string[]> {
   const messages: string[] = [];
-  const plugin = await swarmvaultGraphFirst({
+  const plugin = await beehiveGraphFirst({
     client: {
       app: {
         log(entry) {

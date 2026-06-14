@@ -16,7 +16,7 @@ export interface MarkerState {
 
 export function markerState(cwd: string, agentKey: string): MarkerState {
   const hash = crypto.createHash("sha256").update(cwd).digest("hex");
-  const dir = path.join(os.tmpdir(), "swarmvault-agent-hooks", agentKey, hash);
+  const dir = path.join(os.tmpdir(), "beehive-agent-hooks", agentKey, hash);
   return {
     dir,
     markerPath: path.join(dir, "report-read")
@@ -130,9 +130,9 @@ export async function hasReport(cwd: string): Promise<boolean> {
 }
 
 function artifactRootDir(cwd: string): string {
-  const override = process.env.SWARMVAULT_OUT?.trim();
+  const override = process.env.BEEHIVE_OUT?.trim();
   const baseDir = !override ? path.resolve(cwd) : path.isAbsolute(override) ? path.resolve(override) : path.resolve(cwd, override);
-  const workspaceId = process.env.SWARMVAULT_WORKSPACE_ID?.trim();
+  const workspaceId = process.env.BEEHIVE_WORKSPACE_ID?.trim();
   return workspaceId && /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(workspaceId) ? path.join(baseDir, workspaceId) : baseDir;
 }
 
@@ -269,18 +269,18 @@ export async function isNarrowSearch(input: unknown): Promise<boolean> {
 export type GraphFirstMode = "deny" | "context" | "off";
 
 /**
- * Resolution order: SWARMVAULT_GRAPH_FIRST env var, then `hooks.graphFirst`
- * in swarmvault.config.json, then the "context" default. Enforcement
+ * Resolution order: BEEHIVE_GRAPH_FIRST env var, then `hooks.graphFirst`
+ * in beehive.config.json, then the "context" default. Enforcement
  * ("deny", the once-per-session guided redirect) is opt-in — set it at
- * install time with `swarmvault install --agent <a> --hook --graph-first`.
+ * install time with `beehive install --agent <a> --hook --graph-first`.
  */
 export async function resolveGraphFirstMode(cwd: string): Promise<GraphFirstMode> {
-  const fromEnv = process.env.SWARMVAULT_GRAPH_FIRST?.trim().toLowerCase();
+  const fromEnv = process.env.BEEHIVE_GRAPH_FIRST?.trim().toLowerCase();
   if (fromEnv === "deny" || fromEnv === "context" || fromEnv === "off") {
     return fromEnv;
   }
   try {
-    const raw = await fs.readFile(path.join(cwd, "swarmvault.config.json"), "utf8");
+    const raw = await fs.readFile(path.join(cwd, "beehive.config.json"), "utf8");
     const parsed = JSON.parse(raw) as { hooks?: { graphFirst?: unknown } };
     const fromConfig = typeof parsed?.hooks?.graphFirst === "string" ? parsed.hooks.graphFirst.toLowerCase() : "";
     if (fromConfig === "deny" || fromConfig === "context" || fromConfig === "off") {
@@ -372,13 +372,13 @@ export async function readHookInput(): Promise<unknown> {
 }
 
 export const REPORT_NOTE =
-  "Beehive graph report exists at wiki/graph/report.md, at $SWARMVAULT_OUT/wiki/graph/report.md when only SWARMVAULT_OUT is set, or under <artifact-base>/$SWARMVAULT_WORKSPACE_ID/wiki/graph/report.md when a workspace id is active. Read it before broad grep/glob searching.";
+  "Beehive graph report exists at wiki/graph/report.md, at $BEEHIVE_OUT/wiki/graph/report.md when only BEEHIVE_OUT is set, or under <artifact-base>/$BEEHIVE_WORKSPACE_ID/wiki/graph/report.md when a workspace id is active. Read it before broad grep/glob searching.";
 
 const GRAPH_FIRST_COMMANDS = [
-  '- `swarmvault graph query "<seed>"` — top matches with page paths plus an inline excerpt of the best page; usually answers where-is/what-calls in one command',
-  '- `swarmvault graph explain "<node>"` — compact node summary with neighbors and its wiki page',
-  '- `swarmvault graph callers "<symbol>"` — exact caller list with file:line call sites; use for who-calls/impact questions instead of grep',
-  "- `swarmvault graph blast <target>` — reverse-import impact analysis for change-impact questions",
+  '- `beehive graph query "<seed>"` — top matches with page paths plus an inline excerpt of the best page; usually answers where-is/what-calls in one command',
+  '- `beehive graph explain "<node>"` — compact node summary with neighbors and its wiki page',
+  '- `beehive graph callers "<symbol>"` — exact caller list with file:line call sites; use for who-calls/impact questions instead of grep',
+  "- `beehive graph blast <target>` — reverse-import impact analysis for change-impact questions",
   "- `wiki/graph/report.md` under the active artifact root — orientation report (architecture, communities, key nodes)",
   "Do not add `--json` to these — the plain output is far smaller and already structured.",
   "Trust the graph/wiki answer for orientation questions; verify in source only when you are about to edit or the evidence conflicts. Answer directly in chat — do not write answer files unless asked for a durable artifact."
@@ -394,13 +394,11 @@ export function buildGraphFirstNote(staleness: WatchStaleness | null): string {
   ];
   if (staleness?.pendingSemanticRefreshCount) {
     lines.push(
-      `Note: ${staleness.pendingSemanticRefreshCount} non-code change(s) await semantic refresh — run \`swarmvault compile\` when convenient.`
+      `Note: ${staleness.pendingSemanticRefreshCount} non-code change(s) await semantic refresh — run \`beehive compile\` when convenient.`
     );
   }
   if (staleness?.lastRunSuccess === false) {
-    lines.push(
-      "Note: the last graph refresh failed — run `swarmvault graph status` then `swarmvault graph update` before relying on the graph."
-    );
+    lines.push("Note: the last graph refresh failed — run `beehive graph status` then `beehive graph update` before relying on the graph.");
   }
   return lines.join("\n");
 }
@@ -421,7 +419,7 @@ export function buildDenyReason(toolName: string, input: unknown): string {
   const term = extractSearchTerm(input).slice(0, 120);
   return [
     `Beehive graph-first: this repo has a compiled code graph that answers structure questions in far fewer tokens than ${toolName || "broad search"}.`,
-    `Run: swarmvault graph query "${term}" — it prints the top matches with page paths plus an inline excerpt of the best page, which usually answers the question without reading source. For who-calls/impact questions run swarmvault graph callers "${term}" (exact file:line call sites). Do not add --json (much larger output).`,
+    `Run: beehive graph query "${term}" — it prints the top matches with page paths plus an inline excerpt of the best page, which usually answers the question without reading source. For who-calls/impact questions run beehive graph callers "${term}" (exact file:line call sites). Do not add --json (much larger output).`,
     "Trust that answer for orientation questions instead of re-verifying in source files.",
     "If the graph does not answer, repeat this exact search — it will be allowed for the rest of the session."
   ].join(" ");

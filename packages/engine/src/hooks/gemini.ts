@@ -1,6 +1,6 @@
 // Standalone Gemini CLI hook script. Bundled by tsup into
 // dist/hooks/gemini.js and installed into user projects as
-// `.gemini/hooks/swarmvault-graph-first.js`.
+// `.gemini/hooks/beehive-graph-first.js`.
 
 import {
   buildDenyReason,

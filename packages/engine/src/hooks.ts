@@ -4,8 +4,8 @@ import process from "node:process";
 import type { GitHookStatus } from "./types.js";
 import { ensureDir, fileExists } from "./utils.js";
 
-const hookStart = "# >>> swarmvault hook >>>";
-const hookEnd = "# <<< swarmvault hook <<<";
+const hookStart = "# >>> beehive hook >>>";
+const hookEnd = "# <<< beehive hook <<<";
 
 async function findNearestGitRoot(startPath: string): Promise<string | null> {
   let current = path.resolve(startPath);
@@ -34,28 +34,27 @@ function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
 }
 
-function resolveSwarmvaultExecutableCandidate(): string {
+function resolveBeehiveExecutableCandidate(): string {
   const argvPath = process.argv[1];
   if (
     typeof argvPath === "string" &&
     argvPath.trim() &&
-    (argvPath.includes(`${path.sep}@swarmvaultai${path.sep}cli${path.sep}`) ||
-      argvPath.includes(`${path.sep}packages${path.sep}cli${path.sep}`))
+    (argvPath.includes(`${path.sep}@beehive${path.sep}cli${path.sep}`) || argvPath.includes(`${path.sep}packages${path.sep}cli${path.sep}`))
   ) {
     return path.resolve(argvPath);
   }
-  return "swarmvault";
+  return "beehive";
 }
 
 function managedHookBlock(vaultRoot: string): string {
-  const resolvedExecutable = resolveSwarmvaultExecutableCandidate();
+  const resolvedExecutable = resolveBeehiveExecutableCandidate();
   return [
     hookStart,
     `cd ${shellQuote(vaultRoot)} || exit 0`,
-    `swarmvault_bin=${shellQuote(resolvedExecutable)}`,
-    '[ ! -x "$swarmvault_bin" ] && swarmvault_bin=$(command -v swarmvault 2>/dev/null || true)',
-    'if [ -n "$swarmvault_bin" ] && [ -x "$swarmvault_bin" ]; then',
-    "  \"$swarmvault_bin\" watch --repo --once --code-only >/dev/null 2>&1 || printf '[swarmvault hook] refresh failed\\n' >&2",
+    `beehive_bin=${shellQuote(resolvedExecutable)}`,
+    '[ ! -x "$beehive_bin" ] && beehive_bin=$(command -v beehive 2>/dev/null || true)',
+    'if [ -n "$beehive_bin" ] && [ -x "$beehive_bin" ]; then',
+    "  \"$beehive_bin\" watch --repo --once --code-only >/dev/null 2>&1 || printf '[beehive hook] refresh failed\\n' >&2",
     "fi",
     hookEnd,
     ""
@@ -150,7 +149,7 @@ export async function installGitHooks(rootDir: string, options: GitHookTargetOpt
     throw new Error(
       options.repoPath
         ? `No git repository found at or above ${options.repoPath}.`
-        : "No git repository found above the current vault. Pass a repo path (swarmvault hook install <repo>) when the tracked repo lives below the vault root."
+        : "No git repository found above the current vault. Pass a repo path (beehive hook install <repo>) when the tracked repo lives below the vault root."
     );
   }
 

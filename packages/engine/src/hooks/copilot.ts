@@ -1,6 +1,6 @@
 // Standalone GitHub Copilot hook script. Bundled by tsup into
 // dist/hooks/copilot.js and installed into user projects as
-// `.github/hooks/swarmvault-graph-first.js`.
+// `.github/hooks/beehive-graph-first.js`.
 
 import {
   buildDenyReason,

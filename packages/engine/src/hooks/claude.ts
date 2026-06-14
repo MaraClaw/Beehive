@@ -1,6 +1,6 @@
 // Standalone Claude Code hook script. Bundled by tsup into
 // dist/hooks/claude.js and installed into user projects as
-// `.claude/hooks/swarmvault-graph-first.js`. Must not import from engine
+// `.claude/hooks/beehive-graph-first.js`. Must not import from engine
 // code — tsup inlines only the shared marker-state helpers.
 
 import { spawn } from "node:child_process";
@@ -51,7 +51,7 @@ async function handlePostEdit(cwd: string, input: unknown): Promise<void> {
   const editedPaths = collectEditedFilePaths(input, cwd);
   if (editedPaths.length > 0) {
     try {
-      const child = spawn("swarmvault", ["graph", "update", ...editedPaths.flatMap((p) => ["--file", p]), "--json"], {
+      const child = spawn("beehive", ["graph", "update", ...editedPaths.flatMap((p) => ["--file", p]), "--json"], {
         cwd,
         detached: true,
         stdio: "ignore"

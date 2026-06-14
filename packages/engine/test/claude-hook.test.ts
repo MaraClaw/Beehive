@@ -34,12 +34,12 @@ describe("claude graph-first hook", () => {
   let workspace: string;
 
   beforeEach(async () => {
-    workspace = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-claude-hook-"));
+    workspace = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-claude-hook-"));
     await fs.mkdir(path.join(workspace, "wiki", "graph"), { recursive: true });
     await fs.writeFile(path.join(workspace, "wiki", "graph", "report.md"), "# Graph report\n", "utf8");
     // Enforcement is opt-in; these fixtures opt in the way `install
     // --graph-first` does so the deny flow can be exercised.
-    await fs.writeFile(path.join(workspace, "swarmvault.config.json"), `${JSON.stringify({ hooks: { graphFirst: "deny" } })}\n`, "utf8");
+    await fs.writeFile(path.join(workspace, "beehive.config.json"), `${JSON.stringify({ hooks: { graphFirst: "deny" } })}\n`, "utf8");
   });
 
   afterEach(async () => {
@@ -51,7 +51,7 @@ describe("claude graph-first hook", () => {
   }
 
   it("emits empty output when no report exists", async () => {
-    const bare = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-claude-hook-bare-"));
+    const bare = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-claude-hook-bare-"));
     try {
       const result = await runHook("session-start", { cwd: bare });
       expect(result.output).toEqual({});
@@ -64,21 +64,21 @@ describe("claude graph-first hook", () => {
     const result = await startSession();
     const specific = hookOutput(result);
     expect(specific.hookEventName).toBe("SessionStart");
-    expect(String(specific.additionalContext)).toContain("swarmvault graph query");
+    expect(String(specific.additionalContext)).toContain("beehive graph query");
     expect(String(specific.additionalContext)).toContain("Read source files directly only");
   });
 
-  it("resolves the graph report under SWARMVAULT_WORKSPACE_ID", async () => {
-    const scoped = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-claude-hook-workspace-"));
+  it("resolves the graph report under BEEHIVE_WORKSPACE_ID", async () => {
+    const scoped = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-claude-hook-workspace-"));
     try {
       await fs.mkdir(path.join(scoped, "alpha", "wiki", "graph"), { recursive: true });
       await fs.writeFile(path.join(scoped, "alpha", "wiki", "graph", "report.md"), "# Scoped graph report\n", "utf8");
-      await fs.writeFile(path.join(scoped, "swarmvault.config.json"), `${JSON.stringify({ hooks: { graphFirst: "deny" } })}\n`, "utf8");
+      await fs.writeFile(path.join(scoped, "beehive.config.json"), `${JSON.stringify({ hooks: { graphFirst: "deny" } })}\n`, "utf8");
 
-      const result = await runHook("session-start", { hook_event_name: "SessionStart", cwd: scoped }, { SWARMVAULT_WORKSPACE_ID: "alpha" });
+      const result = await runHook("session-start", { hook_event_name: "SessionStart", cwd: scoped }, { BEEHIVE_WORKSPACE_ID: "alpha" });
       const specific = hookOutput(result);
       expect(specific.hookEventName).toBe("SessionStart");
-      expect(String(specific.additionalContext)).toContain("swarmvault graph query");
+      expect(String(specific.additionalContext)).toContain("beehive graph query");
     } finally {
       await fs.rm(scoped, { recursive: true, force: true });
     }
@@ -99,7 +99,7 @@ describe("claude graph-first hook", () => {
   });
 
   it("stays advisory by default when no graph-first opt-in exists", async () => {
-    await fs.rm(path.join(workspace, "swarmvault.config.json"), { force: true });
+    await fs.rm(path.join(workspace, "beehive.config.json"), { force: true });
     await startSession();
     const result = await runHook("pre-tool-use", {
       tool_name: "Grep",
@@ -115,7 +115,7 @@ describe("claude graph-first hook", () => {
     await startSession();
     const result = await runHook("pre-tool-use", {
       tool_name: "Bash",
-      tool_input: { command: 'swarmvault graph status | grep -E "State"' },
+      tool_input: { command: 'beehive graph status | grep -E "State"' },
       cwd: workspace
     });
     expect(result.output).toEqual({});
@@ -133,7 +133,7 @@ describe("claude graph-first hook", () => {
     const first = await runHook("pre-tool-use", grepInput);
     const firstSpecific = hookOutput(first);
     expect(firstSpecific.permissionDecision).toBe("deny");
-    expect(String(firstSpecific.permissionDecisionReason)).toContain('swarmvault graph query "createMcpServer"');
+    expect(String(firstSpecific.permissionDecisionReason)).toContain('beehive graph query "createMcpServer"');
 
     const second = await runHook("pre-tool-use", grepInput);
     expect(hookOutput(second).permissionDecision).not.toBe("deny");
@@ -192,25 +192,25 @@ describe("claude graph-first hook", () => {
     await startSession();
     const result = await runHook("pre-tool-use", {
       tool_name: "Bash",
-      tool_input: { command: "swarmvault graph query auth --json" },
+      tool_input: { command: "beehive graph query auth --json" },
       cwd: workspace
     });
     expect(result.output).toEqual({});
   });
 
-  it("respects SWARMVAULT_GRAPH_FIRST=off", async () => {
+  it("respects BEEHIVE_GRAPH_FIRST=off", async () => {
     await startSession();
     const result = await runHook(
       "pre-tool-use",
       { tool_name: "Grep", tool_input: { pattern: "anything" }, cwd: workspace },
-      { SWARMVAULT_GRAPH_FIRST: "off" }
+      { BEEHIVE_GRAPH_FIRST: "off" }
     );
     expect(result.output).toEqual({});
   });
 
-  it("respects hooks.graphFirst=context in swarmvault.config.json", async () => {
+  it("respects hooks.graphFirst=context in beehive.config.json", async () => {
     await startSession();
-    await fs.writeFile(path.join(workspace, "swarmvault.config.json"), JSON.stringify({ hooks: { graphFirst: "context" } }), "utf8");
+    await fs.writeFile(path.join(workspace, "beehive.config.json"), JSON.stringify({ hooks: { graphFirst: "context" } }), "utf8");
     const result = await runHook("pre-tool-use", {
       tool_name: "Grep",
       tool_input: { pattern: "anything" },
