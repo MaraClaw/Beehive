@@ -76,7 +76,7 @@ describe.skipIf(!runIntegration)("LocalWhisperProviderAdapter integration", () =
   let tmpRoot: string;
 
   beforeEach(async () => {
-    tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-whisper-int-"));
+    tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-whisper-int-"));
   });
 
   afterEach(async () => {
@@ -108,7 +108,7 @@ describe.skipIf(!runIntegration)("audio ingest end-to-end via local-whisper", ()
   let vaultDir: string;
 
   beforeEach(async () => {
-    vaultDir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-whisper-ingest-"));
+    vaultDir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-whisper-ingest-"));
   });
 
   afterEach(async () => {

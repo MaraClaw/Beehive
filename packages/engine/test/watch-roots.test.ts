@@ -7,7 +7,7 @@ import { addWatchedRoot, initVault, listWatchedRoots, removeWatchedRoot, resolve
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-watch-roots-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-watch-roots-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -17,13 +17,13 @@ afterEach(async () => {
 });
 
 async function readConfig(rootDir: string): Promise<Record<string, unknown>> {
-  const raw = await fs.readFile(path.join(rootDir, "swarmvault.config.json"), "utf8");
+  const raw = await fs.readFile(path.join(rootDir, "beehive.config.json"), "utf8");
   return JSON.parse(raw) as Record<string, unknown>;
 }
 
 async function writeConfig(rootDir: string, patch: Record<string, unknown>): Promise<void> {
   const current = await readConfig(rootDir);
-  await fs.writeFile(path.join(rootDir, "swarmvault.config.json"), `${JSON.stringify({ ...current, ...patch }, null, 2)}\n`, "utf8");
+  await fs.writeFile(path.join(rootDir, "beehive.config.json"), `${JSON.stringify({ ...current, ...patch }, null, 2)}\n`, "utf8");
 }
 
 describe("watch root resolution", () => {
@@ -37,8 +37,8 @@ describe("watch root resolution", () => {
   it("returns the explicit config.watch.repoRoots list when set", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const repoOne = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-repoOne-"));
-    const repoTwo = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-repoTwo-"));
+    const repoOne = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-repoOne-"));
+    const repoTwo = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-repoTwo-"));
     tempDirs.push(repoOne, repoTwo);
     await writeConfig(rootDir, { watch: { repoRoots: [repoOne, repoTwo] } });
     const roots = await resolveWatchedRepoRoots(rootDir);
@@ -48,8 +48,8 @@ describe("watch root resolution", () => {
   it("honors excludeRepoRoots deny list", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const keep = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-keep-"));
-    const drop = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-drop-"));
+    const keep = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-keep-"));
+    const drop = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-drop-"));
     tempDirs.push(keep, drop);
     await writeConfig(rootDir, { watch: { repoRoots: [keep, drop], excludeRepoRoots: [drop] } });
     const roots = await resolveWatchedRepoRoots(rootDir);
@@ -59,7 +59,7 @@ describe("watch root resolution", () => {
   it("uses overrideRoots verbatim and skips config and discovery", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const custom = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-custom-"));
+    const custom = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-custom-"));
     tempDirs.push(custom);
     await writeConfig(rootDir, { watch: { repoRoots: ["/should/be/ignored"], excludeRepoRoots: [custom] } });
     const roots = await resolveWatchedRepoRoots(rootDir, { overrideRoots: [custom] });
@@ -79,7 +79,7 @@ describe("watch root resolution", () => {
   it("listWatchedRoots matches resolveWatchedRepoRoots output", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const repo = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-repo-"));
+    const repo = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-repo-"));
     tempDirs.push(repo);
     await writeConfig(rootDir, { watch: { repoRoots: [repo] } });
     const [a, b] = await Promise.all([listWatchedRoots(rootDir), resolveWatchedRepoRoots(rootDir)]);
@@ -88,10 +88,10 @@ describe("watch root resolution", () => {
 });
 
 describe("watch root persistence", () => {
-  it("addWatchedRoot writes a deduped path into swarmvault.config.json", async () => {
+  it("addWatchedRoot writes a deduped path into beehive.config.json", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const repo = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-add-"));
+    const repo = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-add-"));
     tempDirs.push(repo);
     const added = await addWatchedRoot(rootDir, repo);
     expect(added).toBe(path.resolve(repo));
@@ -105,7 +105,7 @@ describe("watch root persistence", () => {
   it("removeWatchedRoot removes the path and returns true", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const repo = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-remove-"));
+    const repo = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-remove-"));
     tempDirs.push(repo);
     await addWatchedRoot(rootDir, repo);
     const removed = await removeWatchedRoot(rootDir, repo);

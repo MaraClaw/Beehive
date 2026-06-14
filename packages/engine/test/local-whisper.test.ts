@@ -24,7 +24,7 @@ function makeRunner(result: Partial<WhisperRunResult> = {}): {
 }
 
 async function makeTempDir(): Promise<string> {
-  return fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-local-whisper-test-"));
+  return fs.mkdtemp(path.join(os.tmpdir(), "beehive-local-whisper-test-"));
 }
 
 async function makeFakeBinary(dir: string, name: string): Promise<string> {
@@ -35,7 +35,7 @@ async function makeFakeBinary(dir: string, name: string): Promise<string> {
 }
 
 async function makeFakeModel(home: string, modelName: string): Promise<string> {
-  const modelDir = path.join(home, ".swarmvault", "models");
+  const modelDir = path.join(home, ".beehive", "models");
   await fs.mkdir(modelDir, { recursive: true });
   const full = path.join(modelDir, `ggml-${modelName}.bin`);
   await fs.writeFile(full, "fake-ggml-bytes");
@@ -230,14 +230,14 @@ describe("LocalWhisperProviderAdapter", () => {
     );
   });
 
-  it("prefers SWARMVAULT_WHISPER_BINARY env over PATH search", async () => {
+  it("prefers BEEHIVE_WHISPER_BINARY env over PATH search", async () => {
     const model = await makeFakeModel(tmpRoot, "base.en");
     const customBinary = await makeFakeBinary(tmpRoot, "my-custom-whisper");
     const { runner, calls } = makeRunner({ stdout: "hi\n" });
 
     const adapter = new LocalWhisperProviderAdapter("whisper", "base.en", {
       modelPath: model,
-      env: { SWARMVAULT_WHISPER_BINARY: customBinary, PATH: "/tmp/empty" },
+      env: { BEEHIVE_WHISPER_BINARY: customBinary, PATH: "/tmp/empty" },
       runner,
       tmpDir: tmpRoot
     });
@@ -268,7 +268,7 @@ describe("LocalWhisperProviderAdapter", () => {
     const binary = await makeFakeBinary(tmpRoot, "whisper-cli");
     const adapter = new LocalWhisperProviderAdapter("whisper", "base.en", {
       binaryPath: binary,
-      homeDir: tmpRoot, // no ~/.swarmvault/models here
+      homeDir: tmpRoot, // no ~/.beehive/models here
       tmpDir: tmpRoot
     });
     await expect(adapter.transcribeAudio({ mimeType: "audio/wav", bytes: Buffer.from("x") })).rejects.toThrow(
@@ -290,7 +290,7 @@ describe("LocalWhisperProviderAdapter", () => {
 
     await adapter.transcribeAudio({ mimeType: "audio/wav", bytes: Buffer.from("x") });
     const mIndex = calls[0].args.indexOf("-m");
-    expect(calls[0].args[mIndex + 1]).toBe(path.join(tmpRoot, ".swarmvault", "models", "ggml-small.en.bin"));
+    expect(calls[0].args[mIndex + 1]).toBe(path.join(tmpRoot, ".beehive", "models", "ggml-small.en.bin"));
   });
 });
 

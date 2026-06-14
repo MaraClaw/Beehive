@@ -14,7 +14,7 @@ import {
 } from "../src/providers/local-whisper-setup.js";
 
 async function makeTempDir(label: string): Promise<string> {
-  return fs.mkdtemp(path.join(os.tmpdir(), `swarmvault-${label}-`));
+  return fs.mkdtemp(path.join(os.tmpdir(), `beehive-${label}-`));
 }
 
 async function makeFakeBinary(dir: string, name: string): Promise<string> {
@@ -34,9 +34,9 @@ describe("discoverLocalWhisperBinary", () => {
     await fs.rm(tmpRoot, { recursive: true, force: true });
   });
 
-  it("returns the env override when SWARMVAULT_WHISPER_BINARY is set", async () => {
+  it("returns the env override when BEEHIVE_WHISPER_BINARY is set", async () => {
     const result = await discoverLocalWhisperBinary({
-      env: { SWARMVAULT_WHISPER_BINARY: "/opt/custom/whisper" }
+      env: { BEEHIVE_WHISPER_BINARY: "/opt/custom/whisper" }
     });
     expect(result.binaryPath).toBe("/opt/custom/whisper");
     expect(result.source).toBe("env");
@@ -60,9 +60,9 @@ describe("discoverLocalWhisperBinary", () => {
 });
 
 describe("expectedModelPath / modelDownloadUrl", () => {
-  it("resolves to ~/.swarmvault/models/ggml-<model>.bin", () => {
+  it("resolves to ~/.beehive/models/ggml-<model>.bin", () => {
     const result = expectedModelPath("base.en", "/home/user");
-    expect(result).toBe("/home/user/.swarmvault/models/ggml-base.en.bin");
+    expect(result).toBe("/home/user/.beehive/models/ggml-base.en.bin");
   });
 
   it("builds the canonical Hugging Face URL", () => {
@@ -85,7 +85,7 @@ describe("downloadWhisperModel", () => {
     vi.restoreAllMocks();
   });
 
-  it("streams the response body to ~/.swarmvault/models/ggml-<model>.bin", async () => {
+  it("streams the response body to ~/.beehive/models/ggml-<model>.bin", async () => {
     const payload = Buffer.from("this-is-a-fake-ggml-blob");
     const fetchImpl = vi.fn(
       async () =>
@@ -101,7 +101,7 @@ describe("downloadWhisperModel", () => {
       fetchImpl: fetchImpl as unknown as typeof fetch
     });
 
-    expect(result.path).toBe(path.join(tmpRoot, ".swarmvault", "models", "ggml-tiny.en.bin"));
+    expect(result.path).toBe(path.join(tmpRoot, ".beehive", "models", "ggml-tiny.en.bin"));
     expect(result.bytes).toBe(payload.length);
     expect(fetchImpl).toHaveBeenCalledWith("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin");
     const written = await fs.readFile(result.path);
@@ -239,8 +239,8 @@ describe("summarizeLocalWhisperSetup", () => {
   it("reports binary found via PATH and model present when the file exists", async () => {
     const binDir = path.join(tmpRoot, "bin");
     const binary = await makeFakeBinary(binDir, "whisper-cli");
-    await fs.mkdir(path.join(tmpRoot, ".swarmvault", "models"), { recursive: true });
-    await fs.writeFile(path.join(tmpRoot, ".swarmvault", "models", "ggml-base.en.bin"), "blob");
+    await fs.mkdir(path.join(tmpRoot, ".beehive", "models"), { recursive: true });
+    await fs.writeFile(path.join(tmpRoot, ".beehive", "models", "ggml-base.en.bin"), "blob");
 
     const status = await summarizeLocalWhisperSetup({
       modelName: "base.en",

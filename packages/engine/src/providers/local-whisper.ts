@@ -68,7 +68,7 @@ export class LocalWhisperProviderAdapter extends BaseProviderAdapter {
 
     const tmpDir = this.options.tmpDir ?? os.tmpdir();
     const extension = this.extensionForRequest(request);
-    const stem = `swarmvault-whisper-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    const stem = `beehive-whisper-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     const audioPath = path.join(tmpDir, `${stem}.${extension}`);
     await fs.writeFile(audioPath, request.bytes);
 
@@ -108,7 +108,7 @@ export class LocalWhisperProviderAdapter extends BaseProviderAdapter {
   private async resolveBinaryPath(): Promise<string> {
     if (this.options.binaryPath) return this.options.binaryPath;
     const env = this.options.env ?? process.env;
-    if (env.SWARMVAULT_WHISPER_BINARY) return env.SWARMVAULT_WHISPER_BINARY;
+    if (env.BEEHIVE_WHISPER_BINARY) return env.BEEHIVE_WHISPER_BINARY;
     const pathValue = env.PATH ?? "";
     for (const dir of pathValue.split(path.delimiter)) {
       if (!dir) continue;
@@ -118,7 +118,7 @@ export class LocalWhisperProviderAdapter extends BaseProviderAdapter {
       }
     }
     throw new Error(
-      'Local whisper binary not found. Install whisper.cpp (e.g. "brew install whisper-cpp" or "apt install whisper.cpp") or set "localWhisper.binaryPath" in swarmvault.config.json.'
+      'Local whisper binary not found. Install whisper.cpp (e.g. "brew install whisper-cpp" or "apt install whisper.cpp") or set "localWhisper.binaryPath" in beehive.config.json.'
     );
   }
 
@@ -126,11 +126,9 @@ export class LocalWhisperProviderAdapter extends BaseProviderAdapter {
     if (this.options.modelPath) return this.options.modelPath;
     const home = this.options.homeDir ?? (this.options.env ?? process.env).HOME ?? os.homedir();
     const modelName = this.options.model ?? this.model ?? DEFAULT_MODEL;
-    const candidate = path.join(home, ".swarmvault", "models", `ggml-${modelName}.bin`);
+    const candidate = path.join(home, ".beehive", "models", `ggml-${modelName}.bin`);
     if (await fileExists(candidate)) return candidate;
-    throw new Error(
-      `Whisper model "${modelName}" not found at ${candidate}. Run "swarmvault provider setup --local-whisper" to download it.`
-    );
+    throw new Error(`Whisper model "${modelName}" not found at ${candidate}. Run "beehive provider setup --local-whisper" to download it.`);
   }
 }
 

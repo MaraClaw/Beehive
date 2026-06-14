@@ -68,7 +68,7 @@ describe("OpenAiCompatibleProviderAdapter.generateStructured", () => {
     expect(payload.text).toEqual({
       format: expect.objectContaining({
         type: "json_schema",
-        name: "swarmvault_response",
+        name: "beehive_response",
         strict: true
       })
     });
@@ -125,7 +125,7 @@ describe("OpenAiCompatibleProviderAdapter.generateStructured", () => {
       type: "json_schema",
       json_schema: expect.objectContaining({
         type: "json_schema",
-        name: "swarmvault_response",
+        name: "beehive_response",
         strict: true
       })
     });

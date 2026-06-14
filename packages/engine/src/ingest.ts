@@ -84,8 +84,8 @@ import { clearPendingSemanticRefreshEntries } from "./watch-state.js";
 const DEFAULT_MAX_ASSET_SIZE = 10 * 1024 * 1024;
 const DEFAULT_MAX_DIRECTORY_FILES = 5000;
 const HARD_REPO_IGNORES = new Set([".git", ".venv"]);
-const SWARMVAULT_IGNORE_FILENAME = ".swarmvaultignore";
-const SWARMVAULT_INCLUDE_FILENAME = ".swarmvaultinclude";
+const BEEHIVE_IGNORE_FILENAME = ".beehiveignore";
+const BEEHIVE_INCLUDE_FILENAME = ".beehiveinclude";
 const VCS_BOUNDARY_DIRS = new Set([".git", ".hg", ".svn"]);
 const PROGRESS_UPDATE_INTERVAL = 100;
 const RST_HEADING_MARKERS = new Set(["=", "-", "~", "^", '"', "#", "*", "+"]);
@@ -227,7 +227,7 @@ type NormalizedIngestOptions = {
   exclude: string[];
   maxFiles: number;
   gitignore: boolean;
-  swarmvaultignore: boolean;
+  beehiveignore: boolean;
   video: boolean;
   extractClasses: SourceClass[];
   resume?: string;
@@ -861,24 +861,24 @@ function createProgressReporter(
   let completed = 0;
   let contentBytes = 0;
   let nextUpdate = Math.min(PROGRESS_UPDATE_INTERVAL, totalItems);
-  process.stderr.write(`[swarmvault ${prefix}] starting ${totalItems} file(s)\n`);
+  process.stderr.write(`[beehive ${prefix}] starting ${totalItems} file(s)\n`);
 
   return {
     startFile: (filePath) => {
-      process.stderr.write(`[swarmvault ${prefix}] file ${filePath}\n`);
+      process.stderr.write(`[beehive ${prefix}] file ${filePath}\n`);
     },
     tick: (bytes = 0) => {
       completed += 1;
       contentBytes += Math.max(0, bytes);
       if (completed >= nextUpdate || completed === totalItems) {
-        process.stderr.write(`[swarmvault ${prefix}] ${completed}/${totalItems} (${formatProgressBytes(contentBytes)})\n`);
+        process.stderr.write(`[beehive ${prefix}] ${completed}/${totalItems} (${formatProgressBytes(contentBytes)})\n`);
         while (completed >= nextUpdate) {
           nextUpdate += PROGRESS_UPDATE_INTERVAL;
         }
       }
     },
     finish: (summary) => {
-      process.stderr.write(`[swarmvault ${prefix}] finished ${totalItems} file(s)${summary ? ` (${summary})` : ""}\n`);
+      process.stderr.write(`[beehive ${prefix}] finished ${totalItems} file(s)${summary ? ` (${summary})` : ""}\n`);
     }
   };
 }
@@ -892,7 +892,7 @@ function normalizeIngestOptions(options?: IngestOptions): NormalizedIngestOption
     exclude: (options?.exclude ?? []).map((pattern) => pattern.trim()).filter(Boolean),
     maxFiles: Math.max(1, Math.floor(options?.maxFiles ?? DEFAULT_MAX_DIRECTORY_FILES)),
     gitignore: options?.gitignore ?? true,
-    swarmvaultignore: options?.swarmvaultignore ?? true,
+    beehiveignore: options?.beehiveignore ?? true,
     video: options?.video ?? false,
     extractClasses: options?.extractClasses ?? ["first_party"],
     resume: options?.resume,
@@ -1107,7 +1107,7 @@ function isPrivateIp(ip: string): boolean {
 }
 
 function allowPrivateUrlsForProcess(): boolean {
-  return process.env.SWARMVAULT_ALLOW_PRIVATE_URLS === "1";
+  return process.env.BEEHIVE_ALLOW_PRIVATE_URLS === "1";
 }
 
 function isReservedTestHostname(hostname: string): boolean {
@@ -1663,11 +1663,11 @@ async function appendLocalMatcher(
   return [...matchers, { anchorDir: currentDir, matchInputRelative, matcher }];
 }
 
-async function loadSwarmvaultIgnoreMatchers(inputDir: string, repoRoot: string, enabled: boolean): Promise<CascadingMatcher[]> {
+async function loadBeehiveIgnoreMatchers(inputDir: string, repoRoot: string, enabled: boolean): Promise<CascadingMatcher[]> {
   if (!enabled) {
     return [];
   }
-  return loadCascadingMatchers(inputDir, repoRoot, SWARMVAULT_IGNORE_FILENAME, {
+  return loadCascadingMatchers(inputDir, repoRoot, BEEHIVE_IGNORE_FILENAME, {
     matchInputRelativeFromParents: true
   });
 }
@@ -1710,8 +1710,8 @@ async function collectDirectoryFiles(
   options: NormalizedIngestOptions
 ): Promise<{ files: string[]; skipped: DirectoryIngestResult["skipped"] }> {
   const gitignoreMatchers = await loadCascadingMatchers(inputDir, repoRoot, ".gitignore", { enabled: options.gitignore });
-  const swarmvaultIgnoreMatchers = await loadSwarmvaultIgnoreMatchers(inputDir, repoRoot, options.swarmvaultignore);
-  const includeMatchers = await loadCascadingMatchers(inputDir, repoRoot, SWARMVAULT_INCLUDE_FILENAME, {
+  const beehiveIgnoreMatchers = await loadBeehiveIgnoreMatchers(inputDir, repoRoot, options.beehiveignore);
+  const includeMatchers = await loadCascadingMatchers(inputDir, repoRoot, BEEHIVE_INCLUDE_FILENAME, {
     matchInputRelativeFromParents: true
   });
   const skipped: DirectoryIngestResult["skipped"] = [];
@@ -1719,9 +1719,9 @@ async function collectDirectoryFiles(
   const stack: Array<{
     dir: string;
     gitignoreMatchers: typeof gitignoreMatchers;
-    swarmvaultIgnoreMatchers: typeof swarmvaultIgnoreMatchers;
+    beehiveIgnoreMatchers: typeof beehiveIgnoreMatchers;
     includeMatchers: typeof includeMatchers;
-  }> = [{ dir: inputDir, gitignoreMatchers, swarmvaultIgnoreMatchers, includeMatchers }];
+  }> = [{ dir: inputDir, gitignoreMatchers, beehiveIgnoreMatchers, includeMatchers }];
 
   while (stack.length > 0) {
     const current = stack.pop();
@@ -1730,32 +1730,27 @@ async function collectDirectoryFiles(
     }
     const currentDir = current.dir;
     let currentGitignoreMatchers = current.gitignoreMatchers;
-    let currentSwarmvaultIgnoreMatchers = current.swarmvaultIgnoreMatchers;
+    let currentBeehiveIgnoreMatchers = current.beehiveIgnoreMatchers;
     let currentIncludeMatchers = current.includeMatchers;
     if (options.gitignore) {
       currentGitignoreMatchers = await appendLocalMatcher(currentGitignoreMatchers, currentDir, ".gitignore", false);
     }
-    if (options.swarmvaultignore) {
-      currentSwarmvaultIgnoreMatchers = await appendLocalMatcher(
-        currentSwarmvaultIgnoreMatchers,
-        currentDir,
-        SWARMVAULT_IGNORE_FILENAME,
-        false
-      );
+    if (options.beehiveignore) {
+      currentBeehiveIgnoreMatchers = await appendLocalMatcher(currentBeehiveIgnoreMatchers, currentDir, BEEHIVE_IGNORE_FILENAME, false);
     }
-    currentIncludeMatchers = await appendLocalMatcher(currentIncludeMatchers, currentDir, SWARMVAULT_INCLUDE_FILENAME, false);
+    currentIncludeMatchers = await appendLocalMatcher(currentIncludeMatchers, currentDir, BEEHIVE_INCLUDE_FILENAME, false);
 
     const entries = await fs.readdir(currentDir, { withFileTypes: true });
     entries.sort((left, right) => left.name.localeCompare(right.name));
 
     for (const entry of entries) {
       const absolutePath = path.join(currentDir, entry.name);
-      if (entry.name === SWARMVAULT_IGNORE_FILENAME) {
-        skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "swarmvaultignore" });
+      if (entry.name === BEEHIVE_IGNORE_FILENAME) {
+        skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "beehiveignore" });
         continue;
       }
-      if (entry.name === SWARMVAULT_INCLUDE_FILENAME) {
-        skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "swarmvaultinclude" });
+      if (entry.name === BEEHIVE_INCLUDE_FILENAME) {
+        skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "beehiveinclude" });
         continue;
       }
       const relativeToRepo = repoRelativePathFor(absolutePath, repoRoot) ?? toPosix(path.relative(inputDir, absolutePath));
@@ -1775,8 +1770,8 @@ async function collectDirectoryFiles(
         skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "gitignore" });
         continue;
       }
-      if (cascadingMatcherMatches(absolutePath, inputDir, currentSwarmvaultIgnoreMatchers) && !allowlisted && !descendForAllowlist) {
-        skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "swarmvaultignore" });
+      if (cascadingMatcherMatches(absolutePath, inputDir, currentBeehiveIgnoreMatchers) && !allowlisted && !descendForAllowlist) {
+        skipped.push({ path: toPosix(path.relative(rootDir, absolutePath)), reason: "beehiveignore" });
         continue;
       }
 
@@ -1784,7 +1779,7 @@ async function collectDirectoryFiles(
         stack.push({
           dir: absolutePath,
           gitignoreMatchers: currentGitignoreMatchers,
-          swarmvaultIgnoreMatchers: currentSwarmvaultIgnoreMatchers,
+          beehiveIgnoreMatchers: currentBeehiveIgnoreMatchers,
           includeMatchers: currentIncludeMatchers
         });
         continue;
@@ -2819,11 +2814,11 @@ async function evaluateRepoFileForSync(
   options: NormalizedIngestOptions
 ): Promise<{ ok: boolean; reason?: string }> {
   const name = path.basename(absolutePath);
-  if (name === SWARMVAULT_IGNORE_FILENAME) {
-    return { ok: false, reason: "swarmvaultignore" };
+  if (name === BEEHIVE_IGNORE_FILENAME) {
+    return { ok: false, reason: "beehiveignore" };
   }
-  if (name === SWARMVAULT_INCLUDE_FILENAME) {
-    return { ok: false, reason: "swarmvaultinclude" };
+  if (name === BEEHIVE_INCLUDE_FILENAME) {
+    return { ok: false, reason: "beehiveinclude" };
   }
   const relativePath = repoRelativePathFor(absolutePath, repoRoot) ?? toPosix(path.relative(repoRoot, absolutePath));
   const builtIn = builtInIgnoreReason(relativePath);
@@ -2836,16 +2831,16 @@ async function evaluateRepoFileForSync(
 
   const fileDir = path.dirname(absolutePath);
   const gitignoreMatchers = await loadCascadingMatchers(fileDir, repoRoot, ".gitignore", { enabled: options.gitignore });
-  const swarmvaultIgnoreMatchers = await loadSwarmvaultIgnoreMatchers(fileDir, repoRoot, options.swarmvaultignore);
-  const includeMatchers = await loadCascadingMatchers(fileDir, repoRoot, SWARMVAULT_INCLUDE_FILENAME, {
+  const beehiveIgnoreMatchers = await loadBeehiveIgnoreMatchers(fileDir, repoRoot, options.beehiveignore);
+  const includeMatchers = await loadCascadingMatchers(fileDir, repoRoot, BEEHIVE_INCLUDE_FILENAME, {
     matchInputRelativeFromParents: true
   });
   const allowlisted = isAllowlisted(absolutePath, repoRoot, includeMatchers);
   if (cascadingMatcherMatches(absolutePath, repoRoot, gitignoreMatchers) && !allowlisted) {
     return { ok: false, reason: "gitignore" };
   }
-  if (cascadingMatcherMatches(absolutePath, repoRoot, swarmvaultIgnoreMatchers) && !allowlisted) {
-    return { ok: false, reason: "swarmvaultignore" };
+  if (cascadingMatcherMatches(absolutePath, repoRoot, beehiveIgnoreMatchers) && !allowlisted) {
+    return { ok: false, reason: "beehiveignore" };
   }
   if (options.include.length > 0 && !matchesAnyGlob(relativePath, options.include)) {
     return { ok: false, reason: "include_glob" };
@@ -2874,7 +2869,7 @@ async function evaluateRepoFileForSync(
 /**
  * Per-file variant of `syncTrackedReposForWatch`: refreshes only the given
  * files instead of walking every tracked repo root. Powers
- * `swarmvault graph update --file <path>` (the agent post-edit fast path).
+ * `beehive graph update --file <path>` (the agent post-edit fast path).
  */
 export async function syncTrackedFiles(rootDir: string, filePaths: string[], options?: IngestOptions): Promise<WatchRepoSyncResult> {
   const { paths } = await initWorkspace(rootDir);
@@ -3854,7 +3849,7 @@ export async function addInput(rootDir: string, input: string, options: AddOptio
   const { paths, config } = await initWorkspace(rootDir);
   const redactor = resolveIngestRedactor(config, options);
   if (!isHttpUrl(input) && !arxivIdFromInput(input) && !doiFromInput(input)) {
-    throw new Error("`swarmvault add` only supports URLs, bare arXiv ids, and bare DOI strings in the current release.");
+    throw new Error("`beehive add` only supports URLs, bare arXiv ids, and bare DOI strings in the current release.");
   }
 
   if (options.video && isHttpUrl(input)) {

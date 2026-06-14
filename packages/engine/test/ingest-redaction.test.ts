@@ -7,7 +7,7 @@ import { ingestInputDetailed, initVault } from "../src/index.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-redaction-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-redaction-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -87,7 +87,7 @@ describe("ingest redaction", () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8"));
     config.redaction = { enabled: false };
     await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");

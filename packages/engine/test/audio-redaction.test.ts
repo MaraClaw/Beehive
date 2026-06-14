@@ -9,14 +9,14 @@ import type { ProviderAdapter } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-audio-redaction-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-audio-redaction-"));
   tempDirs.push(dir);
   return dir;
 }
 
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
-  delete process.env.SWARMVAULT_YTDLP_BINARY;
+  delete process.env.BEEHIVE_YTDLP_BINARY;
   vi.restoreAllMocks();
 });
 
@@ -101,7 +101,7 @@ describe("audio transcription redaction", () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
     const binDir = await createTempWorkspace();
-    process.env.SWARMVAULT_YTDLP_BINARY = await makeFakeBinary(
+    process.env.BEEHIVE_YTDLP_BINARY = await makeFakeBinary(
       binDir,
       "yt-dlp",
       [

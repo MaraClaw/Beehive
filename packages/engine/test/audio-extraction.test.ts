@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 async function makeTempDir(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-video-extraction-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-video-extraction-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -30,8 +30,8 @@ async function makeFakeBinary(dir: string, name: string, script: string): Promis
 
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
-  delete process.env.SWARMVAULT_FFMPEG_BINARY;
-  delete process.env.SWARMVAULT_YTDLP_BINARY;
+  delete process.env.BEEHIVE_FFMPEG_BINARY;
+  delete process.env.BEEHIVE_YTDLP_BINARY;
 });
 
 describe("audio provider config", () => {
@@ -132,7 +132,7 @@ describe("OpenAiCompatibleProviderAdapter.transcribeAudio", () => {
 });
 
 describe("provider audio capability", () => {
-  const rootDir = path.join(os.tmpdir(), "swarmvault-audio-cap-test");
+  const rootDir = path.join(os.tmpdir(), "beehive-audio-cap-test");
 
   it("openai provider includes audio capability by default", async () => {
     const provider = await createProvider("test", { type: "openai", model: "whisper-1" } as ProviderConfig, rootDir);
@@ -221,7 +221,7 @@ describe("extractAudioTranscription", () => {
 describe("video transcription extraction", () => {
   it("extracts local video audio with ffmpeg and routes it through the audio provider", async () => {
     const tmpDir = await makeTempDir();
-    process.env.SWARMVAULT_FFMPEG_BINARY = await makeFakeBinary(
+    process.env.BEEHIVE_FFMPEG_BINARY = await makeFakeBinary(
       tmpDir,
       "ffmpeg",
       "const fs = require('node:fs'); fs.writeFileSync(process.argv.at(-1), 'fake wav bytes');"
@@ -261,7 +261,7 @@ describe("video transcription extraction", () => {
 
   it("downloads public video audio with yt-dlp when URL video mode is requested", async () => {
     const tmpDir = await makeTempDir();
-    process.env.SWARMVAULT_YTDLP_BINARY = await makeFakeBinary(
+    process.env.BEEHIVE_YTDLP_BINARY = await makeFakeBinary(
       tmpDir,
       "yt-dlp",
       [
@@ -295,7 +295,7 @@ describe("video transcription extraction", () => {
   });
 
   it("returns an explicit warning when the optional ffmpeg binary is unavailable", async () => {
-    process.env.SWARMVAULT_FFMPEG_BINARY = path.join(os.tmpdir(), "missing-ffmpeg");
+    process.env.BEEHIVE_FFMPEG_BINARY = path.join(os.tmpdir(), "missing-ffmpeg");
 
     const result = await extractVideoTranscription("/tmp/test-vault", {
       mimeType: "video/mp4",
