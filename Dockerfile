@@ -9,7 +9,7 @@
 #   docker build -t swarmvault-mcp .
 #   docker run --rm -i swarmvault-mcp
 
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /app
 
@@ -31,7 +31,7 @@ RUN pnpm --filter @swarmvaultai/viewer build \
  && pnpm --filter @swarmvaultai/cli build \
  && pnpm prune --prod
 
-FROM node:24-alpine
+FROM node:26-alpine
 
 WORKDIR /app
 
