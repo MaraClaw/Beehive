@@ -17,7 +17,7 @@ import {
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-graph-status-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-graph-status-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -191,9 +191,9 @@ describe("graph status", () => {
 
     expect(status.graphExists).toBe(false);
     expect(status.reportExists).toBe(false);
-    expect(status.recommendedCommand).toBe("swarmvault compile");
-    await expect(fs.access(path.join(rootDir, "swarmvault.config.json"))).rejects.toThrow();
-    await expect(fs.access(path.join(rootDir, "swarmvault.schema.md"))).rejects.toThrow();
+    expect(status.recommendedCommand).toBe("beehive compile");
+    await expect(fs.access(path.join(rootDir, "beehive.config.json"))).rejects.toThrow();
+    await expect(fs.access(path.join(rootDir, "beehive.schema.md"))).rejects.toThrow();
     await expect(fs.access(path.join(rootDir, "state"))).rejects.toThrow();
     await expect(fs.access(path.join(rootDir, "wiki"))).rejects.toThrow();
   });
@@ -225,13 +225,13 @@ describe("graph status", () => {
     const codeStatus = await getGraphStatus(rootDir);
     expect(codeStatus.codeChangeCount).toBe(1);
     expect(codeStatus.semanticChangeCount).toBe(0);
-    expect(codeStatus.recommendedCommand).toBe("swarmvault graph update");
+    expect(codeStatus.recommendedCommand).toBe("beehive graph update");
 
     await fs.writeFile(path.join(repoDir, "guide.md"), "# Guide\n\nUpdated guide.\n", "utf8");
     const mixedStatus = await getGraphStatus(rootDir);
     expect(mixedStatus.codeChangeCount).toBe(1);
     expect(mixedStatus.semanticChangeCount).toBe(1);
-    expect(mixedStatus.recommendedCommand).toBe("swarmvault compile");
+    expect(mixedStatus.recommendedCommand).toBe("beehive compile");
     expect(mixedStatus.changes.map((change) => `${change.refreshType}:${change.changeType}:${change.path}`)).toContain(
       "semantic:modified:repo/guide.md"
     );

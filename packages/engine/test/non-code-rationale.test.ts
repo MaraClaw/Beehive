@@ -9,7 +9,7 @@ import type { GraphArtifact } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-non-code-rationale-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-non-code-rationale-"));
   tempDirs.push(dir);
   return dir;
 }

@@ -107,7 +107,7 @@ function uniqueStrings(values: string[]): string[] {
   return uniqueBy(values.filter(Boolean), (value) => value);
 }
 
-const GUIDED_SOURCE_MARKER_PREFIX = "<!-- swarmvault-guided-source:";
+const GUIDED_SOURCE_MARKER_PREFIX = "<!-- beehive-guided-source:";
 const GUIDED_SOURCE_START_SUFFIX = ":start -->";
 const GUIDED_SOURCE_END_SUFFIX = ":end -->";
 
@@ -169,7 +169,7 @@ function sourceHashFrontmatter(sourceHashes: Record<string, string>, sourceSeman
 }
 
 function cssclassesFor(kind: string): string[] {
-  return ["swarmvault", `sv-${kind.replace(/_/g, "-")}`];
+  return ["beehive", `sv-${kind.replace(/_/g, "-")}`];
 }
 
 function decoratedTags(baseTags: string[], decorations?: GeneratedPageDecorations): string[] {

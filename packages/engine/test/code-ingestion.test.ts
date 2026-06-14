@@ -9,7 +9,7 @@ import type { CodeIndexArtifact, GraphArtifact, SourceAnalysis } from "../src/ty
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-code-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-code-"));
   tempDirs.push(dir);
   return dir;
 }

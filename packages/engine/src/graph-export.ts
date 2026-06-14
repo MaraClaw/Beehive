@@ -382,7 +382,7 @@ function renderGraphMl(graph: GraphArtifact): string {
   for (const key of keys) {
     lines.push(`  <key id="${key.id}" for="${key.for}" attr.name="${key.name}" attr.type="${key.type}" />`);
   }
-  lines.push('  <graph id="swarmvault" edgedefault="directed">');
+  lines.push('  <graph id="beehive" edgedefault="directed">');
   for (const node of [...graph.nodes].sort((left, right) => left.id.localeCompare(right.id))) {
     const page = node.pageId ? pageById.get(node.pageId) : undefined;
     lines.push(`    <node id="${xmlEscape(node.id)}">`);
@@ -1590,7 +1590,7 @@ async function loadGraph(rootDir: string): Promise<GraphArtifact> {
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` first.");
+    throw new Error("Graph artifact not found. Run `beehive compile` first.");
   }
   return graph;
 }
@@ -1905,7 +1905,7 @@ export async function exportObsidianVault(rootDir: string, outputDir: string): P
       bridge_score: node.bridgeScore ?? 0,
       is_god_node: node.isGodNode ?? false,
       tags: node.tags ?? [],
-      cssclasses: ["swarmvault", `sv-${node.type}`]
+      cssclasses: ["beehive", `sv-${node.type}`]
     };
     if (aliases.length > 0) {
       frontmatter.aliases = aliases;
@@ -2105,7 +2105,7 @@ export async function exportObsidianVault(rootDir: string, outputDir: string): P
       title: dv.title,
       kind: "dashboard",
       tags: ["dashboard", "dataview"],
-      cssclasses: ["swarmvault", "sv-dashboard"]
+      cssclasses: ["beehive", "sv-dashboard"]
     };
     const dvBody = `# ${dv.title}\n\n\`\`\`dataview\n${dv.query}\n\`\`\`\n`;
     await fs.writeFile(path.join(dashboardDir, `${dv.name}.md`), matter.stringify(dvBody, dvFrontmatter), "utf8");

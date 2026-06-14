@@ -34,7 +34,7 @@ function recommendationPriority(status: VaultDoctorStatus): VaultDoctorRecommend
 }
 
 function safeActionFor(checkId: string, command: string): VaultDoctorRecommendation["safeAction"] | undefined {
-  if (checkId === "retrieval" && command === "swarmvault retrieval doctor --repair") {
+  if (checkId === "retrieval" && command === "beehive retrieval doctor --repair") {
     return "doctor:repair";
   }
   return undefined;
@@ -128,7 +128,7 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
     label: "Workspace",
     status: configExists && schemaExists ? "ok" : "error",
     summary: configExists && schemaExists ? "Workspace config and schema are present." : "Workspace config or schema is missing.",
-    detail: [configExists ? null : "Missing swarmvault.config.json.", schemaExists ? null : "Missing swarmvault.schema.md."]
+    detail: [configExists ? null : "Missing beehive.config.json.", schemaExists ? null : "Missing beehive.schema.md."]
       .filter((value): value is string => Boolean(value))
       .join(" "),
     actions:
@@ -136,7 +136,7 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
         ? []
         : [
             {
-              command: "swarmvault init",
+              command: "beehive init",
               description: "Initialize the missing workspace files."
             }
           ]
@@ -153,7 +153,7 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
       ? []
       : [
           {
-            command: "swarmvault compile",
+            command: "beehive compile",
             description: "Compile sources into graph and wiki artifacts."
           }
         ]
@@ -171,7 +171,7 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
       ? []
       : [
           {
-            command: "swarmvault retrieval doctor --repair",
+            command: "beehive retrieval doctor --repair",
             description: "Rebuild stale or missing retrieval artifacts."
           }
         ]
@@ -192,11 +192,11 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
     actions: managedSourcesNeedingAttention.length
       ? [
           {
-            command: "swarmvault source list",
+            command: "beehive source list",
             description: "Inspect managed source status."
           },
           {
-            command: "swarmvault source reload --all",
+            command: "beehive source reload --all",
             description: "Refresh registered managed sources."
           }
         ]
@@ -215,11 +215,11 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
       pendingApprovals || candidates.length
         ? [
             {
-              command: "swarmvault review list",
+              command: "beehive review list",
               description: "Inspect staged approval bundles."
             },
             {
-              command: "swarmvault candidate list",
+              command: "beehive candidate list",
               description: "Inspect candidate concept and entity pages."
             }
           ]
@@ -236,7 +236,7 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
     actions: watchStatus.pendingSemanticRefresh.length
       ? [
           {
-            command: "swarmvault watch --repo --once",
+            command: "beehive watch --repo --once",
             description: "Refresh pending repo changes."
           }
         ]
@@ -256,7 +256,7 @@ export async function doctorVault(rootDir: string, options: DoctorVaultOptions =
     actions: migrationNeedsAttention
       ? [
           {
-            command: "swarmvault migrate --dry-run",
+            command: "beehive migrate --dry-run",
             description: "Preview migration changes before applying."
           }
         ]

@@ -8,14 +8,14 @@ import type { GraphArtifact } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-neo4j-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-neo4j-"));
   tempDirs.push(dir);
   return dir;
 }
 
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
-  delete process.env.SWARMVAULT_TEST_NEO4J_PASSWORD;
+  delete process.env.BEEHIVE_TEST_NEO4J_PASSWORD;
 });
 
 async function writeGraph(rootDir: string, graph: GraphArtifact): Promise<void> {
@@ -23,7 +23,7 @@ async function writeGraph(rootDir: string, graph: GraphArtifact): Promise<void> 
 }
 
 async function updateConfig(rootDir: string, mutate: (config: Record<string, unknown>) => void): Promise<void> {
-  const configPath = path.join(rootDir, "swarmvault.config.json");
+  const configPath = path.join(rootDir, "beehive.config.json");
   const config = JSON.parse(await fs.readFile(configPath, "utf8")) as Record<string, unknown>;
   mutate(config);
   await fs.writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
@@ -184,7 +184,7 @@ describe("graph push neo4j", () => {
         neo4j: {
           uri: "bolt://127.0.0.1:7687",
           username: "neo4j",
-          passwordEnv: "SWARMVAULT_TEST_NEO4J_PASSWORD",
+          passwordEnv: "BEEHIVE_TEST_NEO4J_PASSWORD",
           database: "neo4j",
           batchSize: 123
         }
@@ -196,7 +196,7 @@ describe("graph push neo4j", () => {
     expect(result.uri).toBe("bolt://127.0.0.1:7687");
     expect(result.database).toBe("neo4j");
     expect(result.includedSourceClasses).toEqual(["first_party"]);
-    expect(result.vaultId).toMatch(/^swarmvault-neo4j-[a-z0-9-]+-[a-f0-9]{12}$/);
+    expect(result.vaultId).toMatch(/^beehive-neo4j-[a-z0-9-]+-[a-f0-9]{12}$/);
     expect(result.counts.sources).toBe(1);
     expect(result.counts.pages).toBe(1);
     expect(result.counts.nodes).toBe(1);
@@ -217,13 +217,13 @@ describe("graph push neo4j", () => {
         neo4j: {
           uri: "bolt://127.0.0.1:7687",
           username: "neo4j",
-          passwordEnv: "SWARMVAULT_TEST_NEO4J_PASSWORD",
+          passwordEnv: "BEEHIVE_TEST_NEO4J_PASSWORD",
           database: "default-db",
           includeClasses: ["first_party"]
         }
       };
     });
-    process.env.SWARMVAULT_TEST_NEO4J_PASSWORD = "password";
+    process.env.BEEHIVE_TEST_NEO4J_PASSWORD = "password";
 
     const calls: Array<{ query: string; params?: Record<string, unknown> }> = [];
     const fakeDriver = {
@@ -262,7 +262,7 @@ describe("graph push neo4j", () => {
     expect(result.counts.hyperedges).toBe(1);
     expect(result.counts.groupMembers).toBe(2);
 
-    expect(calls.some((entry) => entry.query.includes("CREATE CONSTRAINT swarmvault_node_identity"))).toBe(true);
+    expect(calls.some((entry) => entry.query.includes("CREATE CONSTRAINT beehive_node_identity"))).toBe(true);
     expect(
       calls.some(
         (entry) => entry.query.includes("MERGE (n:SwarmNode { vaultId: $vaultId, id: row.id })") && entry.params?.vaultId === "vault-123"

@@ -124,8 +124,8 @@ function createDriver(uri: string, username: string, password: string): PushDriv
 }
 
 async function ensureNeo4jConstraints(session: ReturnType<PushDriverLike["session"]>): Promise<void> {
-  await session.run("CREATE CONSTRAINT swarmvault_node_identity IF NOT EXISTS FOR (n:SwarmNode) REQUIRE (n.vaultId, n.id) IS UNIQUE");
-  await session.run("CREATE CONSTRAINT swarmvault_sync_identity IF NOT EXISTS FOR (s:BeehiveSync) REQUIRE s.vaultId IS UNIQUE");
+  await session.run("CREATE CONSTRAINT beehive_node_identity IF NOT EXISTS FOR (n:SwarmNode) REQUIRE (n.vaultId, n.id) IS UNIQUE");
+  await session.run("CREATE CONSTRAINT beehive_sync_identity IF NOT EXISTS FOR (s:BeehiveSync) REQUIRE s.vaultId IS UNIQUE");
 }
 
 function chunkRows<T>(rows: T[], batchSize: number): T[][] {

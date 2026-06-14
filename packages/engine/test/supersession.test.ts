@@ -9,7 +9,7 @@ import type { GraphArtifact } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-supersede-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-supersede-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -103,7 +103,7 @@ describe("graph supersession", () => {
     await initVault(rootDir);
 
     // Write a very short half-life into config so our pages decay past the threshold immediately.
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8"));
     config.freshness = {
       defaultHalfLifeDays: 0.0001,

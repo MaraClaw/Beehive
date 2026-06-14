@@ -27,7 +27,7 @@ const GUIDE_ANSWERS = {
 };
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-personal-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-personal-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -136,7 +136,7 @@ describe("personal knowledge workflows", () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir, { profile: "personal-research" });
 
-    const config = JSON.parse(await fs.readFile(path.join(rootDir, "swarmvault.config.json"), "utf8")) as {
+    const config = JSON.parse(await fs.readFile(path.join(rootDir, "beehive.config.json"), "utf8")) as {
       profile?: {
         presets?: string[];
         dashboardPack?: string;
@@ -153,7 +153,7 @@ describe("personal knowledge workflows", () => {
     expect(config.profile?.guidedIngestDefault).toBe(true);
     expect(config.profile?.deepLintDefault).toBe(true);
 
-    const schema = await fs.readFile(path.join(rootDir, "swarmvault.schema.md"), "utf8");
+    const schema = await fs.readFile(path.join(rootDir, "beehive.schema.md"), "utf8");
     expect(schema).toContain("one-source-at-a-time guided ingest");
     expect(schema).toContain("thesis");
     expect(schema).toContain("Profile Emphasis");
@@ -164,7 +164,7 @@ describe("personal knowledge workflows", () => {
     expect(insightsIndex).toContain("canonical pages");
 
     const playbook = await fs.readFile(path.join(rootDir, "wiki", "insights", "research-playbook.md"), "utf8");
-    expect(playbook).toContain("swarmvault ingest <input> --guide");
+    expect(playbook).toContain("beehive ingest <input> --guide");
     expect(playbook).toContain("wiki/outputs/source-sessions/");
     expect(playbook).toContain("Active profile presets");
   });
@@ -176,7 +176,7 @@ describe("personal knowledge workflows", () => {
     await fs.writeFile(path.join(researchDir, "notes.srt"), ["1", "00:00:01,000 --> 00:00:03,000", "Profile preset test.", ""].join("\n"));
 
     await initVault(rootDir, { profile: "reader,timeline" });
-    const config = JSON.parse(await fs.readFile(path.join(rootDir, "swarmvault.config.json"), "utf8")) as {
+    const config = JSON.parse(await fs.readFile(path.join(rootDir, "beehive.config.json"), "utf8")) as {
       profile?: {
         presets?: string[];
         dashboardPack?: string;

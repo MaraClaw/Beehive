@@ -8,7 +8,7 @@ import { ALL_MIGRATIONS, detectVaultVersion, initVault, planMigration, runMigrat
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-migrate-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-migrate-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -29,7 +29,7 @@ async function readPage(rootDir: string, relPath: string): Promise<{ data: Recor
   return { data: (parsed.data ?? {}) as Record<string, unknown>, content: parsed.content };
 }
 
-describe("swarmvault migrate", () => {
+describe("beehive migrate", () => {
   it("ships every migration step with a valid id and to-version", () => {
     expect(ALL_MIGRATIONS.length).toBeGreaterThan(0);
     for (const step of ALL_MIGRATIONS) {

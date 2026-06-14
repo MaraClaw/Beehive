@@ -453,7 +453,7 @@ export async function exportGraphTree(
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error(`Graph artifact not found at ${paths.graphPath}. Run swarmvault compile first.`);
+    throw new Error(`Graph artifact not found at ${paths.graphPath}. Run beehive compile first.`);
   }
   const tree = buildGraphTree(graph, { ...options, rootDir });
   const resolvedOutputPath = path.resolve(rootDir, outputPath ?? path.join(paths.wikiDir, "graph", "tree.html"));

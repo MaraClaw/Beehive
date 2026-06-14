@@ -20,7 +20,7 @@ const TREE_SITTER_RUNTIME_PACKAGE = "@vscode/tree-sitter-wasm";
 const TREE_SITTER_EXTRA_GRAMMARS_PACKAGE = "tree-sitter-wasms";
 const TREE_SITTER_JULIA_PACKAGE = "tree-sitter-julia";
 const TREE_SITTER_SYSTEMVERILOG_PACKAGE = "tree-sitter-systemverilog";
-const SWIFT_TREE_SITTER_OPT_IN_ENV = "SWARMVAULT_ENABLE_SWIFT_TREE_SITTER";
+const SWIFT_TREE_SITTER_OPT_IN_ENV = "BEEHIVE_ENABLE_SWIFT_TREE_SITTER";
 const packageRootCache = new Map<string, string>();
 const vendoredGrammarAssetByLanguage: Partial<Record<TreeSitterCodeLanguage, string>> = {
   julia: "tree-sitter-julia.wasm",
@@ -754,10 +754,10 @@ function treeSitterCompatibilityMessage(
 ): string {
   const message = error instanceof Error ? error.message : String(error);
   if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "MODULE_NOT_FOUND") {
-    return `Tree-sitter runtime support for ${language} is unavailable. Reinstall @swarmvaultai/engine so the packaged parser runtime is present.`;
+    return `Tree-sitter runtime support for ${language} is unavailable. Reinstall @beehive/engine so the packaged parser runtime is present.`;
   }
   if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "ENOENT") {
-    return `Missing tree-sitter grammar asset for ${language}. Reinstall @swarmvaultai/engine so the packaged grammar files are present.`;
+    return `Missing tree-sitter grammar asset for ${language}. Reinstall @beehive/engine so the packaged grammar files are present.`;
   }
   return `Tree-sitter support for ${language} could not load: ${truncate(normalizeWhitespace(message), 220)}.`;
 }

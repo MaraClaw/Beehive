@@ -255,7 +255,7 @@ function createSimpleOdp(): Buffer {
 }
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-tiny-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-tiny-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -652,7 +652,7 @@ describe("tiny validation matrix", () => {
     // added in packages/engine/src/code-tree-sitter.ts, so `.html` files land
     // as `code` source kind with `language: html`. The former html-prose
     // extractor path is exercised elsewhere (e.g., HTML URLs via
-    // `swarmvault add`), not by the repo-ingest matrix.
+    // `beehive add`), not by the repo-ingest matrix.
 
     for (const sourceKind of expectedSourceKinds) {
       expect(sourceKinds.has(sourceKind), `missing source kind ${sourceKind}`).toBe(true);

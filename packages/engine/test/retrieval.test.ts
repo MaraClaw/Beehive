@@ -16,7 +16,7 @@ import {
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-retrieval-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-retrieval-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -86,7 +86,7 @@ describe("retrieval index", () => {
   it("migrates legacy search config and removes state/search.sqlite", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8"));
     config.search = { hybrid: false, rerank: true };
     delete config.retrieval;

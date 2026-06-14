@@ -76,7 +76,7 @@ async function ensureCompiledGraph(rootDir: string): Promise<GraphArtifact> {
   }
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` first.");
+    throw new Error("Graph artifact not found. Run `beehive compile` first.");
   }
   return graph;
 }

@@ -57,7 +57,7 @@ function buildShortPost(input: {
     `I scanned ${input.vaultName} with Beehive: ${input.overview.sources} sources -> ${input.overview.pages} wiki pages, ${input.overview.nodes} graph nodes, ${input.overview.edges} edges.`,
     topHubLine,
     surpriseLine,
-    "Everything stays local. Try: npm install -g @swarmvaultai/cli && swarmvault quickstart ./your-repo"
+    "Everything stays local. Try: npm install -g @beehive/cli && beehive quickstart ./your-repo"
   ].join("\n");
 }
 
@@ -265,7 +265,7 @@ export function renderGraphShareMarkdown(artifact: GraphShareArtifact): string {
     "",
     ...(artifact.highlights.suggestedQuestions.length
       ? artifact.highlights.suggestedQuestions.map((question) => `- ${question}`)
-      : ["- Add more sources, run `swarmvault compile`, then ask the graph what changed."]),
+      : ["- Add more sources, run `beehive compile`, then ask the graph what changed."]),
     "",
     "## Share Post",
     "",
@@ -276,9 +276,9 @@ export function renderGraphShareMarkdown(artifact: GraphShareArtifact): string {
     "## Reproduce",
     "",
     "```bash",
-    "npm install -g @swarmvaultai/cli",
-    "swarmvault quickstart ./your-repo",
-    "swarmvault graph share --post",
+    "npm install -g @beehive/cli",
+    "beehive quickstart ./your-repo",
+    "beehive graph share --post",
     "```",
     ""
   ];
@@ -370,7 +370,7 @@ export function renderGraphShareSvg(artifact: GraphShareArtifact): string {
     svgText({
       x: 100,
       y: 564,
-      text: "npm install -g @swarmvaultai/cli && swarmvault quickstart ./your-repo",
+      text: "npm install -g @beehive/cli && beehive quickstart ./your-repo",
       size: 18,
       fill: "#d1fae5",
       weight: 800
@@ -446,7 +446,7 @@ export function renderGraphSharePreviewHtml(artifact: GraphShareArtifact): strin
     `        <ul>${topHubs || "<li>Top hubs are still emerging.</li>"}</ul>`,
     '        <h2 style="margin-top:18px">Ask Next</h2>',
     `        <ul>${questions || "<li>Add more sources, run compile, then ask what changed.</li>"}</ul>`,
-    '        <div class="cta">npm install -g @swarmvaultai/cli && swarmvault quickstart ./your-repo</div>',
+    '        <div class="cta">npm install -g @beehive/cli && beehive quickstart ./your-repo</div>',
     "      </section>",
     "    </div>",
     "  </main>",

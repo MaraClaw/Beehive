@@ -7,7 +7,7 @@ import { compileVault, doctorVault, ingestInput, initVault } from "../src/index.
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-doctor-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-doctor-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -28,18 +28,18 @@ describe("vault doctor", () => {
     expect(report.counts.sources).toBe(0);
     expect(report.checks.some((check) => check.id === "graph" && check.status === "error")).toBe(true);
     expect(report.checks.some((check) => check.id === "retrieval" && check.status === "warning")).toBe(true);
-    expect(report.checks.flatMap((check) => check.actions ?? []).some((action) => action.command === "swarmvault compile")).toBe(true);
+    expect(report.checks.flatMap((check) => check.actions ?? []).some((action) => action.command === "beehive compile")).toBe(true);
     expect(report.recommendations[0]).toMatchObject({
-      id: "graph:swarmvault compile",
+      id: "graph:beehive compile",
       priority: "high",
-      command: "swarmvault compile",
+      command: "beehive compile",
       sourceCheckId: "graph"
     });
     expect(report.recommendations).toContainEqual(
       expect.objectContaining({
-        id: "retrieval:swarmvault retrieval doctor --repair",
+        id: "retrieval:beehive retrieval doctor --repair",
         safeAction: "doctor:repair",
-        command: "swarmvault retrieval doctor --repair"
+        command: "beehive retrieval doctor --repair"
       })
     );
   });

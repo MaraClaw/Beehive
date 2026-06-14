@@ -6,7 +6,7 @@ import { ensureDir, sha256, slugify, toPosix, uniqueBy } from "./utils.js";
 export interface GraphMergeInputSummary {
   path: string;
   label: string;
-  format: "swarmvault" | "node-link";
+  format: "beehive" | "node-link";
   nodeCount: number;
   edgeCount: number;
 }
@@ -360,7 +360,7 @@ export async function mergeGraphFiles(
       inputGraphs.push({
         path: resolvedInputPath,
         label: prefix,
-        format: "swarmvault",
+        format: "beehive",
         nodeCount: raw.nodes.length,
         edgeCount: raw.edges.length
       });

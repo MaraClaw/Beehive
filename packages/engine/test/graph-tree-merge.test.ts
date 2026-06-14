@@ -8,7 +8,7 @@ import type { GraphArtifact, GraphNode, GraphPage } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-graph-tree-merge-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-graph-tree-merge-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -161,7 +161,7 @@ describe("graph merge", () => {
     const result = await mergeGraphFiles([first, second], output);
     const merged = JSON.parse(await fs.readFile(output, "utf8")) as GraphArtifact;
 
-    expect(result.inputGraphs.map((input) => input.format)).toEqual(["swarmvault", "node-link"]);
+    expect(result.inputGraphs.map((input) => input.format)).toEqual(["beehive", "node-link"]);
     expect(merged.nodes.some((node) => node.id.startsWith("first:"))).toBe(true);
     expect(merged.nodes.some((node) => node.id.startsWith("second:"))).toBe(true);
     expect(merged.edges.some((edge) => edge.source === "second:a" && edge.target === "second:b")).toBe(true);

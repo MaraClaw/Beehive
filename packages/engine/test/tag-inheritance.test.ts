@@ -83,7 +83,7 @@ describe("tag inheritance — derived concept/entity pages", () => {
       { alpha: "alpha", beta: "beta" },
       "schema-hash",
       metadata(),
-      "entities/swarmvault.md"
+      "entities/beehive.md"
     );
 
     const tags = tagsOf(content);
