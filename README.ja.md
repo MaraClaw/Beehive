@@ -4,9 +4,9 @@
 **Languages:** [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 <!-- readme-language-nav:end -->
 
-[![npm](https://img.shields.io/npm/v/@swarmvaultai/cli)](https://www.npmjs.com/package/@swarmvaultai/cli)
-[![npm downloads](https://img.shields.io/npm/dw/@swarmvaultai/cli)](https://www.npmjs.com/package/@swarmvaultai/cli)
-[![GitHub stars](https://img.shields.io/github/stars/swarmclawai/swarmvault)](https://github.com/swarmclawai/swarmvault)
+[![npm](https://img.shields.io/npm/v/@beehive/cli)](https://www.npmjs.com/package/@beehive/cli)
+[![npm downloads](https://img.shields.io/npm/dw/@beehive/cli)](https://www.npmjs.com/package/@beehive/cli)
+[![GitHub stars](https://img.shields.io/github/stars/beehive/beehive)](https://github.com/MaraClaw/Beehive)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)]()
 
@@ -18,31 +18,31 @@
 ## 30 秒で試す
 
 ```bash
-npm install -g @swarmvaultai/cli
-swarmvault quickstart ./your-repo
+npm install -g @beehive/cli
+beehive quickstart ./your-repo
 ```
 
-`quickstart` は現在のディレクトリで vault を初期化し、ローカルファイル、ディレクトリ、または公開 GitHub repo を取り込み、wiki と graph を compile し、share artifacts を生成してローカル graph viewer を開きます。`swarmvault scan` の初心者向け alias です。
+`quickstart` は現在のディレクトリで vault を初期化し、ローカルファイル、ディレクトリ、または公開 GitHub repo を取り込み、wiki と graph を compile し、share artifacts を生成してローカル graph viewer を開きます。`beehive scan` の初心者向け alias です。
 
 手元にリポジトリがない場合:
 
 ```bash
-swarmvault demo
+beehive demo
 ```
 
 最初の compile 後によく使う次のコマンド:
 
 ```bash
-swarmvault next
-swarmvault query "What are the key concepts?"
-swarmvault graph serve
-swarmvault doctor
-swarmvault candidate list
+beehive next
+beehive query "What are the key concepts?"
+beehive graph serve
+beehive doctor
+beehive candidate list
 ```
 
-vault の状態が分からないときは、読み取り専用の `swarmvault next` を実行してください。init、ingest、compile、query、review、refresh のどれを次に行うべきかを案内します。
+vault の状態が分からないときは、読み取り専用の `beehive next` を実行してください。init、ingest、compile、query、review、refresh のどれを次に行うべきかを案内します。
 
-![Beehive graph workspace](https://www.swarmvault.ai/images/screenshots/graph-workspace.png)
+![Beehive graph workspace](https://www.beehive.ai/images/screenshots/graph-workspace.png)
 
 最初の実行に API key は不要です。組み込みの heuristic provider はローカルかつオフラインで動作します。
 
@@ -60,7 +60,7 @@ Beehive は Andrej Karpathy が提唱したパターンに従い、三つの層�
 
 1. **生のソース** (`raw/`) —— 厳選されたソースドキュメントのコレクション。書籍、記事、論文、書き起こし、コード、画像、データセット。これらは不変です：Beehive は読み取るだけで、変更しません。
 2. **Wiki** (`wiki/`) —— LLM が生成し、人間が執筆する Markdown ファイル。ソース要約、エンティティページ、コンセプトページ、相互参照、ダッシュボード、出力。Wiki は持続的に蓄積される永続的な成果物です。
-3. **スキーマ** (`swarmvault.schema.md`) —— wiki の構造、従うべき規約、およびあなたのドメインで何が重要かを定義します。あなたと LLM がこのファイルを共に進化させていきます。
+3. **スキーマ** (`beehive.schema.md`) —— wiki の構造、従うべき規約、およびあなたのドメインで何が重要かを定義します。あなたと LLM がこのファイルを共に進化させていきます。
 
 > Vannevar Bush の Memex（1945年）の理念を受け継ぎ —— ドキュメント間の連想トレイルを持つ個人的で厳選された知識ストア —— Beehive はソース間のつながりをソースそのものと同じくらい重要に扱います。Bush が解決できなかったのは、誰がメンテナンスを行うかという問題でした。LLM がそれを解決します。
 
@@ -88,7 +88,7 @@ Karpathy の [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9
 |---|:---:|:---:|
 | 三層アーキテクチャ | 記述 | **実装済み** |
 | Ingest / query / lint | 手動 | **CLI コマンド** |
-| 1 コマンドで起動 | — | **`swarmvault quickstart`** |
+| 1 コマンドで起動 | — | **`beehive quickstart`** |
 | 型付きナレッジグラフ | — | **あり** |
 | インタラクティブグラフビューア | — | **あり** |
 | ビジュアル + 投稿しやすい share kit | — | **あり** |
@@ -113,29 +113,29 @@ Karpathy の [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9
 
 macOS、Windows、Linux用のデスクトップアプリをダウンロード——ランタイム内蔵:
 
-**[デスクトップアプリをダウンロード](https://www.swarmvault.ai/download)** | [GitHub Releases](https://github.com/swarmclawai/swarmvault-desktop/releases)
+**[デスクトップアプリをダウンロード](https://www.beehive.ai/download)** | [GitHub Releases](https://github.com/MaraClaw/Beehive-desktop/releases)
 
 ### CLI
 
 Beehive には Node `>=24` が必要です。
 
 ```bash
-npm install -g @swarmvaultai/cli
+npm install -g @beehive/cli
 ```
 
 インストール確認:
 
 ```bash
-swarmvault --version
+beehive --version
 ```
 
 最新の公開版へ更新:
 
 ```bash
-npm install -g @swarmvaultai/cli@latest
+npm install -g @beehive/cli@latest
 ```
 
-グローバル CLI にはグラフビューアのワークフローと MCP サーバーフローがすでに含まれています。通常の利用では `@swarmvaultai/viewer` を別途インストールする必要はありません。
+グローバル CLI にはグラフビューアのワークフローと MCP サーバーフローがすでに含まれています。通常の利用では `@beehive/viewer` を別途インストールする必要はありません。
 
 <!-- readme-section:quickstart -->
 ## クイックスタート
@@ -147,15 +147,15 @@ vault artifacts を置きたい空フォルダまたは scratch フォルダで�
 ```bash
 mkdir my-vault
 cd my-vault
-swarmvault quickstart ../your-repo
-swarmvault next
+beehive quickstart ../your-repo
+beehive next
 ```
 
-これが新規ユーザーにとって一番簡単な入口です。`swarmvault scan` と同じ実行パスで、vault の初期化、ローカルファイル、ディレクトリ、または公開 GitHub repo の取り込み、wiki と graph の compile、share artifacts の生成を行い、`--no-serve` または `--no-viz` がない場合は graph viewer を開きます。対話実行では stderr に bounded ingest progress と現在処理中のファイルを表示するため、大きな PDF や文書フォルダの抽出中も無反応に見えません。
+これが新規ユーザーにとって一番簡単な入口です。`beehive scan` と同じ実行パスで、vault の初期化、ローカルファイル、ディレクトリ、または公開 GitHub repo の取り込み、wiki と graph の compile、share artifacts の生成を行い、`--no-serve` または `--no-viz` がない場合は graph viewer を開きます。対話実行では stderr に bounded ingest progress と現在処理中のファイルを表示するため、大きな PDF や文書フォルダの抽出中も無反応に見えません。
 
 ```text
 my-vault/
-├── swarmvault.schema.md       ユーザーが編集するボルト指示ファイル
+├── beehive.schema.md       ユーザーが編集するボルト指示ファイル
 ├── raw/                       不変のソースファイルとローカライズ済みアセット
 ├── wiki/                      コンパイル済み wiki: sources, concepts, entities, code, outputs, graph
 ├── state/                     graph.json, retrieval/, embeddings, sessions, approvals
@@ -163,49 +163,49 @@ my-vault/
 └── agent/                     エージェント向けに生成される補助ファイル
 ```
 
-生成 artifacts をソースツリーの外に置きたい場合は、`SWARMVAULT_OUT=.swarmvault-out` を使います。`swarmvault.config.json` と `swarmvault.schema.md` はプロジェクトルートに残り、`raw/`、`wiki/`、`state/`、`agent/`、`inbox/` は出力ディレクトリ配下に解決されます。
+生成 artifacts をソースツリーの外に置きたい場合は、`BEEHIVE_OUT=.beehive-out` を使います。`beehive.config.json` と `beehive.schema.md` はプロジェクトルートに残り、`raw/`、`wiki/`、`state/`、`agent/`、`inbox/` は出力ディレクトリ配下に解決されます。
 
 ### メインループを学ぶ
 
 最速パスが分かったら、同じ流れをステップごとに実行できます:
 
 ```bash
-swarmvault init --obsidian --profile personal-research
-swarmvault ingest ./src --repo-root .
-swarmvault ingest ./meeting.srt --guide
-swarmvault add https://arxiv.org/abs/2401.12345
-swarmvault compile
-swarmvault next
-swarmvault query "What is the auth flow?"
-swarmvault graph serve
+beehive init --obsidian --profile personal-research
+beehive ingest ./src --repo-root .
+beehive ingest ./meeting.srt --guide
+beehive add https://arxiv.org/abs/2401.12345
+beehive compile
+beehive next
+beehive query "What is the auth flow?"
+beehive graph serve
 ```
 
-同じ repo、folder、docs hub を継続的に登録して refresh したい場合は、`swarmvault source add https://github.com/karpathy/micrograd`、`swarmvault source add https://example.com/docs/getting-started`、`swarmvault source list`、`swarmvault source reload --all`、`swarmvault source session transcript-or-session-id` を使います。公開 GitHub repo には `swarmvault clone https://github.com/owner/repo --no-viz`、または checkout を再利用する `swarmvault source add https://github.com/owner/repo --branch main --checkout-dir .swarmvault-checkouts/repo` が使えます。
+同じ repo、folder、docs hub を継続的に登録して refresh したい場合は、`beehive source add https://github.com/karpathy/micrograd`、`beehive source add https://example.com/docs/getting-started`、`beehive source list`、`beehive source reload --all`、`beehive source session transcript-or-session-id` を使います。公開 GitHub repo には `beehive clone https://github.com/owner/repo --no-viz`、または checkout を再利用する `beehive source add https://github.com/owner/repo --branch main --checkout-dir .beehive-checkouts/repo` が使えます。
 
 ### よく使う次のコマンド
 
 | 目的 | コマンド |
 | --- | --- |
-| このフォルダで次に実行するコマンドを見る | `swarmvault next` |
-| viewer を開かず初心者パスを実行 | `swarmvault quickstart ./path --no-serve` |
-| 既存の短い alias を使う | `swarmvault scan ./path --no-viz` |
-| graph freshness を確認 | `swarmvault graph status ./src` または `swarmvault check-update ./src` |
-| コード由来 graph artifacts を更新 | `swarmvault update ./src` |
-| graph communities を再計算 | `swarmvault graph cluster` または `swarmvault cluster-only` |
-| graph counts と export validation | `swarmvault graph stats` と `swarmvault graph validate --strict` |
-| 初回サマリーを共有 | `swarmvault graph share --post`、`swarmvault graph share --svg ./share-card.svg`、`swarmvault graph share --bundle ./share-kit` |
-| agents や他ツール向けに export | `swarmvault export ai --out ./exports/ai` |
-| bounded agent context を作る | `swarmvault context build "Implement the auth refactor" --target ./src --budget 8000` |
-| task history を記録 | `swarmvault task start "Implement the auth refactor" --target ./src --agent codex` |
-| vault 上の会話を保存 | `swarmvault chat "How should the next agent use this vault?"` |
-| health と repair guidance を見る | `swarmvault doctor --repair` |
-| graph exports を作る | `swarmvault graph export --report ./exports/report.html`、`swarmvault graph export --callflow ./exports/callflow.html`、`swarmvault graph export --obsidian ./exports/graph-vault`、`swarmvault graph export --neo4j ./exports/graph.cypher` |
-| source/module tree を見る、または merge | `swarmvault tree --output ./exports/tree.html` と `swarmvault merge-graphs ./exports/graph.json ./other-graph.json --out ./exports/merged-graph.json` |
-| graph data を Neo4j に送る | `swarmvault graph push neo4j --dry-run` |
+| このフォルダで次に実行するコマンドを見る | `beehive next` |
+| viewer を開かず初心者パスを実行 | `beehive quickstart ./path --no-serve` |
+| 既存の短い alias を使う | `beehive scan ./path --no-viz` |
+| graph freshness を確認 | `beehive graph status ./src` または `beehive check-update ./src` |
+| コード由来 graph artifacts を更新 | `beehive update ./src` |
+| graph communities を再計算 | `beehive graph cluster` または `beehive cluster-only` |
+| graph counts と export validation | `beehive graph stats` と `beehive graph validate --strict` |
+| 初回サマリーを共有 | `beehive graph share --post`、`beehive graph share --svg ./share-card.svg`、`beehive graph share --bundle ./share-kit` |
+| agents や他ツール向けに export | `beehive export ai --out ./exports/ai` |
+| bounded agent context を作る | `beehive context build "Implement the auth refactor" --target ./src --budget 8000` |
+| task history を記録 | `beehive task start "Implement the auth refactor" --target ./src --agent codex` |
+| vault 上の会話を保存 | `beehive chat "How should the next agent use this vault?"` |
+| health と repair guidance を見る | `beehive doctor --repair` |
+| graph exports を作る | `beehive graph export --report ./exports/report.html`、`beehive graph export --callflow ./exports/callflow.html`、`beehive graph export --obsidian ./exports/graph-vault`、`beehive graph export --neo4j ./exports/graph.cypher` |
+| source/module tree を見る、または merge | `beehive tree --output ./exports/tree.html` と `beehive merge-graphs ./exports/graph.json ./other-graph.json --out ./exports/merged-graph.json` |
+| graph data を Neo4j に送る | `beehive graph push neo4j --dry-run` |
 
-最小の LLM-Wiki starter が欲しい場合は、`swarmvault init --lite` が `raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md`、`swarmvault.schema.md` だけを作ります。config、state、agent installs は作りません。通常の `init`、`quickstart`、`scan`、`clone` もデフォルトでは agent rule files を書きません。プロジェクトローカルの agent instructions が必要なときに `swarmvault install --agent <agent>` を実行してください。
+最小の LLM-Wiki starter が欲しい場合は、`beehive init --lite` が `raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md`、`beehive.schema.md` だけを作ります。config、state、agent installs は作りません。通常の `init`、`quickstart`、`scan`、`clone` もデフォルトでは agent rule files を書きません。プロジェクトローカルの agent instructions が必要なときに `beehive install --agent <agent>` を実行してください。
 
-vault が git repo 内にある場合、`ingest`、`compile`、`query` は `--commit` を受け付けます。`compile --max-tokens <n>` は bounded context windows 向けに低優先度ページを削ります。`swarmvault ingest ./customer-call.mp3`、`swarmvault ingest https://www.youtube.com/watch?v=dQw4w9WgXcQ`、`swarmvault ingest --video https://example.com/product-demo.mp4` は、必要な provider または helper binary がある場合に audio、YouTube transcript、video workflows を扱います。
+vault が git repo 内にある場合、`ingest`、`compile`、`query` は `--commit` を受け付けます。`compile --max-tokens <n>` は bounded context windows 向けに低優先度ページを削ります。`beehive ingest ./customer-call.mp3`、`beehive ingest https://www.youtube.com/watch?v=dQw4w9WgXcQ`、`beehive ingest --video https://example.com/product-demo.mp4` は、必要な provider または helper binary がある場合に audio、YouTube transcript、video workflows を扱います。
 
 <!-- readme-section:provider-setup -->
 ## 任意: モデルプロバイダーを追加
@@ -222,7 +222,7 @@ concept・entity・claim の抽出品質を高めたまま完全ローカルで�
 ollama pull gemma4
 ```
 
-Beehive は `init`、`quickstart`、`scan`、`clone` 中にこれらのプロジェクトローカル rule files をデフォルトで書きません。明示的に設定済み agent のインストールを選んだ場合だけ書き込みます。1 つずつ入れるなら `swarmvault install --agent <agent>` を使い、複数をまとめて入れるなら `swarmvault.config.json` に agents を列挙してから `swarmvault init --install-agent-rules` または `swarmvault quickstart <input> --install-agent-rules` を実行します。
+Beehive は `init`、`quickstart`、`scan`、`clone` 中にこれらのプロジェクトローカル rule files をデフォルトで書きません。明示的に設定済み agent のインストールを選んだ場合だけ書き込みます。1 つずつ入れるなら `beehive install --agent <agent>` を使い、複数をまとめて入れるなら `beehive.config.json` に agents を列挙してから `beehive init --install-agent-rules` または `beehive quickstart <input> --install-agent-rules` を実行します。
 
 ```json
 {
@@ -241,7 +241,7 @@ Beehive は `init`、`quickstart`、`scan`、`clone` 中にこれらのプロジ
 }
 ```
 
-heuristic プロバイダーのみの構成で compile/query を実行すると、Beehive はこの設定を勧める一回限りの通知を表示します。`SWARMVAULT_NO_NOTICES=1` を設定すると非表示にできます。サポートしている他のプロバイダー（OpenAI、Anthropic、Gemini、OpenRouter、Groq、Together、xAI、Cerebras、openai-compatible、custom）もそのまま使えます。
+heuristic プロバイダーのみの構成で compile/query を実行すると、Beehive はこの設定を勧める一回限りの通知を表示します。`BEEHIVE_NO_NOTICES=1` を設定すると非表示にできます。サポートしている他のプロバイダー（OpenAI、Anthropic、Gemini、OpenRouter、Groq、Together、xAI、Cerebras、openai-compatible、custom）もそのまま使えます。
 
 ### ローカル Semantic Embeddings
 
@@ -291,16 +291,16 @@ embedding 対応 provider が利用できる場合、Beehive は既定で semant
 }
 ```
 
-他の任意バックエンド、タスクの振り分け、能力ごとの設定例は [provider docs](https://www.swarmvault.ai/docs/providers) を参照してください。CLI から provider routing を管理することもできます:
+他の任意バックエンド、タスクの振り分け、能力ごとの設定例は [provider docs](https://www.beehive.ai/docs/providers) を参照してください。CLI から provider routing を管理することもできます:
 
 ```bash
-swarmvault provider add router --type openrouter --model openrouter/auto --api-key-env OPENROUTER_API_KEY --capability chat --capability structured --task queryProvider
-swarmvault provider list
-swarmvault provider show router
-swarmvault provider remove router --fallback local
+beehive provider add router --type openrouter --model openrouter/auto --api-key-env OPENROUTER_API_KEY --capability chat --capability structured --task queryProvider
+beehive provider list
+beehive provider show router
+beehive provider remove router --fallback local
 ```
 
-これらのコマンドは `swarmvault.config.json` の未知のフィールドを保持し、secret は `apiKeyEnv` で参照します。平文 API key は受け付けません。
+これらのコマンドは `beehive.config.json` の未知のフィールドを保持し、secret は `apiKeyEnv` で参照します。平文 API key は受け付けません。
 
 ### 音声ファースト取り込み（ローカル Whisper）
 
@@ -312,10 +312,10 @@ brew install whisper-cpp
 # Debian / Ubuntu
 sudo apt install whisper.cpp
 
-swarmvault provider setup --local-whisper --apply
+beehive provider setup --local-whisper --apply
 ```
 
-このコマンドはバイナリを検出し、既定の `base.en` ggml モデル（約 147 MB）を `~/.swarmvault/models/` にダウンロードしたうえで、`swarmvault.config.json` の `providers.local-whisper` に provider を登録し、`tasks.audioProvider` をそこへ向けます。以降は `swarmvault add voice-memo.m4a`（または `raw/inbox/` に音声を置く）で完全オフラインのエンドツーエンド書き起こしが走り、既存の取り込み時 secret 除去は音声由来のテキストにも同じく適用されるため、会議中に口頭で出た鍵やトークンは `raw/` や `wiki/` に届く前にマスクされます。精度は `--model {tiny.en,small.en,medium.en,large-v3}`、スレッド数は `localWhisper.threads` で調整でき、バイナリ／モデルの探索は `localWhisper.binaryPath` / `localWhisper.modelPath` / `SWARMVAULT_WHISPER_BINARY` で上書きできます。`local-whisper` provider タイプは 1.1.0 では `STABILITY.md` 上 **experimental** 扱いです。
+このコマンドはバイナリを検出し、既定の `base.en` ggml モデル（約 147 MB）を `~/.beehive/models/` にダウンロードしたうえで、`beehive.config.json` の `providers.local-whisper` に provider を登録し、`tasks.audioProvider` をそこへ向けます。以降は `beehive add voice-memo.m4a`（または `raw/inbox/` に音声を置く）で完全オフラインのエンドツーエンド書き起こしが走り、既存の取り込み時 secret 除去は音声由来のテキストにも同じく適用されるため、会議中に口頭で出た鍵やトークンは `raw/` や `wiki/` に届く前にマスクされます。精度は `--model {tiny.en,small.en,medium.en,large-v3}`、スレッド数は `localWhisper.threads` で調整でき、バイナリ／モデルの探索は `localWhisper.binaryPath` / `localWhisper.modelPath` / `BEEHIVE_WHISPER_BINARY` で上書きできます。`local-whisper` provider タイプは 1.1.0 では `STABILITY.md` 上 **experimental** 扱いです。
 
 ホスト型の書き起こし provider を使いたい場合は、`tasks.audioProvider` を `audio` capability を持つ provider（OpenAI、Groq など）に向けてください。YouTube transcript 取り込みにはモデル provider は不要です。
 
@@ -324,15 +324,15 @@ swarmvault provider setup --local-whisper --apply
 Beehive をすぐ役立てる最短経路は、managed-source ワークフローです:
 
 ```bash
-swarmvault source add ./exports/customer-call.srt --guide
-swarmvault source add https://github.com/karpathy/micrograd
-swarmvault source add https://example.com/docs/getting-started
-swarmvault source list
-swarmvault source session file-customer-call-srt-12345678
-swarmvault source reload --all
+beehive source add ./exports/customer-call.srt --guide
+beehive source add https://github.com/karpathy/micrograd
+beehive source add https://example.com/docs/getting-started
+beehive source list
+beehive source session file-customer-call-srt-12345678
+beehive source reload --all
 ```
 
-`source add` はソースを登録し、ボルトへ同期し、1 回 compile し、`wiki/outputs/source-briefs/` にソース別ブリーフを書きます。`--guide` を付けると、`wiki/outputs/source-sessions/` に再開可能なガイド付き session を作成し、`profile.guidedSessionMode` が `canonical_review` のときは canonical な source/concept/entity page への更新を approval queue に段階化し、`insights_only` のときはガイド付き統合結果を `wiki/insights/` 側へ留めます。さらに `swarmvault.config.json` で `profile.guidedIngestDefault: true` を設定すれば、`ingest`、`source add`、`source reload` でガイド付きモードを既定にでき、個別の実行だけ軽量パスにしたいときは `--no-guide` でオーバーライドできます。ディレクトリや公開リポジトリ、docs ハブだけでなく、継続的に同期したいローカルファイルにも使えます。単発のファイルや URL には `ingest`、研究 URL の正規化には `add` を使ってください。
+`source add` はソースを登録し、ボルトへ同期し、1 回 compile し、`wiki/outputs/source-briefs/` にソース別ブリーフを書きます。`--guide` を付けると、`wiki/outputs/source-sessions/` に再開可能なガイド付き session を作成し、`profile.guidedSessionMode` が `canonical_review` のときは canonical な source/concept/entity page への更新を approval queue に段階化し、`insights_only` のときはガイド付き統合結果を `wiki/insights/` 側へ留めます。さらに `beehive.config.json` で `profile.guidedIngestDefault: true` を設定すれば、`ingest`、`source add`、`source reload` でガイド付きモードを既定にでき、個別の実行だけ軽量パスにしたいときは `--no-guide` でオーバーライドできます。ディレクトリや公開リポジトリ、docs ハブだけでなく、継続的に同期したいローカルファイルにも使えます。単発のファイルや URL には `ingest`、研究 URL の正規化には `add` を使ってください。
 
 <!-- readme-section:agent-setup -->
 ## エージェントと MCP の設定
@@ -340,54 +340,54 @@ swarmvault source reload --all
 まず、コーディングエージェントにボルトのルールをインストールします:
 
 ```bash
-swarmvault install --agent claude --hook --mcp  # Claude Code + graph-first hook + MCP server
-swarmvault install --agent codex --hook     # Codex + graph-first hook
-swarmvault install --agent cursor           # Cursor
-swarmvault install --agent copilot --hook   # GitHub Copilot CLI + hook
-swarmvault install --agent gemini --hook    # Gemini CLI + hook
-swarmvault install --agent trae             # Trae
-swarmvault install --agent claw             # Claw / OpenClaw skill target
-swarmvault install --agent droid            # Droid / Factory rules target
-swarmvault install --agent kiro             # Kiro IDE + 常時 steering
-swarmvault install --agent kilo --hook       # Kilo project rules + plugin
-swarmvault install --agent hermes           # Hermes ユーザースコープ skill
-swarmvault install --agent antigravity      # Google Antigravity ルール + /swarmvault ワークフロー
-swarmvault install --agent vscode           # VS Code Copilot Chat chatmode
-swarmvault install status --agent kilo --hook
+beehive install --agent claude --hook --mcp  # Claude Code + graph-first hook + MCP server
+beehive install --agent codex --hook     # Codex + graph-first hook
+beehive install --agent cursor           # Cursor
+beehive install --agent copilot --hook   # GitHub Copilot CLI + hook
+beehive install --agent gemini --hook    # Gemini CLI + hook
+beehive install --agent trae             # Trae
+beehive install --agent claw             # Claw / OpenClaw skill target
+beehive install --agent droid            # Droid / Factory rules target
+beehive install --agent kiro             # Kiro IDE + 常時 steering
+beehive install --agent kilo --hook       # Kilo project rules + plugin
+beehive install --agent hermes           # Hermes ユーザースコープ skill
+beehive install --agent antigravity      # Google Antigravity ルール + /beehive ワークフロー
+beehive install --agent vscode           # VS Code Copilot Chat chatmode
+beehive install status --agent kilo --hook
 ```
 
-hook 対応エージェントでは、インストールされた hook が graph-first の読み取りをガイドし、強制はオプトインです。Claude Code の場合、`--hook` はセッション開始時に graph-first の指示を注入します — コード理解系の質問にはプレーンな `swarmvault graph query|explain|path` コマンド（`--json` は出力がはるかに大きくなるため避ける）、`swarmvault query`、`swarmvault context build`、または `wiki/graph/report.md` で答え、ソースファイルは編集するときだけ直接読む — に加えてグラフ鮮度の注意書きも添えます。`swarmvault graph query "<seed>"` はページパス付きの上位マッチに加えて、最も一致した wiki ページのインライン抜粋を表示するため、たいてい 1 コマンドで「X はどこか / Y を呼ぶのは何か」という質問にファイルの追加読み込みなしで答えられます。「X を呼ぶのは何か / X を変更したときの影響は」という質問に対しては、hook のガイダンスが `swarmvault graph callers <symbol>` を推奨します。グラフの call edges からシンボルのすべての呼び出し元を正確な file:line の呼び出し箇所エビデンス付きで一覧し、グラフが呼び出し元と特定したファイルだけをスキャンするため、リポジトリ全体の grep を置き換えられます。デフォルトでは hook はアドバイザリーモード（`context`）で動作します: 各セッションで最初の広い Grep/Glob/Bash 検索に対して、これらのプレーンなグラフコマンドを指す一度きりのガイダンスノートが付くだけで、何も拒否されません。インストール時に `--graph-first` を渡すと強制にオプトインでき、その場合は各セッションで最初の広い検索が一度だけ拒否され、これらのプレーンなグラフコマンドとそのインライン抜粋へのガイド付きリダイレクトが返ります（同じ検索を繰り返せばそのまま通るため、作業がブロックされることはありません）。このフラグは省略可能な値 — `deny`（フラグを渡したときのデフォルト）、`context`、`off` — を受け取り、選んだモードを `swarmvault.config.json` の `hooks.graphFirst` として永続化します。`SWARMVAULT_GRAPH_FIRST=deny|context|off` はセッション単位で引き続き上書きできます。Edit/Write ツールの後にはバックグラウンドで `swarmvault graph update --file <path>` を起動してグラフを編集に追従させます。ボルトのアーティファクトディレクトリ（`wiki/`、`raw/`、`state/`）や単一ファイルに限定された検索は決してインターセプトされず、パイプ出力をフィルタするだけの検索ツール（例: `some-command | grep …`）は広いファイル検索として扱われません。Codex、Gemini、Copilot、OpenCode、Kilo の hook にも同じ graph-first ガイダンス — セッションノートと、各ツールの hook API に合わせた一度きりの検索リダイレクト — が入ります。
+hook 対応エージェントでは、インストールされた hook が graph-first の読み取りをガイドし、強制はオプトインです。Claude Code の場合、`--hook` はセッション開始時に graph-first の指示を注入します — コード理解系の質問にはプレーンな `beehive graph query|explain|path` コマンド（`--json` は出力がはるかに大きくなるため避ける）、`beehive query`、`beehive context build`、または `wiki/graph/report.md` で答え、ソースファイルは編集するときだけ直接読む — に加えてグラフ鮮度の注意書きも添えます。`beehive graph query "<seed>"` はページパス付きの上位マッチに加えて、最も一致した wiki ページのインライン抜粋を表示するため、たいてい 1 コマンドで「X はどこか / Y を呼ぶのは何か」という質問にファイルの追加読み込みなしで答えられます。「X を呼ぶのは何か / X を変更したときの影響は」という質問に対しては、hook のガイダンスが `beehive graph callers <symbol>` を推奨します。グラフの call edges からシンボルのすべての呼び出し元を正確な file:line の呼び出し箇所エビデンス付きで一覧し、グラフが呼び出し元と特定したファイルだけをスキャンするため、リポジトリ全体の grep を置き換えられます。デフォルトでは hook はアドバイザリーモード（`context`）で動作します: 各セッションで最初の広い Grep/Glob/Bash 検索に対して、これらのプレーンなグラフコマンドを指す一度きりのガイダンスノートが付くだけで、何も拒否されません。インストール時に `--graph-first` を渡すと強制にオプトインでき、その場合は各セッションで最初の広い検索が一度だけ拒否され、これらのプレーンなグラフコマンドとそのインライン抜粋へのガイド付きリダイレクトが返ります（同じ検索を繰り返せばそのまま通るため、作業がブロックされることはありません）。このフラグは省略可能な値 — `deny`（フラグを渡したときのデフォルト）、`context`、`off` — を受け取り、選んだモードを `beehive.config.json` の `hooks.graphFirst` として永続化します。`BEEHIVE_GRAPH_FIRST=deny|context|off` はセッション単位で引き続き上書きできます。Edit/Write ツールの後にはバックグラウンドで `beehive graph update --file <path>` を起動してグラフを編集に追従させます。ボルトのアーティファクトディレクトリ（`wiki/`、`raw/`、`state/`）や単一ファイルに限定された検索は決してインターセプトされず、パイプ出力をフィルタするだけの検索ツール（例: `some-command | grep …`）は広いファイル検索として扱われません。Codex、Gemini、Copilot、OpenCode、Kilo の hook にも同じ graph-first ガイダンス — セッションノートと、各ツールの hook API に合わせた一度きりの検索リダイレクト — が入ります。
 
-`swarmvault install --agent claude --mcp` はプロジェクトの `.mcp.json` に Beehive MCP server を登録します（`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`）。Claude のインストールでは `.claude/skills/swarmvault/SKILL.md` にプロジェクト skill bundle も書き込まれます。`--scope user` を使うと skill・hook・settings が `~/.claude` 配下に一度だけインストールされ、すべてのリポジトリで有効になります — コンパイル済みグラフレポートのないリポジトリでは hook は何もしません。
+`beehive install --agent claude --mcp` はプロジェクトの `.mcp.json` に Beehive MCP server を登録します（`{"mcpServers":{"beehive":{"command":"beehive","args":["mcp"]}}}`）。Claude のインストールでは `.claude/skills/beehive/SKILL.md` にプロジェクト skill bundle も書き込まれます。`--scope user` を使うと skill・hook・settings が `~/.claude` 配下に一度だけインストールされ、すべてのリポジトリで有効になります — コンパイル済みグラフレポートのないリポジトリでは hook は何もしません。
 
-`swarmvault install --agent <agent>` はホストプロジェクトもクリーンに保ちます: git リポジトリではボルトのアーティファクトディレクトリが `.gitignore` に追記され、厳密な JSON 形式の `tsconfig.json` ではアーティファクトディレクトリが `"exclude"` に追加されるため、`raw/` 配下に保存されたソースコピーがホストの型チェックを壊しません（コメント付きの JSONC tsconfig は書き換えられず警告のみ、アーティファクトディレクトリをまだカバーしている linter 設定には助言的な警告が出ます。`SWARMVAULT_OUT` でアーティファクトをリポジトリ外に置いている場合はすべてスキップされます）。
+`beehive install --agent <agent>` はホストプロジェクトもクリーンに保ちます: git リポジトリではボルトのアーティファクトディレクトリが `.gitignore` に追記され、厳密な JSON 形式の `tsconfig.json` ではアーティファクトディレクトリが `"exclude"` に追加されるため、`raw/` 配下に保存されたソースコピーがホストの型チェックを壊しません（コメント付きの JSONC tsconfig は書き換えられず警告のみ、アーティファクトディレクトリをまだカバーしている linter 設定には助言的な警告が出ます。`BEEHIVE_OUT` でアーティファクトをリポジトリ外に置いている場合はすべてスキップされます）。
 
 トークンを節約するエージェントワークフロー向けの、リポジトリごとの推奨オンボーディング:
 
 ```bash
 cd <repo>
-swarmvault init && swarmvault ingest .
-swarmvault install --agent claude --hook --mcp --graph-first
-swarmvault hook install        # commit/checkout 時の git-hook リフレッシュ。追跡対象リポジトリがボルトルートより下にある場合は省略可能なリポジトリパス引数（例: `swarmvault hook install packages/app`）を受け取ります
+beehive init && beehive ingest .
+beehive install --agent claude --hook --mcp --graph-first
+beehive hook install        # commit/checkout 時の git-hook リフレッシュ。追跡対象リポジトリがボルトルートより下にある場合は省略可能なリポジトリパス引数（例: `beehive hook install packages/app`）を受け取ります
 ```
 
-`swarmvault install --agent <agent> [--scope project|user]` で project scope または user scope を選べます。`swarmvault install status --agent <agent>` は対象ファイルの存在を read-only で報告します。
+`beehive install --agent <agent> [--scope project|user]` で project scope または user scope を選べます。`beehive install status --agent <agent>` は対象ファイルの存在を read-only で報告します。
 
-最小構成の LLM-Wiki スターターが欲しい場合は `swarmvault init --lite` を使ってください。`raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md`、`swarmvault.schema.md` だけを作成し、設定ファイルや state、エージェントインストールは生成しません。エージェントが wiki を直接メンテナンスします。グラフ・検索・approval のフルツールチェーンが必要になったら後から `swarmvault init` でアップグレードできます。
+最小構成の LLM-Wiki スターターが欲しい場合は `beehive init --lite` を使ってください。`raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md`、`beehive.schema.md` だけを作成し、設定ファイルや state、エージェントインストールは生成しません。エージェントが wiki を直接メンテナンスします。グラフ・検索・approval のフルツールチェーンが必要になったら後から `beehive init` でアップグレードできます。
 
 あるいは、ボルトを直接 MCP で公開します:
 
 ```bash
-swarmvault mcp
+beehive mcp
 ```
 
 OpenClaw または ClawHub を使う場合は、パッケージ済みのスキルを次で導入できます:
 
 ```bash
-clawhub install swarmvault
+clawhub install beehive
 ```
 
-これで公開済みの `SKILL.md` に加えて、ClawHub 用 README、例、リファレンス、トラブルシューティング、検証用プロンプトが入ります。CLI 自体の更新は `npm install -g @swarmvaultai/cli@latest` を使います。
+これで公開済みの `SKILL.md` に加えて、ClawHub 用 README、例、リファレンス、トラブルシューティング、検証用プロンプトが入ります。CLI 自体の更新は `npm install -g @beehive/cli@latest` を使います。
 
 <!-- readme-section:input-types -->
 ## さまざまな入力を混在して扱えます
@@ -410,18 +410,18 @@ clawhub install swarmvault
 | チャット書き出し | Slack export `.zip`、展開済み Slack export ディレクトリ | チャンネル/日付単位の会話をローカル抽出 |
 | メール | `.eml .mbox` | 単一メール抽出と mailbox 展開 |
 | カレンダー | `.ics` | `VEVENT` のローカル展開 |
-| 音声 | `.mp3 .wav .m4a .aac .ogg .webm` とその他の `audio/*` ファイル | ローカル Whisper（`swarmvault provider setup --local-whisper`）、または `tasks.audioProvider` 経由の provider ベース書き起こし |
+| 音声 | `.mp3 .wav .m4a .aac .ogg .webm` とその他の `audio/*` ファイル | ローカル Whisper（`beehive provider setup --local-whisper`）、または `tasks.audioProvider` 経由の provider ベース書き起こし |
 | 動画 | `.mp4 .mov .m4v .mkv .avi` と `--video` 付き URL 入力 | `ffmpeg` または `yt-dlp` で音声を抽出し、`tasks.audioProvider` で書き起こし |
 | HTML | `.html`, URLs | Readability + Turndown による Markdown 化（URL 取り込み） |
 | YouTube URL | `youtube.com/watch`、`youtu.be`、`youtube.com/embed`、`youtube.com/shorts` | transcript を直接取得し、タイトルと動画メタデータも抽出 |
 | Images | `.png .jpg .jpeg .gif .webp .bmp .tif .tiff .svg .ico .heic .heif .avif .jxl` | Vision provider（設定されている場合） |
-| Research | arXiv, DOI, articles, X/Twitter | `swarmvault add` による正規化 Markdown |
+| Research | arXiv, DOI, articles, X/Twitter | `beehive add` による正規化 Markdown |
 | Text docs | `.md .mdx .txt .rst .rest` | 直接 ingest と軽量な `.rst` 見出し正規化 |
 | 設定 / データ | `.json .jsonc .json5 .toml .yaml .yml .xml .ini .conf .cfg .properties .env` | key/value スキーマヒント付きの構造化プレビュー |
 | 開発者マニフェスト | `package.json` `tsconfig.json` `Cargo.toml` `pyproject.toml` `go.mod` `go.sum` `Dockerfile` `Makefile` `LICENSE` `.gitignore` `.editorconfig` `.npmrc` など | コンテンツスニッフベースのテキスト ingest —— 一般的な開発設定ファイルが暗黙的に捨てられることはありません |
 | Code | `.js .mjs .cjs .jsx .ts .mts .cts .tsx .sh .bash .zsh .py .go .rs .java .kt .kts .scala .sc .dart .lua .zig .cs .c .cc .cpp .cxx .h .hh .hpp .hxx .php .rb .ps1 .psm1 .psd1 .ex .exs .ml .mli .m .mm .res .resi .sol .vue .svelte .jl .v .vh .sv .svh .r .R .css .html .htm .sql`、および `#!/usr/bin/env node\|python\|ruby\|bash\|zsh` shebang を持つ拡張子なしスクリプト | packaged parser がある言語は AST/parser ベースの解析とモジュール解決。Svelte は `<script>` block を TypeScript analyzer で nest-parse します。Julia と Verilog/SystemVerilog は packaged WASM grammar を使うようになりました。JavaScript と TypeScript は静的 import と動的 `import()` edge を捕捉します。R は検出し、安全な packaged grammar が利用可能になるまでは明示的な parser-asset diagnostic を出します。SQL は table/view ノードと read/write/join/reference edges も追加 |
 | Browser clips | inbox bundles | `inbox import` によるアセット書き換え済み Markdown |
-| Managed sources | ローカルディレクトリ、公開 GitHub リポジトリ root URL、docs ハブ URL | `swarmvault source add` によるレジストリ同期 |
+| Managed sources | ローカルディレクトリ、公開 GitHub リポジトリ root URL、docs ハブ URL | `beehive source add` によるレジストリ同期 |
 
 <!-- readme-section:what-you-get -->
 ## 得られるもの
@@ -430,59 +430,59 @@ clawhub install swarmvault
 
 **God nodes とコミュニティ** - 接続度の高い橋渡しノードを自動検出します。グラフレポートページでは「なぜこのつながりが重要か」を平易な言葉で示します。
 
-**schema-guided compilation** - 各ボルトは `swarmvault.schema.md` を持ち、コンパイラはドメイン固有の命名規則、分類、grounding 要件に従います。
+**schema-guided compilation** - 各ボルトは `beehive.schema.md` を持ち、コンパイラはドメイン固有の命名規則、分類、grounding 要件に従います。
 
 **save-first query** - 回答は既定で `wiki/outputs/` に書き込まれるため、有用な作業が消えずに蓄積されます。`markdown`、`report`、`slides`、`chart`、`image` に対応します。
 
-**Agent context packs** - `swarmvault context build` は、目的、任意の対象、token 予算に合わせて関連ページ、グラフ evidence、明示的な omitted list をまとめ、`wiki/context/` と `state/context-packs/` に保存します。Markdown、JSON、`llms.txt` 風の出力で、そのまま agent kickoff や PR レビュー、handoff に使えます。
+**Agent context packs** - `beehive context build` は、目的、任意の対象、token 予算に合わせて関連ページ、グラフ evidence、明示的な omitted list をまとめ、`wiki/context/` と `state/context-packs/` に保存します。Markdown、JSON、`llms.txt` 風の出力で、そのまま agent kickoff や PR レビュー、handoff に使えます。
 
-**Chat sessions と AI export packs** - `swarmvault chat` は multi-turn transcript を `wiki/outputs/chat-sessions/` に保存し、構造化 state を `state/chat-sessions/` に残します。`swarmvault export ai` は `llms.txt`、full-text、JSON-LD、manifest、ページごとの sibling を生成し、静的な agent handoff に使えます。
+**Chat sessions と AI export packs** - `beehive chat` は multi-turn transcript を `wiki/outputs/chat-sessions/` に保存し、構造化 state を `state/chat-sessions/` に残します。`beehive export ai` は `llms.txt`、full-text、JSON-LD、manifest、ページごとの sibling を生成し、静的な agent handoff に使えます。
 
-**Agent task ledger** - `swarmvault task start|update|finish|resume` は、task goal、linked context packs、decisions、graph evidence、touched paths、outcomes、follow-ups を git-friendly な JSON と Markdown として `state/memory/tasks/` と `wiki/memory/tasks/` に保存します。Compile は task と decision をグラフに含めます。既存の `memory` commands は互換 alias として残ります。
+**Agent task ledger** - `beehive task start|update|finish|resume` は、task goal、linked context packs、decisions、graph evidence、touched paths、outcomes、follow-ups を git-friendly な JSON と Markdown として `state/memory/tasks/` と `wiki/memory/tasks/` に保存します。Compile は task と decision をグラフに含めます。既存の `memory` commands は互換 alias として残ります。
 
-**Vault doctor とワークベンチ** - `swarmvault doctor [--repair]` は graph artifacts、retrieval、review queue、watch state、migration、managed sources、source/page counts、task state を確認します。グラフビューアのワークベンチは優先度付き next action、全 check と詳細、コピー可能な推奨コマンド、安全な repair、明示的な capture mode、title/tag capture fields、budget 付き context-pack 作成、task-start actions を表示します。
+**Vault doctor とワークベンチ** - `beehive doctor [--repair]` は graph artifacts、retrieval、review queue、watch state、migration、managed sources、source/page counts、task state を確認します。グラフビューアのワークベンチは優先度付き next action、全 check と詳細、コピー可能な推奨コマンド、安全な repair、明示的な capture mode、title/tag capture fields、budget 付き context-pack 作成、task-start actions を表示します。
 
 **レビュー可能な変更** - `compile --approve` は変更を approval bundles として段階化します。新しい concepts と entities はまず `wiki/candidates/` に入るため、黙って変更されません。
 
-**設定可能な profile** - `swarmvault.config.json` の `profile.presets`、`profile.dashboardPack`、`profile.guidedSessionMode`、`profile.guidedIngestDefault`、`profile.deepLintDefault`、`profile.dataviewBlocks` を組み合わせて、自分向けの vault mode を作れます。`personal-research` はあくまで built-in preset alias です。
+**設定可能な profile** - `beehive.config.json` の `profile.presets`、`profile.dashboardPack`、`profile.guidedSessionMode`、`profile.guidedIngestDefault`、`profile.deepLintDefault`、`profile.dataviewBlocks` を組み合わせて、自分向けの vault mode を作れます。`personal-research` はあくまで built-in preset alias です。
 
-**ガイド付き session** - `ingest --guide`、`source add --guide`、`source reload --guide`、`source guide <id>`、`source session <id>` は再開可能な source session を作成し、`wiki/outputs/source-sessions/` に残しながら、source review、source guide、そして profile 設定に応じて canonical page あるいは `wiki/insights/` へ向かう更新案を受け入れ前に段階化します。`swarmvault.config.json` で `profile.guidedIngestDefault: true` を設定すると、ingest と source コマンドでガイド付きモードがデフォルトになります。`--no-guide` でオーバーライドできます。
+**ガイド付き session** - `ingest --guide`、`source add --guide`、`source reload --guide`、`source guide <id>`、`source session <id>` は再開可能な source session を作成し、`wiki/outputs/source-sessions/` に残しながら、source review、source guide、そして profile 設定に応じて canonical page あるいは `wiki/insights/` へ向かう更新案を受け入れ前に段階化します。`beehive.config.json` で `profile.guidedIngestDefault: true` を設定すると、ingest と source コマンドでガイド付きモードがデフォルトになります。`--no-guide` でオーバーライドできます。
 
-**deep lint の既定値** - `swarmvault.config.json` で `profile.deepLintDefault: true` を設定すると、`swarmvault lint` は LLM ベースの advisory deep lint を既定で含むようになります。特定の実行だけ構造チェックに戻したい場合は `--no-deep` を使ってください。
+**deep lint の既定値** - `beehive.config.json` で `profile.deepLintDefault: true` を設定すると、`beehive lint` は LLM ベースの advisory deep lint を既定で含むようになります。特定の実行だけ構造チェックに戻したい場合は `--no-deep` を使ってください。
 
 **Web-search 強化 lint** — `lint --deep --web` は、設定済みの web-search provider（`http-json` または `custom`）を使用して deep-lint の検出結果に外部エビデンスを追加します。Web search は現在 deep lint のみに限定されています。他のコマンドはローカル vault 状態のみを参照します。
 
 **知識ダッシュボード** - `wiki/dashboards/` には recent sources、reading log、timeline、source sessions、source guides、research map、contradictions、open questions が出力されます。まず plain markdown として読めることを優先し、`profile.dataviewBlocks` を有効にすると Obsidian Dataview 向けのクエリも追加されます。
 
-**Retrieval、ハイブリッド search と rerank** - ローカル retrieval は SQLite FTS shard と manifest を `state/retrieval/` に保存します。embedding 対応 provider が利用できる場合、ローカル search は SQLite 全文検索と semantic page match を統合できます。`tasks.embeddingProvider` はその backend を明示的に選ぶ方法ですが、現在の `queryProvider` が embeddings をサポートしていればそちらに fallback することもあります。`retrieval.rerank: true` を使うと、`query` の前に現在の `queryProvider` が上位候補を再ランキングします。`swarmvault retrieval status|rebuild|doctor` で index を確認または修復できます。
+**Retrieval、ハイブリッド search と rerank** - ローカル retrieval は SQLite FTS shard と manifest を `state/retrieval/` に保存します。embedding 対応 provider が利用できる場合、ローカル search は SQLite 全文検索と semantic page match を統合できます。`tasks.embeddingProvider` はその backend を明示的に選ぶ方法ですが、現在の `queryProvider` が embeddings をサポートしていればそちらに fallback することもあります。`retrieval.rerank: true` を使うと、`query` の前に現在の `queryProvider` が上位候補を再ランキングします。`beehive retrieval status|rebuild|doctor` で index を確認または修復できます。
 
 **token 予算つき compile と自動 commit** - `compile --max-tokens <n>` は低優先度ページを削って生成 wiki を所定の token 予算内に収めます。`ingest|compile|query --commit` は、vault が git リポジトリ内にあるとき `wiki/` と `state/` の変更を即座に commit できます。
 
 **グラフ健全性シグナル** - graph report artifact には community cohesion の要約、孤立ノードや曖昧 edge の warning、そして弱いまたは曖昧な領域を補う follow-up question も含まれるようになりました。
 
-**ビジュアル + 投稿しやすい share kit** - すべての compile が `wiki/graph/share-card.md`、`wiki/graph/share-card.svg`、`wiki/graph/share-kit/` を生成します。`swarmvault graph share --post` は短いテキストを出力し、`swarmvault graph share --svg [path]` は 1200x630 のビジュアルカードを書き出し、`swarmvault graph share --bundle [dir]` は markdown、投稿テキスト、SVG、HTML preview、JSON metadata を書き出して、投稿、リンク共有、スクリーンショットに使いやすくします。
+**ビジュアル + 投稿しやすい share kit** - すべての compile が `wiki/graph/share-card.md`、`wiki/graph/share-card.svg`、`wiki/graph/share-kit/` を生成します。`beehive graph share --post` は短いテキストを出力し、`beehive graph share --svg [path]` は 1200x630 のビジュアルカードを書き出し、`beehive graph share --bundle [dir]` は markdown、投稿テキスト、SVG、HTML preview、JSON metadata を書き出して、投稿、リンク共有、スクリーンショットに使いやすくします。
 
 **graph blast radius、cycles、status、stats、validation、refresh、query filters、tree、merge、clustering、report export** - `graph blast <target>` は module dependency の reverse import をたどって変更影響範囲を示し、`graph cycles [--relation imports]` は決定的な directed cycle を検出し、`graph status [path]` は graph/report artifacts と tracked repo changes の stale 状態を read-only で確認します。`check-update [path]` は同じ cron-safe status check の top-level compatibility alias です。`graph stats` は軽量な counts と relation mix を出力し、`graph validate [graph] --strict` は export/merge/push workflow の前に duplicate id、dangling reference、confidence range、conflicted-edge evidence を検査します。`graph update [path]` / `graph refresh [path]` は graph artifacts 向けに code-only repo refresh cycle を実行し、node/edge が 25% を超えて減る場合は明示的な `--force` がない限り停止します。`update [path]` は top-level compatibility alias です。`watch [path] --once` は watch config に保存せずに 1 つの repo root を対象にできます。`graph query` は relation、context group、evidence class、node type、language で traversal を絞り込めます。`graph tree` は expand/collapse controls と node inspector 付きの interactive source/module/symbol HTML tree を書き出し、`tree` は top-level alias です。`graph merge` は Beehive または node-link JSON graph を namespace 付きの 1 つの artifact に統合し、`merge-graphs` は top-level alias です。`graph cluster [--resolution <n>]` は再 ingest なしで既存 graph から communities、degree、god-node flags、graph report pages を再計算し、`cluster-only [vault]` は top-level compatibility alias です。`graph export --report` は統計、主要ノード、コミュニティ、warning を含む self-contained HTML report を出力します。`graph export --callflow <path>` は compact な directed relationship HTML view を書き出します。`graph export --neo4j <path>` は Neo4j import 前に使う Cypher export alias です。
 
-**グラフ diff** - `swarmvault diff` は現在のナレッジグラフを最後にコミットされたバージョンと比較し、追加/削除されたノード、エッジ、ページを表示して、compile で何が変わったかを正確に確認できます。
+**グラフ diff** - `beehive diff` は現在のナレッジグラフを最後にコミットされたバージョンと比較し、追加/削除されたノード、エッジ、ページを表示して、compile で何が変わったかを正確に確認できます。
 
-**Worktree artifact roots** - `SWARMVAULT_OUT=<dir>` は生成される `raw/`、`wiki/`、`state/`、`agent/`、`inbox/` artifacts を移動しつつ、`swarmvault.config.json` と `swarmvault.schema.md` はプロジェクトルートに残します。isolated smoke tests、共有 source tree、生成 vault state をソース横に置きたくない repo worktree に向いています。
+**Worktree artifact roots** - `BEEHIVE_OUT=<dir>` は生成される `raw/`、`wiki/`、`state/`、`agent/`、`inbox/` artifacts を移動しつつ、`beehive.config.json` と `beehive.schema.md` はプロジェクトルートに残します。isolated smoke tests、共有 source tree、生成 vault state をソース横に置きたくない repo worktree に向いています。
 
 **Obsidian グラフ export** - `graph export --obsidian` は、既存 wiki フォルダ構成を保ちつつ、Breadcrumbs/Juggl 対応の型付きリンク frontmatter 付きグラフ接続、community note、orphan node stub、Dataview ダッシュボードページ、コピー済みアセット、`types.json`・ノードタイプ別カラーグループ・`cssclasses` を含む完全な `.obsidian` 設定を含む Obsidian 向け note bundle を書き出します。
 
-**適応的なコミュニティ分割** - Beehive は小規模または疎なグラフでは Louvain の community resolution を自動調整し、さらに大きすぎるまたは cohesion の低いコミュニティを分割して、大きな repo でも graph report を読みやすく保ちます。クラスタリング結果を固定したい場合は `swarmvault.config.json` で `graph.communityResolution` を設定し、単発の再計算だけなら `swarmvault graph cluster --resolution <n>` を使えます。
+**適応的なコミュニティ分割** - Beehive は小規模または疎なグラフでは Louvain の community resolution を自動調整し、さらに大きすぎるまたは cohesion の低いコミュニティを分割して、大きな repo でも graph report を読みやすく保ちます。クラスタリング結果を固定したい場合は `beehive.config.json` で `graph.communityResolution` を設定し、単発の再計算だけなら `beehive graph cluster --resolution <n>` を使えます。
 
 **任意のモデルプロバイダー** - OpenAI、Anthropic、Gemini、Ollama、OpenRouter、Groq、Together、xAI、Cerebras、汎用 OpenAI-compatible、custom adapters、そしてオフライン/ローカル既定の heuristic を使えます。
 
-**Agent integration** - Codex、Claude Code、Cursor、Goose、Pi、Gemini CLI、OpenCode、Aider、GitHub Copilot CLI、Trae、Claw/OpenClaw、Droid、Kiro、Kilo、Hermes、Google Antigravity、VS Code Copilot Chat、Devin、および extended skill-bundle roster 用の規則を明示的にインストールします。`init`、`quickstart`、`scan`、`clone` は、設定済みインストールを選ばない限りプロジェクトローカル rule files を書きません。任意の graph-first hooks は対応エージェントの graph-first 読み取りをガイドします — セッション開始時のグラフガイダンスと鮮度注意書き、最初の広域検索への一度きりのアドバイザリーノート（または `--graph-first` の強制オプトインで一度きりの拒否リダイレクト、同じ検索の再実行は常に許可）、Claude Code では編集後の自動バックグラウンドのファイル単位グラフリフレッシュで、`SWARMVAULT_GRAPH_FIRST` または `hooks.graphFirst` で設定できます。Antigravity は `.agents/rules/` と `.agents/workflows/` にインストールされ、再インストール時に古い fully managed `.agent/` files をクリーンアップします。
+**Agent integration** - Codex、Claude Code、Cursor、Goose、Pi、Gemini CLI、OpenCode、Aider、GitHub Copilot CLI、Trae、Claw/OpenClaw、Droid、Kiro、Kilo、Hermes、Google Antigravity、VS Code Copilot Chat、Devin、および extended skill-bundle roster 用の規則を明示的にインストールします。`init`、`quickstart`、`scan`、`clone` は、設定済みインストールを選ばない限りプロジェクトローカル rule files を書きません。任意の graph-first hooks は対応エージェントの graph-first 読み取りをガイドします — セッション開始時のグラフガイダンスと鮮度注意書き、最初の広域検索への一度きりのアドバイザリーノート（または `--graph-first` の強制オプトインで一度きりの拒否リダイレクト、同じ検索の再実行は常に許可）、Claude Code では編集後の自動バックグラウンドのファイル単位グラフリフレッシュで、`BEEHIVE_GRAPH_FIRST` または `hooks.graphFirst` で設定できます。Antigravity は `.agents/rules/` と `.agents/workflows/` にインストールされ、再インストール時に古い fully managed `.agent/` files をクリーンアップします。
 
-**MCP server** - `swarmvault mcp` は graph stats、read-only のグラフ鮮度チェック（`graph_status`）、コード限定グラフリフレッシュ（`update_graph`、ファイル単位指定も可）、graph clustering refresh、community lookup、hyperedges、context-pack、task-ledger、互換 memory-task、vault doctor、retrieval health tools を含むボルト操作を stdio 経由で互換エージェントクライアントへ公開します。リポジトリには、stdio container entrypoint を検証する MCP server registry 向けの Docker/registry metadata も含まれます。
+**MCP server** - `beehive mcp` は graph stats、read-only のグラフ鮮度チェック（`graph_status`）、コード限定グラフリフレッシュ（`update_graph`、ファイル単位指定も可）、graph clustering refresh、community lookup、hyperedges、context-pack、task-ledger、互換 memory-task、vault doctor、retrieval health tools を含むボルト操作を stdio 経由で互換エージェントクライアントへ公開します。リポジトリには、stdio container entrypoint を検証する MCP server registry 向けの Docker/registry metadata も含まれます。
 
 **組み込みブラウザ clipper** - `graph serve` はローカルの `/api/bookmarklet` ページと `/api/clip` エンドポイントを公開し、workbench または bookmarklet から現在のブラウザ URL、ページタイトル、選択テキスト、Markdown、HTML excerpt、tags を実行中の vault に取り込めます。URL-only bookmarklet clip は normalized `add` を使い、選択テキストは inbox import path で取り込みます。
 
 **Automation** - watch mode、git hooks、定期実行、inbox import により、ボルトを手動更新なしで最新に保てます。
 
-**Managed sources** - `swarmvault source add|list|reload|review|guide|session|delete` により、繰り返し使うローカルファイル、ディレクトリ、公開 GitHub リポジトリ、docs サイトを名前付き同期ソースとして管理できます。レジストリは `state/sources.json`、ソース別ブリーフは `wiki/outputs/source-briefs/`、再開可能な session アンカーは `wiki/outputs/source-sessions/`、ガイド付き統合成果物は `wiki/outputs/source-guides/` に保存されます。公開 GitHub repo には `--branch`、`--ref`、`--checkout-dir` を指定して branch/tag/commit を固定したり checkout を再利用できます。
+**Managed sources** - `beehive source add|list|reload|review|guide|session|delete` により、繰り返し使うローカルファイル、ディレクトリ、公開 GitHub リポジトリ、docs サイトを名前付き同期ソースとして管理できます。レジストリは `state/sources.json`、ソース別ブリーフは `wiki/outputs/source-briefs/`、再開可能な session アンカーは `wiki/outputs/source-sessions/`、ガイド付き統合成果物は `wiki/outputs/source-guides/` に保存されます。公開 GitHub repo には `--branch`、`--ref`、`--checkout-dir` を指定して branch/tag/commit を固定したり checkout を再利用できます。
 
 **Source artifact の種類：**
 
@@ -497,7 +497,7 @@ clawhub install swarmvault
 
 **インタラクティブ ingest フィードバック** - file と directory ingest は stderr に境界付きの進捗、現在の file、処理済み content size を表示します。JSON、MCP、watch、CI 風の flow は静かなままです。
 
-**大規模リポジトリ向けの堅牢化** - 大きな repo ingest や compile は bounded に保たれ、provider-backed non-code analysis は model call の前に長い抽出テキストを chunk 化します。nested `.gitignore` と `.swarmvaultignore` を尊重し、意図的な例外には `.swarmvaultinclude` allowlist を使えます。parser 互換性の失敗は該当ソースだけに閉じ込めて明示的な診断を残し、code-only repo watch cycle は non-code re-analysis を飛ばし、グラフレポートでは細かすぎるコミュニティをまとめて可読性を保ちます。
+**大規模リポジトリ向けの堅牢化** - 大きな repo ingest や compile は bounded に保たれ、provider-backed non-code analysis は model call の前に長い抽出テキストを chunk 化します。nested `.gitignore` と `.beehiveignore` を尊重し、意図的な例外には `.beehiveinclude` allowlist を使えます。parser 互換性の失敗は該当ソースだけに閉じ込めて明示的な診断を残し、code-only repo watch cycle は non-code re-analysis を飛ばし、グラフレポートでは細かすぎるコミュニティをまとめて可読性を保ちます。
 
 各エッジには `extracted`、`inferred`、`ambiguous` のタグが付き、何が実際に見つかった情報で、何が推論かを常に判断できます。
 
@@ -506,56 +506,56 @@ clawhub install swarmvault
 
 | Agent | インストールコマンド |
 |-------|----------------------|
-| Codex | `swarmvault install --agent codex --hook` |
-| Claude Code | `swarmvault install --agent claude --hook --mcp` |
-| Cursor | `swarmvault install --agent cursor` |
-| Goose | `swarmvault install --agent goose` |
-| Pi | `swarmvault install --agent pi` |
-| Gemini CLI | `swarmvault install --agent gemini` |
-| OpenCode | `swarmvault install --agent opencode` |
-| Aider | `swarmvault install --agent aider` |
-| GitHub Copilot CLI | `swarmvault install --agent copilot` |
-| Trae | `swarmvault install --agent trae` |
-| Claw / OpenClaw | `swarmvault install --agent claw` |
-| Droid | `swarmvault install --agent droid` |
-| Kiro | `swarmvault install --agent kiro` |
-| Kilo | `swarmvault install --agent kilo --hook` |
-| Hermes | `swarmvault install --agent hermes` |
-| Google Antigravity | `swarmvault install --agent antigravity` |
-| VS Code Copilot Chat | `swarmvault install --agent vscode` |
-| Amp | `swarmvault install --agent amp` |
-| Augment | `swarmvault install --agent augment` |
-| AdaL | `swarmvault install --agent adal` |
-| IBM Bob | `swarmvault install --agent bob` |
-| Cline | `swarmvault install --agent cline` |
-| CodeBuddy | `swarmvault install --agent codebuddy` |
-| Command Code | `swarmvault install --agent command-code` |
-| Continue | `swarmvault install --agent continue` |
-| Cortex Code | `swarmvault install --agent cortex` |
-| Crush | `swarmvault install --agent crush` |
-| Deep Agents | `swarmvault install --agent deepagents` |
-| Devin | `swarmvault install --agent devin` |
-| Firebender | `swarmvault install --agent firebender` |
-| iFlow CLI | `swarmvault install --agent iflow` |
-| Junie | `swarmvault install --agent junie` |
-| Kilo Code | `swarmvault install --agent kilo-code` |
-| Kimi Code CLI | `swarmvault install --agent kimi` |
-| Kode | `swarmvault install --agent kode` |
-| MCPJam | `swarmvault install --agent mcpjam` |
-| Mistral Vibe | `swarmvault install --agent mistral-vibe` |
-| Mux | `swarmvault install --agent mux` |
-| Neovate | `swarmvault install --agent neovate` |
-| OpenClaw | `swarmvault install --agent openclaw` |
-| OpenHands | `swarmvault install --agent openhands` |
-| Pochi | `swarmvault install --agent pochi` |
-| Qoder | `swarmvault install --agent qoder` |
-| Qwen Code | `swarmvault install --agent qwen-code` |
-| Replit | `swarmvault install --agent replit` |
-| Roo Code | `swarmvault install --agent roo-code` |
-| TRAE CN | `swarmvault install --agent trae-cn` |
-| Warp | `swarmvault install --agent warp` |
-| Windsurf | `swarmvault install --agent windsurf` |
-| Zencoder | `swarmvault install --agent zencoder` |
+| Codex | `beehive install --agent codex --hook` |
+| Claude Code | `beehive install --agent claude --hook --mcp` |
+| Cursor | `beehive install --agent cursor` |
+| Goose | `beehive install --agent goose` |
+| Pi | `beehive install --agent pi` |
+| Gemini CLI | `beehive install --agent gemini` |
+| OpenCode | `beehive install --agent opencode` |
+| Aider | `beehive install --agent aider` |
+| GitHub Copilot CLI | `beehive install --agent copilot` |
+| Trae | `beehive install --agent trae` |
+| Claw / OpenClaw | `beehive install --agent claw` |
+| Droid | `beehive install --agent droid` |
+| Kiro | `beehive install --agent kiro` |
+| Kilo | `beehive install --agent kilo --hook` |
+| Hermes | `beehive install --agent hermes` |
+| Google Antigravity | `beehive install --agent antigravity` |
+| VS Code Copilot Chat | `beehive install --agent vscode` |
+| Amp | `beehive install --agent amp` |
+| Augment | `beehive install --agent augment` |
+| AdaL | `beehive install --agent adal` |
+| IBM Bob | `beehive install --agent bob` |
+| Cline | `beehive install --agent cline` |
+| CodeBuddy | `beehive install --agent codebuddy` |
+| Command Code | `beehive install --agent command-code` |
+| Continue | `beehive install --agent continue` |
+| Cortex Code | `beehive install --agent cortex` |
+| Crush | `beehive install --agent crush` |
+| Deep Agents | `beehive install --agent deepagents` |
+| Devin | `beehive install --agent devin` |
+| Firebender | `beehive install --agent firebender` |
+| iFlow CLI | `beehive install --agent iflow` |
+| Junie | `beehive install --agent junie` |
+| Kilo Code | `beehive install --agent kilo-code` |
+| Kimi Code CLI | `beehive install --agent kimi` |
+| Kode | `beehive install --agent kode` |
+| MCPJam | `beehive install --agent mcpjam` |
+| Mistral Vibe | `beehive install --agent mistral-vibe` |
+| Mux | `beehive install --agent mux` |
+| Neovate | `beehive install --agent neovate` |
+| OpenClaw | `beehive install --agent openclaw` |
+| OpenHands | `beehive install --agent openhands` |
+| Pochi | `beehive install --agent pochi` |
+| Qoder | `beehive install --agent qoder` |
+| Qwen Code | `beehive install --agent qwen-code` |
+| Replit | `beehive install --agent replit` |
+| Roo Code | `beehive install --agent roo-code` |
+| TRAE CN | `beehive install --agent trae-cn` |
+| Warp | `beehive install --agent warp` |
+| Windsurf | `beehive install --agent windsurf` |
+| Zencoder | `beehive install --agent zencoder` |
 
 Codex、Claude Code、OpenCode、Gemini CLI、Copilot、Kilo は `--hook` にも対応しており、graph-first の読み取りをガイドします（デフォルトはアドバイザリー。`--graph-first` で強制にオプトイン）。Claude Code はさらに `--mcp` でプロジェクトの `.mcp.json` への MCP server 登録に、`--scope user` で `~/.claude` 配下への skill/hook/settings の一括インストールに対応します。Project-scope installs は skills directory を持つ agent に skill bundle を書けます。`--scope user` は対応する user-level skill files を書きます。
 
@@ -573,7 +573,7 @@ Codex、Claude Code、OpenCode、Gemini CLI、Copilot、Kilo は `--hook` にも
 | **[capture](worked/capture/)** | arXiv、DOI、URL からの研究向け `add` capture と正規化メタデータ | `worked/capture/` |
 | **[mixed-corpus](worked/mixed-corpus/)** | compile、review、save-first output loops（混合入力タイプ） | `worked/mixed-corpus/` |
 
-手順付きの説明は [examples guide](https://www.swarmvault.ai/docs/getting-started/examples) を参照してください。
+手順付きの説明は [examples guide](https://www.beehive.ai/docs/getting-started/examples) を参照してください。
 
 <!-- readme-section:providers -->
 ## Providers
@@ -582,7 +582,7 @@ Codex、Claude Code、OpenCode、Gemini CLI、Copilot、Kilo は `--hook` にも
 
 `heuristic` `openai` `anthropic` `gemini` `ollama` `openrouter` `groq` `together` `xai` `cerebras` `openai-compatible` `custom`
 
-設定例は [provider docs](https://www.swarmvault.ai/docs/providers) を参照してください。
+設定例は [provider docs](https://www.beehive.ai/docs/providers) を参照してください。
 
 <!-- readme-section:privacy -->
 ## プライバシーとデータフロー
@@ -601,18 +601,18 @@ Beehive はデフォルトでデータをローカル処理します：
 
 | Package | 目的 |
 |---------|------|
-| `@swarmvaultai/cli` | グローバル CLI（`swarmvault` と `vault` コマンド） |
-| `@swarmvaultai/engine` | ingest、compile、query、lint、watch、MCP のランタイムライブラリ |
-| `@swarmvaultai/viewer` | グラフビューア（CLI に含まれており別途インストール不要） |
+| `@beehive/cli` | グローバル CLI（`beehive` と `vault` コマンド） |
+| `@beehive/engine` | ingest、compile、query、lint、watch、MCP のランタイムライブラリ |
+| `@beehive/viewer` | グラフビューア（CLI に含まれており別途インストール不要） |
 
 <!-- readme-section:help -->
 ## ヘルプ
 
-- Docs: https://www.swarmvault.ai/docs
-- Providers: https://www.swarmvault.ai/docs/providers
-- Troubleshooting: https://www.swarmvault.ai/docs/getting-started/troubleshooting
-- npm package: https://www.npmjs.com/package/@swarmvaultai/cli
-- GitHub issues: https://github.com/swarmclawai/swarmvault/issues
+- Docs: <https://www.beehive.ai/docs>
+- Providers: <https://www.beehive.ai/docs/providers>
+- Troubleshooting: <https://www.beehive.ai/docs/getting-started/troubleshooting>
+- npm package: <https://www.npmjs.com/package/@beehive/cli>
+- GitHub issues: <https://github.com/MaraClaw/Beehive/issues>
 
 <!-- readme-section:development -->
 ## 開発
@@ -633,10 +633,10 @@ PR のガイドラインは [CONTRIBUTING.md](CONTRIBUTING.md)、公開パッケ
 <!-- readme-section:links -->
 ## リンク
 
-- Website: https://www.swarmvault.ai
-- Docs: https://www.swarmvault.ai/docs
-- npm: https://www.npmjs.com/package/@swarmvaultai/cli
-- GitHub: https://github.com/swarmclawai/swarmvault
+- Website: <https://www.beehive.ai>
+- Docs: <https://www.beehive.ai/docs>
+- npm: <https://www.npmjs.com/package/@beehive/cli>
+- GitHub: <https://github.com/MaraClaw/Beehive>
 
 <!-- readme-section:license -->
 ## ライセンス
