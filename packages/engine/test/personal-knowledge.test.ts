@@ -82,7 +82,7 @@ function createIcs(): string {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//SwarmVault Tests//EN",
+    "PRODID:-//Beehive Tests//EN",
     "BEGIN:VEVENT",
     "UID:event-1",
     "DTSTAMP:20260409T090000Z",

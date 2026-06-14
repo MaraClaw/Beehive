@@ -3136,7 +3136,7 @@ function swiftDeclarationKindFromKeyword(node: TreeNode): CodeSymbolKind {
 // Swift visibility is expressed as a `modifiers` child containing a
 // `visibility_modifier`, whose innermost child carries the concrete keyword
 // (public / private / fileprivate / internal / open). Missing visibility means
-// `internal`, which Swift treats as module-accessible. For the SwarmVault
+// `internal`, which Swift treats as module-accessible. For the Beehive
 // graph's "exported" flag we treat everything except `private` and
 // `fileprivate` as exported.
 function swiftVisibilityKeyword(node: TreeNode): string | undefined {
@@ -4203,7 +4203,7 @@ function solidityCodeAnalysis(manifest: SourceManifest, rootNode: TreeNode, diag
 }
 
 // tree-sitter-html's tree is structural (nested `element` nodes, `attribute`
-// children with `attribute_name` + `quoted_attribute_value`). For SwarmVault
+// children with `attribute_name` + `quoted_attribute_value`). For Beehive
 // purposes HTML files are mostly not "code" in the symbol-extraction sense, so
 // we focus on two graph-useful signals:
 //   1. Imports: `<link rel="stylesheet" href="./x.css">` and `<script src="./y.js">`

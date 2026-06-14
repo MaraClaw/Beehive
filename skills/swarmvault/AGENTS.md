@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-This directory is the published ClawHub/OpenClaw skill package for SwarmVault. It is a text-only artifact with its own frontmatter, required files, examples, validation prompts, and publish/inspect lifecycle.
+This directory is the published ClawHub/OpenClaw skill package for Beehive. It is a text-only artifact with its own frontmatter, required files, examples, validation prompts, and publish/inspect lifecycle.
 
 ## STRUCTURE
 
@@ -62,4 +62,4 @@ pnpm live:cli-surface
 ## NOTES
 
 - If adding/removing CLI commands, update `scripts/cli-surface-smoke.mjs`, examples, README, and smoke prompts together.
-- Shared agent rule files preserve user content around SwarmVault managed blocks.
+- Shared agent rule files preserve user content around Beehive managed blocks.

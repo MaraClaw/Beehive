@@ -3459,7 +3459,7 @@ async function syncVaultArtifacts(
     page: emptyGraphPage({
       id: "index",
       path: "index.md",
-      title: "SwarmVault Index",
+      title: "Beehive Index",
       kind: "index",
       sourceIds: [],
       projectIds: [],
@@ -5207,8 +5207,8 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
             "",
             "Human-authored notes live here.",
             "",
-            "- SwarmVault can read these pages during compile and query.",
-            "- SwarmVault can stage insight-page updates through guided sessions, but it never applies them without review.",
+            "- Beehive can read these pages during compile and query.",
+            "- Beehive can stage insight-page updates through guided sessions, but it never applies them without review.",
             ""
           ]
       ).join("\n"),

@@ -54,7 +54,7 @@ function buildShortPost(input: {
     : "The graph is ready for its first surprising connection.";
 
   return [
-    `I scanned ${input.vaultName} with SwarmVault: ${input.overview.sources} sources -> ${input.overview.pages} wiki pages, ${input.overview.nodes} graph nodes, ${input.overview.edges} edges.`,
+    `I scanned ${input.vaultName} with Beehive: ${input.overview.sources} sources -> ${input.overview.pages} wiki pages, ${input.overview.nodes} graph nodes, ${input.overview.edges} edges.`,
     topHubLine,
     surpriseLine,
     "Everything stays local. Try: npm install -g @swarmvaultai/cli && swarmvault quickstart ./your-repo"
@@ -228,7 +228,7 @@ export function buildGraphShareArtifact(input: {
 
 export function renderGraphShareMarkdown(artifact: GraphShareArtifact): string {
   const lines = [
-    "# SwarmVault Share Card",
+    "# Beehive Share Card",
     "",
     `> ${artifact.tagline}`,
     "",
@@ -310,7 +310,7 @@ export function renderGraphShareSvg(artifact: GraphShareArtifact): string {
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">`,
-    `  <title>SwarmVault share card for ${escapeXml(artifact.vaultName)}</title>`,
+    `  <title>Beehive share card for ${escapeXml(artifact.vaultName)}</title>`,
     `  <desc>${escapeXml(artifact.tagline)}</desc>`,
     "  <defs>",
     '    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">',
@@ -330,7 +330,7 @@ export function renderGraphShareSvg(artifact: GraphShareArtifact): string {
     '  <circle cx="438" cy="326" r="10" fill="#06b6d4" />',
     '  <circle cx="746" cy="194" r="10" fill="#a7f3d0" />',
     '  <circle cx="1110" cy="84" r="9" fill="#22c55e" />',
-    svgText({ x: 78, y: 96, text: "SwarmVault", size: 28, fill: "#86efac", weight: 900 }),
+    svgText({ x: 78, y: 96, text: "Beehive", size: 28, fill: "#86efac", weight: 900 }),
     svgText({ x: 78, y: 152, text: clipText(artifact.vaultName, 42), size: 54, fill: "#f8fafc", weight: 900 }),
     svgText({ x: 78, y: 196, text: clipText(artifact.tagline, 86), size: 22, fill: "#cbd5e1", weight: 600 }),
     ...svgStatCard({ x: 78, y: 242, label: "Sources", value: artifact.overview.sources }),
@@ -395,7 +395,7 @@ export function renderGraphSharePreviewHtml(artifact: GraphShareArtifact): strin
     .slice(0, 3)
     .map((question) => `<li>${escapeXml(question)}</li>`)
     .join("\n");
-  const title = `SwarmVault Share Kit - ${artifact.vaultName}`;
+  const title = `Beehive Share Kit - ${artifact.vaultName}`;
 
   return [
     "<!doctype html>",

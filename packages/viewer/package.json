@@ -1,7 +1,7 @@
 {
   "name": "@swarmvaultai/viewer",
   "version": "3.21.0",
-  "description": "Graph viewer package for SwarmVault graph artifacts.",
+  "description": "Graph viewer package for Beehive graph artifacts.",
   "type": "module",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",

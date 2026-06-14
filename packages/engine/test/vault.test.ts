@@ -292,7 +292,7 @@ function createSimplePptx(): Buffer {
           '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
           '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/">',
           "<dc:title>Tiny Slide Deck</dc:title>",
-          "<dc:creator>SwarmVault Tests</dc:creator>",
+          "<dc:creator>Beehive Tests</dc:creator>",
           "</cp:coreProperties>"
         ].join(""),
         "utf8"
@@ -396,7 +396,7 @@ function createSimpleEpub(chapters: Array<{ fileName: string; title: string; bod
           '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid">',
           '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">',
           "<dc:title>Tiny EPUB</dc:title>",
-          "<dc:creator>SwarmVault Tests</dc:creator>",
+          "<dc:creator>Beehive Tests</dc:creator>",
           "</metadata>",
           "<manifest>",
           '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
@@ -490,30 +490,30 @@ describe("swarmvault workflow", () => {
     const copilotContent = await fs.readFile(copilotTarget.target, "utf8");
     const cursorContent = await fs.readFile(cursorTarget.target, "utf8");
     const parsedCursor = matter(cursorContent);
-    expect(agentsContent).toContain("# SwarmVault Rules");
+    expect(agentsContent).toContain("# Beehive Rules");
     expect(agentsContent.match(/swarmvault:managed:start/g)?.length ?? 0).toBe(1);
-    expect(geminiContent).toContain("# SwarmVault Rules");
-    expect(conventionsContent).toContain("# SwarmVault Conventions");
-    expect(copilotContent).toContain("# SwarmVault Repository Instructions");
-    expect(parsedCursor.data.description).toBe("SwarmVault graph-first repository instructions.");
+    expect(geminiContent).toContain("# Beehive Rules");
+    expect(conventionsContent).toContain("# Beehive Conventions");
+    expect(copilotContent).toContain("# Beehive Repository Instructions");
+    expect(parsedCursor.data.description).toBe("Beehive graph-first repository instructions.");
     expect(parsedCursor.data.alwaysApply).toBe(true);
-    expect(parsedCursor.content).toContain("# SwarmVault Rules");
+    expect(parsedCursor.content).toContain("# Beehive Rules");
     expect(parsedCursor.content.match(/swarmvault:managed:start/g)?.length ?? 0).toBe(1);
     expect(await fs.readFile(path.join(rootDir, ".aider.conf.yml"), "utf8")).toContain("CONVENTIONS.md");
 
     const traeContent = await fs.readFile(traeTarget.target, "utf8");
     const clawContent = await fs.readFile(clawTarget.target, "utf8");
     const droidContent = await fs.readFile(droidTarget.target, "utf8");
-    expect(traeContent).toContain("# SwarmVault Rules");
-    expect(clawContent).toContain("# SwarmVault Rules");
-    expect(droidContent).toContain("# SwarmVault Rules");
+    expect(traeContent).toContain("# Beehive Rules");
+    expect(clawContent).toContain("# Beehive Rules");
+    expect(droidContent).toContain("# Beehive Rules");
 
     await installAgent(rootDir, "cursor");
     const cursorContentAgain = await fs.readFile(cursorTarget.target, "utf8");
     expect(cursorContentAgain).toBe(cursorContent);
   });
 
-  it("keeps agent-specific user notes while installing matching managed SwarmVault blocks", async () => {
+  it("keeps agent-specific user notes while installing matching managed Beehive blocks", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
     const agentsPath = path.join(rootDir, "AGENTS.md");
@@ -680,10 +680,10 @@ describe("swarmvault workflow", () => {
     const kiroSkillRaw = await fs.readFile(kiroTarget.target, "utf8");
     const kiroSkill = matter(kiroSkillRaw);
     expect(kiroSkill.data.name).toBe("swarmvault");
-    expect(kiroSkill.content).toContain("SwarmVault compiles curated sources");
+    expect(kiroSkill.content).toContain("Beehive compiles curated sources");
     const kiroSteering = matter(await fs.readFile(path.join(rootDir, ".kiro", "steering", "swarmvault.md"), "utf8"));
     expect(kiroSteering.data.inclusion).toBe("always");
-    expect(kiroSteering.content).toContain("# SwarmVault Rules");
+    expect(kiroSteering.content).toContain("# Beehive Rules");
 
     await fs.mkdir(path.join(rootDir, ".agent", "rules"), { recursive: true });
     await fs.mkdir(path.join(rootDir, ".agent", "workflows"), { recursive: true });
@@ -692,10 +692,10 @@ describe("swarmvault workflow", () => {
       [
         "---",
         "alwaysApply: true",
-        "description: SwarmVault graph-first repository rules.",
+        "description: Beehive graph-first repository rules.",
         "---",
         "",
-        "# SwarmVault Rules",
+        "# Beehive Rules",
         "",
         "- Read `swarmvault.schema.md` before compile or query style work. It is the canonical schema path.",
         "- Treat `raw/` as immutable source input.",
@@ -704,9 +704,9 @@ describe("swarmvault workflow", () => {
         "- For graph questions, prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` before broad grep/glob searching.",
         "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
         "- Save high-value answers back into `wiki/outputs/` instead of leaving them only in chat.",
-        "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks.",
+        "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for Beehive maintenance tasks.",
         "",
-        "> MCP navigation hint: SwarmVault exposes a local MCP server via `swarmvault mcp`. Wire it into your Antigravity MCP config to query the graph without shelling out."
+        "> MCP navigation hint: Beehive exposes a local MCP server via `swarmvault mcp`. Wire it into your Antigravity MCP config to query the graph without shelling out."
       ].join("\n"),
       "utf8"
     );
@@ -715,12 +715,12 @@ describe("swarmvault workflow", () => {
       [
         "---",
         "command: swarmvault",
-        "description: Compile, query, and lint the SwarmVault vault.",
+        "description: Compile, query, and lint the Beehive vault.",
         "---",
         "",
         "# /swarmvault",
         "",
-        "Run SwarmVault against the current directory.",
+        "Run Beehive against the current directory.",
         "",
         "## Steps",
         "",
@@ -738,7 +738,7 @@ describe("swarmvault workflow", () => {
     expect(antigravityTarget.targets).toContain(path.join(rootDir, ".agents", "workflows", "swarmvault.md"));
     const antigravityRules = matter(await fs.readFile(antigravityTarget.target, "utf8"));
     expect(antigravityRules.data.alwaysApply).toBe(true);
-    expect(antigravityRules.content).toContain("# SwarmVault Rules");
+    expect(antigravityRules.content).toContain("# Beehive Rules");
     await expect(fs.access(path.join(rootDir, ".agent", "rules", "swarmvault.md"))).rejects.toThrow();
     await expect(fs.access(path.join(rootDir, ".agent", "workflows", "swarmvault.md"))).rejects.toThrow();
     const antigravityWorkflow = matter(await fs.readFile(path.join(rootDir, ".agents", "workflows", "swarmvault.md"), "utf8"));
@@ -749,9 +749,9 @@ describe("swarmvault workflow", () => {
     expect(vscodeTarget.target).toBe(path.join(rootDir, ".github", "chatmodes", "swarmvault.chatmode.md"));
     expect(vscodeTarget.targets).toContain(path.join(rootDir, ".github", "copilot-instructions.md"));
     const vscodeChatmode = matter(await fs.readFile(vscodeTarget.target, "utf8"));
-    expect(vscodeChatmode.data.description).toContain("SwarmVault");
+    expect(vscodeChatmode.data.description).toContain("Beehive");
     expect(Array.isArray(vscodeChatmode.data.tools)).toBe(true);
-    expect(vscodeChatmode.content).toContain("# SwarmVault mode");
+    expect(vscodeChatmode.content).toContain("# Beehive mode");
     const vscodeInstructions = await fs.readFile(path.join(rootDir, ".github", "copilot-instructions.md"), "utf8");
     expect(vscodeInstructions).toContain("swarmvault:managed:start");
     expect(vscodeInstructions).toContain("Read `wiki/graph/report.md` before broad file searching");
@@ -807,7 +807,7 @@ describe("swarmvault workflow", () => {
 
       const skill = matter(await fs.readFile(skillPath, "utf8"));
       expect(skill.data.name).toBe("swarmvault");
-      expect(skill.content).toContain("SwarmVault compiles curated sources");
+      expect(skill.content).toContain("Beehive compiles curated sources");
       expect(await fs.readFile(commandPath, "utf8")).toContain("# /swarmvault");
     } finally {
       process.env.HOME = originalHome;
@@ -919,7 +919,7 @@ describe("swarmvault workflow", () => {
       const skillRaw = await fs.readFile(expectedPath, "utf8");
       const parsed = matter(skillRaw);
       expect(parsed.data.name).toBe("swarmvault");
-      expect(parsed.content).toContain("SwarmVault compiles curated sources");
+      expect(parsed.content).toContain("Beehive compiles curated sources");
     }
   });
 
@@ -941,10 +941,10 @@ describe("swarmvault workflow", () => {
       const userSkillRaw = await fs.readFile(userSkillPath, "utf8");
       const userSkill = matter(userSkillRaw);
       expect(userSkill.data.name).toBe("swarmvault");
-      expect(userSkill.content).toContain("SwarmVault compiles curated sources");
+      expect(userSkill.content).toContain("Beehive compiles curated sources");
 
       const agentsContent = await fs.readFile(path.join(rootDir, "AGENTS.md"), "utf8");
-      expect(agentsContent).toContain("# SwarmVault Rules");
+      expect(agentsContent).toContain("# Beehive Rules");
     } finally {
       process.env.HOME = originalHome;
       process.env.USERPROFILE = originalUserProfile;
@@ -1115,7 +1115,7 @@ describe("swarmvault workflow", () => {
     expect(settings.hooks?.PreToolUse?.some((entry) => JSON.stringify(entry).includes("echo user-owned"))).toBe(true);
   });
 
-  it("registers the SwarmVault MCP server for Claude with --mcp", async () => {
+  it("registers the Beehive MCP server for Claude with --mcp", async () => {
     const rootDir = await createTempWorkspace();
     await initVault(rootDir);
     const mcpPath = path.join(rootDir, ".mcp.json");
@@ -1302,9 +1302,9 @@ describe("swarmvault workflow", () => {
     await fs.writeFile(
       notePath,
       [
-        "# Local-First SwarmVault",
+        "# Local-First Beehive",
         "",
-        "SwarmVault keeps raw sources immutable while compiling a linked markdown wiki.",
+        "Beehive keeps raw sources immutable while compiling a linked markdown wiki.",
         "The system does not rely on a hosted backend.",
         "Graph exports make provenance visible."
       ].join("\n"),
@@ -1319,7 +1319,7 @@ describe("swarmvault workflow", () => {
     const shareSvgPath = path.join(rootDir, "wiki", "graph", "share-card.svg");
     const shareSvg = await fs.readFile(shareSvgPath, "utf8");
     expect(shareSvg).toContain('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"');
-    expect(shareSvg).toContain("SwarmVault share card");
+    expect(shareSvg).toContain("Beehive share card");
     const shareKitDir = path.join(rootDir, "wiki", "graph", "share-kit");
     const shareKitFiles = await fs.readdir(shareKitDir);
     expect(shareKitFiles.sort()).toEqual([
@@ -1340,9 +1340,9 @@ describe("swarmvault workflow", () => {
     expect(shareArtifact.overview?.sources).toBe(1);
     const sourcePagePath = path.join(rootDir, "wiki", "sources", `${manifest.sourceId}.md`);
     const parsedSourcePage = matter(await fs.readFile(sourcePagePath, "utf8"));
-    expect(parsedSourcePage.data.title).toBe("Local-First SwarmVault");
-    expect(parsedSourcePage.content).toContain("# Local-First SwarmVault");
-    expect(parsedSourcePage.content).not.toContain("# Local-First SwarmVault SwarmVault keeps raw sources immutable");
+    expect(parsedSourcePage.data.title).toBe("Local-First Beehive");
+    expect(parsedSourcePage.content).toContain("# Local-First Beehive");
+    expect(parsedSourcePage.content).not.toContain("# Local-First Beehive Beehive keeps raw sources immutable");
     expect(parsedSourcePage.data.status).toBe("active");
     expect(parsedSourcePage.data.managed_by).toBe("system");
     expect(parsedSourcePage.data.created_at).toBeTruthy();
@@ -1353,7 +1353,7 @@ describe("swarmvault workflow", () => {
     const reparsedSourcePage = matter(await fs.readFile(sourcePagePath, "utf8"));
     expect(reparsedSourcePage.data.created_at).toBe(parsedSourcePage.data.created_at);
 
-    const query = await queryVault(rootDir, { question: "What does SwarmVault optimize for?" });
+    const query = await queryVault(rootDir, { question: "What does Beehive optimize for?" });
     expect(query.answer).toContain("Question:");
     expect(query.savedPath).toBeTruthy();
     expect(query.saved).toBe(true);
@@ -1415,7 +1415,7 @@ describe("swarmvault workflow", () => {
     await initVault(rootDir);
 
     const pdfPath = path.join(rootDir, "paper.pdf");
-    await fs.writeFile(pdfPath, createSimplePdf("SwarmVault PDF extraction turns papers into searchable text."), "binary");
+    await fs.writeFile(pdfPath, createSimplePdf("Beehive PDF extraction turns papers into searchable text."), "binary");
 
     const manifest = await ingestInput(rootDir, "paper.pdf");
     expect(manifest.sourceKind).toBe("pdf");
@@ -1424,7 +1424,7 @@ describe("swarmvault workflow", () => {
     expect(manifest.extractionHash).toBeTruthy();
 
     const extractedText = await fs.readFile(path.join(rootDir, manifest.extractedTextPath as string), "utf8");
-    expect(extractedText).toContain("SwarmVault PDF extraction");
+    expect(extractedText).toContain("Beehive PDF extraction");
 
     const extractionArtifact = JSON.parse(
       await fs.readFile(path.join(rootDir, manifest.extractedMetadataPath as string), "utf8")
@@ -1437,7 +1437,7 @@ describe("swarmvault workflow", () => {
       await fs.readFile(path.join(rootDir, "state", "analyses", `${manifest.sourceId}.json`), "utf8")
     ) as SourceAnalysis;
     expect(analysis.summary).not.toContain("Text extraction is not yet available");
-    expect(analysis.summary).toContain("SwarmVault PDF extraction");
+    expect(analysis.summary).toContain("Beehive PDF extraction");
     expect(analysis.extractionHash).toBe(manifest.extractionHash);
   });
 
@@ -1462,7 +1462,7 @@ describe("swarmvault workflow", () => {
     ) as SourceExtractionArtifact;
     expect(extractionArtifact.extractor).toBe("docx_text");
     expect(extractionArtifact.metadata?.title).toBe("Tiny DOCX Source");
-    expect(extractionArtifact.metadata?.author).toBe("SwarmVault Tests");
+    expect(extractionArtifact.metadata?.author).toBe("Beehive Tests");
 
     await compileVault(rootDir);
     const analysis = JSON.parse(
@@ -1616,7 +1616,7 @@ describe("swarmvault workflow", () => {
         "Guide Title",
         "===========",
         "",
-        "SwarmVault should keep reStructuredText searchable.",
+        "Beehive should keep reStructuredText searchable.",
         "",
         ".. note:: Parser diagnostics stay local to the affected module."
       ].join("\n"),
@@ -1745,7 +1745,7 @@ describe("swarmvault workflow", () => {
     await fs.mkdir(assetsDir, { recursive: true });
     await fs.writeFile(
       path.join(inboxDir, "clip.md"),
-      ["# Browser Clip", "", "SwarmVault can preserve image references from captured markdown.", "", "![Diagram](assets/diagram.png)"].join(
+      ["# Browser Clip", "", "Beehive can preserve image references from captured markdown.", "", "![Diagram](assets/diagram.png)"].join(
         "\n"
       ),
       "utf8"
@@ -1833,7 +1833,7 @@ describe("swarmvault workflow", () => {
         "<html><head><title>Remote Article</title></head><body>",
         "<article>",
         "<h1>Remote Article</h1>",
-        "<p>SwarmVault localizes remote images during URL ingest.</p>",
+        "<p>Beehive localizes remote images during URL ingest.</p>",
         '<img alt="Relative" src="/images/relative.png" />',
         `<img alt="Absolute" src="${server.baseUrl}/images/absolute.png" />`,
         "</article>",
@@ -1944,7 +1944,7 @@ describe("swarmvault workflow", () => {
           [
             "<html><head>",
             '<link rel="canonical" href="https://papers.example/swarmvault-study" />',
-            '<meta name="citation_title" content="SwarmVault DOI Capture" />',
+            '<meta name="citation_title" content="Beehive DOI Capture" />',
             '<meta name="citation_author" content="Leslie Lamport" />',
             '<meta name="citation_doi" content="10.5555/swarmvault-doi" />',
             '<meta name="keywords" content="knowledge graphs, parser-first" />',
@@ -1963,7 +1963,7 @@ describe("swarmvault workflow", () => {
           [
             "<html><head>",
             '<link rel="canonical" href="https://papers.example/swarmvault-study" />',
-            '<meta property="og:title" content="SwarmVault DOI Capture" />',
+            '<meta property="og:title" content="Beehive DOI Capture" />',
             '<meta name="citation_author" content="Leslie Lamport" />',
             '<meta name="citation_doi" content="10.5555/swarmvault-doi" />',
             '<meta name="keywords" content="knowledge graphs, parser-first" />',
@@ -2014,8 +2014,8 @@ describe("swarmvault workflow", () => {
     try {
       const arxiv = await addInput(rootDir, "2401.12345", { author: "Wayde" });
       const doi = await addInput(rootDir, "10.5555/swarmvault-doi");
-      const article = await addInput(rootDir, "https://example.test/article", { contributor: "SwarmVault" });
-      const tweet = await addInput(rootDir, "https://x.com/example/status/1234567890", { contributor: "SwarmVault" });
+      const article = await addInput(rootDir, "https://example.test/article", { contributor: "Beehive" });
+      const tweet = await addInput(rootDir, "https://x.com/example/status/1234567890", { contributor: "Beehive" });
 
       expect(arxiv.captureType).toBe("arxiv");
       expect(arxiv.fallback).toBe(false);
@@ -2067,7 +2067,7 @@ describe("swarmvault workflow", () => {
     }) as typeof globalThis.fetch;
 
     try {
-      await fs.writeFile(path.join(rootDir, "note.md"), "# Existing Note\n\nSwarmVault saves outputs into wiki/outputs.\n", "utf8");
+      await fs.writeFile(path.join(rootDir, "note.md"), "# Existing Note\n\nBeehive saves outputs into wiki/outputs.\n", "utf8");
       await ingestInput(rootDir, "note.md");
       await compileVault(rootDir);
 
@@ -2091,7 +2091,7 @@ describe("swarmvault workflow", () => {
 
     await fs.writeFile(
       path.join(rootDir, "note.md"),
-      ["# Durable Graphs", "", "SwarmVault benchmarks graph-guided context against whole-corpus reads."].join("\n"),
+      ["# Durable Graphs", "", "Beehive benchmarks graph-guided context against whole-corpus reads."].join("\n"),
       "utf8"
     );
     await ingestInput(rootDir, "note.md");
@@ -2320,12 +2320,12 @@ describe("swarmvault workflow", () => {
           "export async function createAdapter(id, config) {",
           "  function payload(title) {",
           "    if (title.includes('Alpha')) {",
-          "      return { title, summary: 'Alpha summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Trust Surfaces', description: 'Trust-oriented reporting.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Alpha links parser-first analysis to trust surfaces.', confidence: 0.92, status: 'extracted', polarity: 'positive', citation: 'alpha' }], questions: ['How do parser-first trust surfaces improve graph quality?'] };",
+          "      return { title, summary: 'Alpha summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Trust Surfaces', description: 'Trust-oriented reporting.' }], entities: [{ name: 'Beehive', description: 'Beehive project.' }], claims: [{ text: 'Alpha links parser-first analysis to trust surfaces.', confidence: 0.92, status: 'extracted', polarity: 'positive', citation: 'alpha' }], questions: ['How do parser-first trust surfaces improve graph quality?'] };",
           "    }",
           "    if (title.includes('Beta')) {",
-          "      return { title, summary: 'Beta summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Graph Reports', description: 'Graph report generation.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Beta links parser-first analysis to graph reports.', confidence: 0.9, status: 'extracted', polarity: 'positive', citation: 'beta' }], questions: ['What makes graph reports trustworthy?'] };",
+          "      return { title, summary: 'Beta summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Graph Reports', description: 'Graph report generation.' }], entities: [{ name: 'Beehive', description: 'Beehive project.' }], claims: [{ text: 'Beta links parser-first analysis to graph reports.', confidence: 0.9, status: 'extracted', polarity: 'positive', citation: 'beta' }], questions: ['What makes graph reports trustworthy?'] };",
           "    }",
-          "    return { title, summary: 'Gamma summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Watch Reporting', description: 'Watch-driven reporting.' }], entities: [{ name: 'SwarmVault', description: 'SwarmVault project.' }], claims: [{ text: 'Gamma links parser-first analysis to watch reporting.', confidence: 0.91, status: 'extracted', polarity: 'positive', citation: 'gamma' }], questions: ['Which watch signals are structural?'] };",
+          "    return { title, summary: 'Gamma summary.', concepts: [{ name: 'Parser First', description: 'Parser-first workflow.' }, { name: 'Watch Reporting', description: 'Watch-driven reporting.' }], entities: [{ name: 'Beehive', description: 'Beehive project.' }], claims: [{ text: 'Gamma links parser-first analysis to watch reporting.', confidence: 0.91, status: 'extracted', polarity: 'positive', citation: 'gamma' }], questions: ['Which watch signals are structural?'] };",
           "  }",
           "  return {",
           "    id,",
@@ -2702,7 +2702,7 @@ describe("swarmvault workflow", () => {
     await fs.writeFile(
       path.join(rootDir, "swarmvault.schema.md"),
       [
-        "# SwarmVault Schema",
+        "# Beehive Schema",
         "",
         "## Vault Purpose",
         "",
@@ -2799,7 +2799,7 @@ describe("swarmvault workflow", () => {
     await fs.writeFile(
       path.join(rootDir, "swarmvault.schema.md"),
       [
-        "# SwarmVault Schema",
+        "# Beehive Schema",
         "",
         "## Vault Purpose",
         "",
@@ -2881,7 +2881,7 @@ describe("swarmvault workflow", () => {
     const notePath = path.join(rootDir, "notes.md");
     await fs.writeFile(
       notePath,
-      ["# MCP Test Note", "", "SwarmVault exposes wiki search and read operations through MCP."].join("\n"),
+      ["# MCP Test Note", "", "Beehive exposes wiki search and read operations through MCP."].join("\n"),
       "utf8"
     );
 
@@ -3032,7 +3032,7 @@ describe("swarmvault workflow", () => {
 
     const schemaResource = await readResource("swarmvault://schema");
     expect(schemaResource.contents[0]?.uri).toBe("swarmvault://schema");
-    expect((schemaResource.contents[0] as { text: string }).text).toContain("# SwarmVault Schema");
+    expect((schemaResource.contents[0] as { text: string }).text).toContain("# Beehive Schema");
 
     const sessionsResource = await readResource("swarmvault://sessions");
     expect((sessionsResource.contents[0] as { text: string }).text).toContain("compile");
@@ -3068,7 +3068,7 @@ describe("swarmvault workflow", () => {
     try {
       await fs.writeFile(
         path.join(rootDir, "inbox", "watch.md"),
-        ["# Watch Note", "", "SwarmVault should import and compile this file when watch mode is running."].join("\n"),
+        ["# Watch Note", "", "Beehive should import and compile this file when watch mode is running."].join("\n"),
         "utf8"
       );
 

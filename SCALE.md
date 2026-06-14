@@ -1,6 +1,6 @@
-# SwarmVault Scale Limits
+# Beehive Scale Limits
 
-This document records the tested operating envelope for SwarmVault. Above the top tier, SwarmVault still runs, but interactive performance and memory headroom degrade without targeted tuning. Treat these numbers as recommended ceilings, not hard failures.
+This document records the tested operating envelope for Beehive. Above the top tier, Beehive still runs, but interactive performance and memory headroom degrade without targeted tuning. Treat these numbers as recommended ceilings, not hard failures.
 
 ## Scale tiers
 
@@ -43,10 +43,10 @@ Run `swarmvault benchmark` after a compile. The artifact lives at `state/benchma
 
 ## When you exceed the large tier
 
-You are outside SwarmVault's tested envelope. Options in order of effort:
+You are outside Beehive's tested envelope. Options in order of effort:
 
 1. Split by project — most vaults above 50,000 sources have a natural split (multiple repos, multiple research programs). Use separate `swarmvault init` roots and point each at a focused subset.
-2. Use the Neo4j sink — push the compiled graph to Neo4j so heavy graph analytics run outside SwarmVault's Node process.
+2. Use the Neo4j sink — push the compiled graph to Neo4j so heavy graph analytics run outside Beehive's Node process.
 3. Tune the knobs above aggressively and accept longer compile times.
 4. File an issue. External retrieval backends and larger multi-shard deployments remain roadmap work, and concrete use cases inform that work.
 

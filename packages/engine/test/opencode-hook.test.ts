@@ -65,7 +65,7 @@ describe("OpenCode graph-first hook", () => {
 
     const messages = await collectSessionMessages(rootDir);
 
-    expect(messages.join("\n")).toContain("SwarmVault graph-first");
+    expect(messages.join("\n")).toContain("Beehive graph-first");
   });
 
   it("resolves the graph report under SWARMVAULT_OUT and SWARMVAULT_WORKSPACE_ID", async () => {
@@ -76,7 +76,7 @@ describe("OpenCode graph-first hook", () => {
 
     const messages = await collectSessionMessages(rootDir);
 
-    expect(messages.join("\n")).toContain("SwarmVault graph-first");
+    expect(messages.join("\n")).toContain("Beehive graph-first");
   });
 
   it("does not log graph-first guidance when the graph report is missing", async () => {

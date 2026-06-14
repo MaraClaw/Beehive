@@ -312,7 +312,7 @@ async function runBehaviorSmoke() {
     [
       "# Durable Output Notes",
       "",
-      "SwarmVault should preserve durable outputs, graph paths, and task handoffs.",
+      "Beehive should preserve durable outputs, graph paths, and task handoffs.",
       "",
       "NOTE: parser-backed checks keep the CLI surface honest."
     ].join("\n"),

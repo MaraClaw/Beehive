@@ -25,7 +25,7 @@ describe("AI export packs and chat sessions", () => {
       [
         "# Durable Agent Handoffs",
         "",
-        "SwarmVault compiles durable wiki pages so future agents can read summaries, graph relations, and cited outputs."
+        "Beehive compiles durable wiki pages so future agents can read summaries, graph relations, and cited outputs."
       ].join("\n"),
       "utf8"
     );
@@ -48,7 +48,7 @@ describe("AI export packs and chat sessions", () => {
     expect(result.files.every((file) => /^[a-f0-9]{64}$/u.test(file.sha256))).toBe(true);
 
     const index = await fs.readFile(path.join(result.outputDir, "llms.txt"), "utf8");
-    expect(index).toContain("SwarmVault AI Index");
+    expect(index).toContain("Beehive AI Index");
     expect(index).toContain("swarmvault chat");
 
     const graphJsonLd = JSON.parse(await fs.readFile(path.join(result.outputDir, "graph.jsonld"), "utf8")) as { "@graph": unknown[] };

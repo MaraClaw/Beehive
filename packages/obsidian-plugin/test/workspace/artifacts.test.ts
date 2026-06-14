@@ -32,8 +32,8 @@ describe("workspace artifact helpers", () => {
   });
 
   it("rejects unsafe workspace ids instead of silently changing workspaces", () => {
-    expect(() => resolvePluginWorkspaceId({ workspaceId: "../outside" })).toThrow("Invalid SwarmVault workspace ID");
-    expect(() => resolvePluginWorkspaceId({ workspaceId: "foo/bar" })).toThrow("Invalid SwarmVault workspace ID");
+    expect(() => resolvePluginWorkspaceId({ workspaceId: "../outside" })).toThrow("Invalid Beehive workspace ID");
+    expect(() => resolvePluginWorkspaceId({ workspaceId: "foo/bar" })).toThrow("Invalid Beehive workspace ID");
   });
 
   it("respects relative SWARMVAULT_OUT when resolving artifact roots", () => {

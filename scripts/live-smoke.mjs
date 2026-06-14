@@ -236,7 +236,7 @@ try {
     assert.ok(sourcePage.includes("title: Durable Research Vaults"), "markdown source page did not keep the manifest title");
     assert.ok(sourcePage.includes("# Durable Research Vaults"), "markdown source page did not keep a clean heading");
     assert.ok(
-      !sourcePage.includes("# Durable Research Vaults SwarmVault turns raw sources into durable markdown"),
+      !sourcePage.includes("# Durable Research Vaults Beehive turns raw sources into durable markdown"),
       "markdown source page title leaked the body text into the heading"
     );
   });
@@ -298,7 +298,7 @@ try {
           await neo4jContainer.query(`MATCH ()-[r]->() WHERE r.vaultId = '${pushed.vaultId}' RETURN count(r) AS count`)
         );
         const syncNodes = Number(
-          await neo4jContainer.query(`MATCH (s:SwarmVaultSync {vaultId: '${pushed.vaultId}'}) RETURN count(s) AS count`)
+          await neo4jContainer.query(`MATCH (s:BeehiveSync {vaultId: '${pushed.vaultId}'}) RETURN count(s) AS count`)
         );
         assert.ok(pushedNodes >= pushed.counts.nodes + pushed.counts.hyperedges, "Neo4j push did not create the expected node records");
         assert.ok(
@@ -324,7 +324,7 @@ try {
     await runStep("managed-source-directory", async () => {
       const managedDir = path.join(workspaceDir, "managed", "repo");
       await fs.mkdir(managedDir, { recursive: true });
-      await fs.writeFile(path.join(managedDir, "README.md"), "# Managed Repo\n\nSwarmVault should manage this directory source.\n", "utf8");
+      await fs.writeFile(path.join(managedDir, "README.md"), "# Managed Repo\n\nBeehive should manage this directory source.\n", "utf8");
       await fs.writeFile(path.join(managedDir, "notes.md"), "# Managed Notes\n\nInitial notes for the managed source.\n", "utf8");
 
       const added = await runCliJson(["source", "add", managedDir]);
@@ -464,7 +464,7 @@ try {
         [
           "BEGIN:VCALENDAR",
           "VERSION:2.0",
-          "PRODID:-//SwarmVault Smoke//EN",
+          "PRODID:-//Beehive Smoke//EN",
           "BEGIN:VEVENT",
           "UID:event-1@example.com",
           "DTSTAMP:20260409T080000Z",
@@ -637,7 +637,7 @@ try {
           "<html><head><title>Remote Article</title></head><body>",
           "<article>",
           "<h1>Remote Article</h1>",
-          "<p>SwarmVault localizes remote images during URL ingest.</p>",
+          "<p>Beehive localizes remote images during URL ingest.</p>",
           '<img alt="Relative" src="/images/relative.png" />',
           `<img alt="Absolute" src="${server.baseUrl}/images/absolute.png" />`,
           "</article>",
@@ -705,7 +705,7 @@ try {
         },
         "/capture.md": {
           contentType: "text/plain; charset=utf-8",
-          body: ["# Captured Link", "", "SwarmVault add falls back to generic URL ingest for unsupported URLs."].join("\n")
+          body: ["# Captured Link", "", "Beehive add falls back to generic URL ingest for unsupported URLs."].join("\n")
         }
       });
       try {
@@ -769,7 +769,7 @@ try {
       });
 
       await fs.writeFile(path.join(workspaceDir, "diagram.png"), MINIMAL_PNG);
-      await fs.writeFile(path.join(workspaceDir, "paper.pdf"), createSimplePdf("SwarmVault PDF extraction keeps documents searchable."));
+      await fs.writeFile(path.join(workspaceDir, "paper.pdf"), createSimplePdf("Beehive PDF extraction keeps documents searchable."));
       await fs.writeFile(path.join(workspaceDir, "brief.docx"), MINIMAL_DOCX);
       await fs.writeFile(path.join(workspaceDir, "dataset.csv"), ["Metric,Value", "Users,12", "Errors,1"].join("\n"), "utf8");
       await fs.writeFile(path.join(workspaceDir, "dataset.tsv"), ["Week\tSignups", "Week 1\t4", "Week 2\t8"].join("\n"), "utf8");
@@ -817,7 +817,7 @@ try {
       assert.equal(pptxArtifact.metadata?.slide_count, "1", "pptx extraction did not preserve slide count");
 
       const pdfExtract = await fs.readFile(path.join(workspaceDir, pdfManifest.extractedTextPath), "utf8");
-      assert.ok(pdfExtract.includes("SwarmVault PDF extraction"), "pdf extraction did not preserve document text");
+      assert.ok(pdfExtract.includes("Beehive PDF extraction"), "pdf extraction did not preserve document text");
       const docxExtract = await fs.readFile(path.join(workspaceDir, docxManifest.extractedTextPath), "utf8");
       assert.ok(docxExtract.includes("Local DOCX files should extract readable text before analysis."), "docx extraction did not preserve document text");
       const csvExtract = await fs.readFile(path.join(workspaceDir, csvManifest.extractedTextPath), "utf8");
@@ -1663,7 +1663,7 @@ try {
       try {
         await fs.writeFile(
           artifactPath("inbox", "watch.md"),
-          ["# Watch Note", "", "SwarmVault should import and compile this file when watch mode is running."].join("\n"),
+          ["# Watch Note", "", "Beehive should import and compile this file when watch mode is running."].join("\n"),
           "utf8"
         );
 
@@ -1885,19 +1885,19 @@ try {
       const cursorContent = await fs.readFile(path.join(workspaceDir, ".cursor", "rules", "swarmvault.mdc"), "utf8");
       const copilotContent = await fs.readFile(path.join(workspaceDir, ".github", "copilot-instructions.md"), "utf8");
       const conventionsContent = await fs.readFile(path.join(workspaceDir, "CONVENTIONS.md"), "utf8");
-      assert.ok(agentsContent.includes("# SwarmVault Rules"), "AGENTS.md missing managed rules");
+      assert.ok(agentsContent.includes("# Beehive Rules"), "AGENTS.md missing managed rules");
       assert.ok(codexHooksContent.includes("swarmvault-graph-first.js"), "codex hooks config missing hook helper");
       assert.ok(codexHooksContent.includes('"Bash"'), "codex hooks config missing Bash matcher");
       assert.ok(codexHookContent.includes("wiki/graph/report.md"), "codex hook helper missing graph report notice");
-      assert.ok(claudeContent.includes("# SwarmVault Rules"), "CLAUDE.md missing managed rules");
+      assert.ok(claudeContent.includes("# Beehive Rules"), "CLAUDE.md missing managed rules");
       assert.ok(claudeSettingsContent.includes("swarmvault-graph-first.js"), "claude settings missing hook helper");
       assert.ok(claudeHookContent.includes("additionalContext"), "claude hook helper missing additionalContext output");
-      assert.ok(geminiContent.includes("# SwarmVault Rules"), "GEMINI.md missing managed rules");
+      assert.ok(geminiContent.includes("# Beehive Rules"), "GEMINI.md missing managed rules");
       assert.ok(cursorContent.includes("alwaysApply: true"), "cursor rule missing alwaysApply frontmatter");
-      assert.ok(cursorContent.includes("description: SwarmVault graph-first repository instructions."), "cursor rule missing description");
-      assert.ok(cursorContent.includes("# SwarmVault Rules"), "cursor rule missing managed rules");
-      assert.ok(copilotContent.includes("# SwarmVault Repository Instructions"), "copilot instructions missing managed rules");
-      assert.ok(conventionsContent.includes("# SwarmVault Conventions"), "CONVENTIONS.md missing managed rules");
+      assert.ok(cursorContent.includes("description: Beehive graph-first repository instructions."), "cursor rule missing description");
+      assert.ok(cursorContent.includes("# Beehive Rules"), "cursor rule missing managed rules");
+      assert.ok(copilotContent.includes("# Beehive Repository Instructions"), "copilot instructions missing managed rules");
+      assert.ok(conventionsContent.includes("# Beehive Conventions"), "CONVENTIONS.md missing managed rules");
       assert.ok(
         Array.isArray(codex.targets) && (await targetListIncludesPath(codex.targets, path.join(workspaceDir, ".codex", "hooks", "swarmvault-graph-first.js")))
       );
@@ -1918,7 +1918,7 @@ try {
 
     await runStep("agent-clis", async () => {
       const prompt =
-        "Reply with exactly two lines. First line: file=<workspace instruction file you used>. Second line: command=<one SwarmVault command recommended by that file>.";
+        "Reply with exactly two lines. First line: file=<workspace instruction file you used>. Second line: command=<one Beehive command recommended by that file>.";
 
       if (runCodexAgentSmoke && (await commandOnPath("codex"))) {
         const codexOutputPath = path.join(artifactDir, "codex-smoke.txt");
@@ -1934,7 +1934,7 @@ try {
         );
         const codexOutput = await fs.readFile(codexOutputPath, "utf8");
         assert.ok(codexOutput.includes("AGENTS.md"), "codex smoke did not use AGENTS.md");
-        assert.ok(codexOutput.includes("swarmvault "), "codex smoke did not recommend a SwarmVault command");
+        assert.ok(codexOutput.includes("swarmvault "), "codex smoke did not recommend a Beehive command");
       }
 
       if (await commandOnPath("claude") && process.env.ANTHROPIC_API_KEY) {
@@ -1958,7 +1958,7 @@ try {
           }
         );
         assert.ok(claudeResult.stdout.includes("CLAUDE.md"), "claude smoke did not use CLAUDE.md");
-        assert.ok(claudeResult.stdout.includes("swarmvault "), "claude smoke did not recommend a SwarmVault command");
+        assert.ok(claudeResult.stdout.includes("swarmvault "), "claude smoke did not recommend a Beehive command");
       }
 
       if (runOpencodeAgentSmoke && (await commandOnPath("opencode")) && process.env.OLLAMA_API_KEY) {
@@ -2003,7 +2003,7 @@ try {
         );
         const opencodeTranscript = `${opencodeResult.stdout}\n${opencodeResult.stderr}`;
         assert.ok(opencodeTranscript.includes("AGENTS.md"), "opencode smoke did not use AGENTS.md");
-        assert.ok(opencodeTranscript.includes("swarmvault "), "opencode smoke did not recommend a SwarmVault command");
+        assert.ok(opencodeTranscript.includes("swarmvault "), "opencode smoke did not recommend a Beehive command");
       }
 
       if (await commandOnPath("gemini") && (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY)) {
@@ -2017,7 +2017,7 @@ try {
         );
         const geminiTranscript = `${geminiResult.stdout}\n${geminiResult.stderr}`;
         assert.ok(geminiTranscript.includes("GEMINI.md"), "gemini smoke did not use GEMINI.md");
-        assert.ok(geminiTranscript.includes("swarmvault "), "gemini smoke did not recommend a SwarmVault command");
+        assert.ok(geminiTranscript.includes("swarmvault "), "gemini smoke did not recommend a Beehive command");
       }
     });
   }
@@ -2249,7 +2249,7 @@ function createSimplePptx() {
           '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
           '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">',
           "<dc:title>Tiny Slide Deck</dc:title>",
-          "<dc:creator>SwarmVault Tests</dc:creator>",
+          "<dc:creator>Beehive Tests</dc:creator>",
           "</cp:coreProperties>"
         ].join(""),
         "utf8"
@@ -2326,7 +2326,7 @@ function createSimpleEpub() {
         [
           '<?xml version="1.0" encoding="UTF-8"?>',
           '<package xmlns="http://www.idpf.org/2007/opf" version="3.0">',
-          '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Tiny EPUB</dc:title><dc:creator>SwarmVault Tests</dc:creator></metadata>',
+          '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Tiny EPUB</dc:title><dc:creator>Beehive Tests</dc:creator></metadata>',
           "<manifest>",
           '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
           '<item id="chapter-1" href="chapter-1.xhtml" media-type="application/xhtml+xml"/>',

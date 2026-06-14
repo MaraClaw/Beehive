@@ -269,7 +269,7 @@ describe("graph push neo4j", () => {
       )
     ).toBe(true);
     expect(
-      calls.some((entry) => entry.query.includes("MERGE (s:SwarmVaultSync { vaultId: $vaultId })") && entry.params?.vaultId === "vault-123")
+      calls.some((entry) => entry.query.includes("MERGE (s:BeehiveSync { vaultId: $vaultId })") && entry.params?.vaultId === "vault-123")
     ).toBe(true);
     expect(
       calls.some(

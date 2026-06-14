@@ -10,7 +10,7 @@ Source code handles Obsidian plugin lifecycle, commands, CLI process integration
 main.ts          # plugin entry and lifecycle
 commands/        # addCommand registrations and command implementations
 cli/             # shell-out runner, managed processes, version check, Windows shim
-workspace/       # marker-based SwarmVault workspace root resolution
+workspace/       # marker-based Beehive workspace root resolution
 citations/       # page_id token to Obsidian wikilink rewriting
 modals/          # query/input modals
 settings/        # defaults and settings tab

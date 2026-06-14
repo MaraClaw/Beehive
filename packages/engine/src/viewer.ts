@@ -703,11 +703,11 @@ export async function startGraphServer(
           response.writeHead(200, { "content-type": "text/html" });
           response.end(
             [
-              "<!doctype html><html><head><title>SwarmVault Clipper</title></head><body>",
-              "<h1>SwarmVault Clipper</h1>",
+              "<!doctype html><html><head><title>Beehive Clipper</title></head><body>",
+              "<h1>Beehive Clipper</h1>",
               `<p>Drag this link to your bookmarks bar:</p>`,
-              `<p style="font-size:1.5em"><a href="${script.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}">Clip to SwarmVault</a></p>`,
-              `<p>When clicked on any page, it sends the URL to your running SwarmVault instance for ingestion.</p>`,
+              `<p style="font-size:1.5em"><a href="${script.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}">Clip to Beehive</a></p>`,
+              `<p>When clicked on any page, it sends the URL to your running Beehive instance for ingestion.</p>`,
               `<p>Server: <code>http://localhost:${effectivePort}</code></p>`,
               "</body></html>"
             ].join("\n")
@@ -824,7 +824,7 @@ export async function exportGraphHtml(rootDir: string, outputPath: string, optio
     "  <head>",
     '    <meta charset="UTF-8" />',
     '    <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
-    "    <title>SwarmVault Graph Export</title>",
+    "    <title>Beehive Graph Export</title>",
     style ? `    <style>${style}</style>` : "",
     "  </head>",
     "  <body>",

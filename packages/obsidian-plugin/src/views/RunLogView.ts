@@ -23,7 +23,7 @@ export class RunLogView extends ItemView {
   }
 
   getDisplayText(): string {
-    return "SwarmVault: Run log";
+    return "Beehive: Run log";
   }
 
   getIcon(): string {
@@ -71,12 +71,12 @@ export class RunLogView extends ItemView {
     container.addClass("swarmvault-run-log");
 
     const header = container.createEl("div", { cls: "swarmvault-run-log__header" });
-    header.createEl("h3", { text: "SwarmVault run log" });
+    header.createEl("h3", { text: "Beehive run log" });
     header.createEl("div", { text: `${this.entries.length} recent` });
 
     if (this.entries.length === 0) {
       container.createEl("p", {
-        text: "No commands have been run yet. Use the command palette to invoke a SwarmVault command.",
+        text: "No commands have been run yet. Use the command palette to invoke a Beehive command.",
         cls: "swarmvault-run-log__empty"
       });
       return;

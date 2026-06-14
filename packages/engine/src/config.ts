@@ -493,9 +493,9 @@ export function defaultVaultSchema(profile: string | VaultProfileConfig = "defau
       presetLines.push("- Maintain explicit thesis, hub, or recurring-question pages that evolve as new evidence arrives.");
     }
     return [
-      "# SwarmVault Schema",
+      "# Beehive Schema",
       "",
-      "Edit this file to teach SwarmVault how this research vault should be organized and maintained.",
+      "Edit this file to teach Beehive how this research vault should be organized and maintained.",
       "",
       "## Vault Purpose",
       "",
@@ -551,9 +551,9 @@ export function defaultVaultSchema(profile: string | VaultProfileConfig = "defau
   }
 
   return [
-    "# SwarmVault Schema",
+    "# Beehive Schema",
     "",
-    "Edit this file to teach SwarmVault how this vault should be organized and maintained.",
+    "Edit this file to teach Beehive how this vault should be organized and maintained.",
     "",
     "## Vault Purpose",
     "",

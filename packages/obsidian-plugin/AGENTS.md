@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-This package is a private, desktop-only Obsidian plugin that shells out to the SwarmVault CLI and bundles to CommonJS for Obsidian.
+This package is a private, desktop-only Obsidian plugin that shells out to the Beehive CLI and bundles to CommonJS for Obsidian.
 
 ## STRUCTURE
 
@@ -19,7 +19,7 @@ esbuild.config.mjs   # CJS bundle despite package type module
 
 | Task | Location | Notes |
 | --- | --- | --- |
-| Plugin lifecycle | `src/main.ts` | `SwarmVaultPlugin extends Plugin`, onload/onunload. |
+| Plugin lifecycle | `src/main.ts` | `BeehivePlugin extends Plugin`, onload/onunload. |
 | Commands/UI source | `src/AGENTS.md` | Read before changing runtime source. |
 | Tests/mock | `test/AGENTS.md` | Read before changing tests or mock Obsidian APIs. |
 | Build | `esbuild.config.mjs` | Outputs `dist/main.js` CJS and copies manifest/styles. |

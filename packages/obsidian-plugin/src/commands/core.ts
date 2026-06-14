@@ -1,15 +1,15 @@
 import { Notice } from "obsidian";
-import type SwarmVaultPlugin from "../main";
+import type BeehivePlugin from "../main";
 import { SimpleInputModal } from "../modals/SimpleInputModal";
 import { executeCli } from "./execute";
 
-export async function runInit(plugin: SwarmVaultPlugin): Promise<void> {
+export async function runInit(plugin: BeehivePlugin): Promise<void> {
   const result = await executeCli<{ status?: string; rootDir?: string }>(plugin, {
     args: ["init", "--json"],
-    commandLabel: "SwarmVault: Init",
+    commandLabel: "Beehive: Init",
     notifyOnSuccess: (json) => {
       const r = json as { status?: string; rootDir?: string } | null;
-      return `Initialized SwarmVault workspace${r?.rootDir ? ` at ${r.rootDir}` : ""}.`;
+      return `Initialized Beehive workspace${r?.rootDir ? ` at ${r.rootDir}` : ""}.`;
     }
   });
   if (result.json) {
@@ -17,10 +17,10 @@ export async function runInit(plugin: SwarmVaultPlugin): Promise<void> {
   }
 }
 
-export async function runIngest(plugin: SwarmVaultPlugin): Promise<void> {
+export async function runIngest(plugin: BeehivePlugin): Promise<void> {
   const initial = inferIngestTarget(plugin);
   new SimpleInputModal(plugin.app, {
-    title: "SwarmVault: Ingest",
+    title: "Beehive: Ingest",
     description: "Path or URL to ingest into raw/.",
     placeholder: "/abs/path or https://…",
     initialValue: initial,
@@ -28,33 +28,33 @@ export async function runIngest(plugin: SwarmVaultPlugin): Promise<void> {
     onSubmit: async (value) => {
       await executeCli(plugin, {
         args: ["ingest", value, "--json"],
-        commandLabel: "SwarmVault: Ingest",
+        commandLabel: "Beehive: Ingest",
         notifyOnSuccess: () => `Ingested ${value}`
       }).catch(() => undefined);
     }
   }).open();
 }
 
-export async function runAdd(plugin: SwarmVaultPlugin): Promise<void> {
+export async function runAdd(plugin: BeehivePlugin): Promise<void> {
   new SimpleInputModal(plugin.app, {
-    title: "SwarmVault: Add",
+    title: "Beehive: Add",
     description: "Supported URL or arXiv id to capture before ingest.",
     placeholder: "https://arxiv.org/abs/… or 2401.12345",
     submitLabel: "Add",
     onSubmit: async (value) => {
       await executeCli(plugin, {
         args: ["add", value, "--json"],
-        commandLabel: "SwarmVault: Add",
+        commandLabel: "Beehive: Add",
         notifyOnSuccess: () => `Added ${value}`
       }).catch(() => undefined);
     }
   }).open();
 }
 
-export async function runCompile(plugin: SwarmVaultPlugin): Promise<void> {
+export async function runCompile(plugin: BeehivePlugin): Promise<void> {
   await executeCli<{ sourceCount?: number; pageCount?: number; changedPages?: unknown[] }>(plugin, {
     args: ["compile", "--json"],
-    commandLabel: "SwarmVault: Compile",
+    commandLabel: "Beehive: Compile",
     notifyOnSuccess: (json) => {
       const r = json as { sourceCount?: number; pageCount?: number; changedPages?: unknown[] } | null;
       if (!r) return "Compile complete.";
@@ -67,10 +67,10 @@ export async function runCompile(plugin: SwarmVaultPlugin): Promise<void> {
     });
 }
 
-export async function runLint(plugin: SwarmVaultPlugin): Promise<void> {
+export async function runLint(plugin: BeehivePlugin): Promise<void> {
   const result = await executeCli<Array<{ severity: string; code: string; message: string; pagePath?: string }>>(plugin, {
     args: ["lint", "--json"],
-    commandLabel: "SwarmVault: Lint",
+    commandLabel: "Beehive: Lint",
     notifyOnSuccess: (json) => {
       const findings = (json as unknown[]) ?? [];
       return findings.length === 0 ? "Lint: no findings." : `Lint: ${findings.length} finding(s).`;
@@ -86,7 +86,7 @@ export async function runLint(plugin: SwarmVaultPlugin): Promise<void> {
   new Notice(preview, 10_000);
 }
 
-function inferIngestTarget(plugin: SwarmVaultPlugin): string {
+function inferIngestTarget(plugin: BeehivePlugin): string {
   const active = plugin.app.workspace.getActiveFile();
   if (active && plugin.workspaceRoot) {
     const abs = `${plugin.workspaceRoot}/${active.path}`;

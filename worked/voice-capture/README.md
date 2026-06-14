@@ -1,13 +1,13 @@
 # Voice Capture Example
 
-A worked example of SwarmVault's local-Whisper audio pipeline. Ingests a voice memo end-to-end with no API keys and no network calls.
+A worked example of Beehive's local-Whisper audio pipeline. Ingests a voice memo end-to-end with no API keys and no network calls.
 
 ## Prerequisites
 
 1. **whisper.cpp binary** on `$PATH`:
    - macOS: `brew install whisper-cpp`
    - Debian / Ubuntu: `sudo apt install whisper.cpp` (or build from [ggerganov/whisper.cpp](https://github.com/ggerganov/whisper.cpp))
-   - SwarmVault searches for `whisper-cli`, `whisper-cpp`, or `whisper` in that order; override with `SWARMVAULT_WHISPER_BINARY` or `localWhisper.binaryPath` in `swarmvault.config.json`.
+   - Beehive searches for `whisper-cli`, `whisper-cpp`, or `whisper` in that order; override with `SWARMVAULT_WHISPER_BINARY` or `localWhisper.binaryPath` in `swarmvault.config.json`.
 2. **A Whisper ggml model** — `swarmvault provider setup --local-whisper` downloads `base.en` (~147 MB) into `~/.swarmvault/models/` by default. Pick a different tier with `--model {tiny.en,small.en,medium.en,large-v3}`.
 
 ## Walkthrough

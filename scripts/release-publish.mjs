@@ -130,7 +130,7 @@ function readRequiredValue(argv, index, token) {
 function printUsage() {
   console.log(`Usage: pnpm release:publish -- [options]
 
-Publishes the full SwarmVault release sequence from the OSS repo.
+Publishes the full Beehive release sequence from the OSS repo.
 
 Options:
   --version <version>        Release version. Defaults to package.json version.
@@ -408,8 +408,8 @@ async function updateDesktopRelease(version, tagName) {
     await runCommand("pnpm", ["install", "--frozen-lockfile"], { cwd: desktopRoot });
     await runCommand("pnpm", ["typecheck"], { cwd: desktopRoot });
     await runCommand("git", ["add", "package.json", "pnpm-lock.yaml", "README.md"], { cwd: desktopRoot });
-    await runCommand("git", ["commit", "-m", `chore: refresh desktop lockfile for SwarmVault ${version}`], { cwd: desktopRoot });
-    await runCommand("git", ["tag", "-a", tagName, "-m", `SwarmVault Desktop ${version}`], { cwd: desktopRoot });
+    await runCommand("git", ["commit", "-m", `chore: refresh desktop lockfile for Beehive ${version}`], { cwd: desktopRoot });
+    await runCommand("git", ["tag", "-a", tagName, "-m", `Beehive Desktop ${version}`], { cwd: desktopRoot });
     await runCommand("git", ["push", "origin", "main"], { cwd: desktopRoot });
     await runCommand("git", ["push", "origin", tagName], { cwd: desktopRoot });
     return;
@@ -427,7 +427,7 @@ async function updateDesktopRelease(version, tagName) {
       allowFailure: true
     });
     if (diff.code === 1) {
-      await runCommand("git", ["commit", "-m", `chore: refresh desktop lockfile for SwarmVault ${version}`], {
+      await runCommand("git", ["commit", "-m", `chore: refresh desktop lockfile for Beehive ${version}`], {
         cwd: desktopRoot
       });
     }
@@ -438,7 +438,7 @@ async function updateDesktopRelease(version, tagName) {
     allowFailure: true
   });
   if (localTag.code !== 0) {
-    await runCommand("git", ["tag", "-a", tagName, "-m", `SwarmVault Desktop ${version}`], { cwd: desktopRoot });
+    await runCommand("git", ["tag", "-a", tagName, "-m", `Beehive Desktop ${version}`], { cwd: desktopRoot });
   } else {
     console.log(`[release-publish] Desktop tag ${tagName} already exists locally; skipping tag creation.`);
   }
@@ -464,7 +464,7 @@ async function createGithubRelease(version, tagName) {
         "--repo",
         releaseArgs.githubRepo,
         "--title",
-        `SwarmVault ${version}`,
+        `Beehive ${version}`,
         "--notes-file",
         "<generated-release-notes.md>"
       ],
@@ -488,7 +488,7 @@ async function createGithubRelease(version, tagName) {
   try {
     await runCommand(
       "gh",
-      ["release", "create", tagName, "--repo", releaseArgs.githubRepo, "--title", `SwarmVault ${version}`, "--notes-file", notesPath],
+      ["release", "create", tagName, "--repo", releaseArgs.githubRepo, "--title", `Beehive ${version}`, "--notes-file", notesPath],
       { cwd: repoRoot }
     );
   } finally {
@@ -506,7 +506,7 @@ const rootPackage = await readJson(path.join(repoRoot, "package.json"));
 const version = releaseArgs.version ?? rootPackage.version;
 const tagName = `v${version}`;
 
-console.log(`[release-publish] Preparing SwarmVault ${version}.`);
+console.log(`[release-publish] Preparing Beehive ${version}.`);
 await validateVersions(version);
 await assertClean(repoRoot, "OSS");
 await assertTagPushed(repoRoot, tagName, "OSS");

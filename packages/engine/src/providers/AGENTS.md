@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-Provider adapters are capability-driven boundaries between SwarmVault tasks and model, embedding, image, audio, and custom provider implementations.
+Provider adapters are capability-driven boundaries between Beehive tasks and model, embedding, image, audio, and custom provider implementations.
 
 ## WHERE TO LOOK
 

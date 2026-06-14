@@ -1,12 +1,12 @@
 # @swarmvaultai/cli
 
-`@swarmvaultai/cli` is the global command-line entry point for SwarmVault.
+`@swarmvaultai/cli` is the global command-line entry point for Beehive.
 
 It gives you the `swarmvault` command for building a local-first knowledge vault from files, audio/video transcripts, YouTube URLs, reStructuredText and DOCX documents, browser clips, saved query outputs, and guided exploration runs.
 
 ## Install
 
-SwarmVault requires Node `>=24`.
+Beehive requires Node `>=24`.
 
 ```bash
 npm install -g @swarmvaultai/cli
@@ -112,7 +112,7 @@ Set `SWARMVAULT_OUT=<dir>` when generated artifacts should be isolated from the 
 
 Beginner-friendly alias for `swarmvault scan`.
 
-- initializes the current directory as a SwarmVault workspace
+- initializes the current directory as a Beehive workspace
 - ingests the supplied local file or directory, or registers/syncs the supplied public GitHub repo root URL
 - compiles wiki, graph, search, and share artifacts immediately
 - prints the generated `raw/`, `wiki/`, `state/graph.json`, and `wiki/graph/` paths in human output
@@ -126,7 +126,7 @@ Use this as the default first-run command in docs and onboarding.
 
 Quick-start a scratch vault from a local file, directory, or public GitHub repo root URL in one command.
 
-- initializes the current directory as a SwarmVault workspace
+- initializes the current directory as a Beehive workspace
 - ingests the supplied file or directory as local sources, or registers/syncs the supplied public GitHub repo root URL
 - compiles the vault immediately
 - writes `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/`, then prints the paths
@@ -275,9 +275,9 @@ Repo ingest defaults to `first_party` material. The extra `--include-*` flags op
 
 Interactive file and directory ingest now emits bounded stderr progress, including the active file and processed content size. JSON, MCP, watch, and CI-style flows stay quiet, and parser compatibility failures stay local to the affected source instead of aborting unrelated analysis.
 
-Audio and video files use `tasks.audioProvider` when you configure a provider with `audio` capability. Local video extraction shells out to `ffmpeg`; public video URL extraction with `--video` shells out to `yt-dlp`. When no audio provider or extractor binary is configured, SwarmVault still ingests the source and records an explicit extraction warning instead of failing. YouTube transcript ingest does not require a model provider.
+Audio and video files use `tasks.audioProvider` when you configure a provider with `audio` capability. Local video extraction shells out to `ffmpeg`; public video URL extraction with `--video` shells out to `yt-dlp`. When no audio provider or extractor binary is configured, Beehive still ingests the source and records an explicit extraction warning instead of failing. YouTube transcript ingest does not require a model provider.
 
-When `--commit` is set, SwarmVault stages `wiki/` and `state/` changes and creates a git commit when the vault root is inside a git worktree. Outside git, it becomes a no-op instead of failing.
+When `--commit` is set, Beehive stages `wiki/` and `state/` changes and creates a git commit when the vault root is inside a git worktree. Outside git, it becomes a no-op instead of failing.
 
 ### `swarmvault add <url>`
 
@@ -366,11 +366,11 @@ By default, the answer is written into `wiki/outputs/` and immediately registere
 - `state/graph.json`
 - `state/retrieval/`
 
-Saved outputs also carry related page, node, and source metadata so SwarmVault can refresh related source, concept, and entity pages immediately.
+Saved outputs also carry related page, node, and source metadata so Beehive can refresh related source, concept, and entity pages immediately.
 
-Human-authored pages in `wiki/insights/` are also indexed into search and query context, but SwarmVault does not rewrite them after initialization.
+Human-authored pages in `wiki/insights/` are also indexed into search and query context, but Beehive does not rewrite them after initialization.
 
-By default, query uses the local SQLite retrieval index. When an embedding-capable provider is available and `retrieval.hybrid` is not disabled, semantic page matches are fused into the same candidate set before answer generation. `tasks.embeddingProvider` is the explicit way to choose that backend, but SwarmVault can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged top hits. `--commit` immediately commits saved `wiki/` and `state/` changes when the vault root is inside a git repo.
+By default, query uses the local SQLite retrieval index. When an embedding-capable provider is available and `retrieval.hybrid` is not disabled, semantic page matches are fused into the same candidate set before answer generation. `tasks.embeddingProvider` is the explicit way to choose that backend, but Beehive can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged top hits. `--commit` immediately commits saved `wiki/` and `state/` changes when the vault root is inside a git repo.
 
 ### `swarmvault context build|list|show|delete`
 
@@ -440,11 +440,11 @@ Set `profile.deepLintDefault: true` when deep lint should be the default for `sw
 
 ### `swarmvault watch [--lint] [--repo] [--once] [--code-only] [--debounce <ms>]`
 
-Watch the inbox directory and trigger import and compile cycles when files change. With `--repo`, each cycle also refreshes tracked repo roots that were previously ingested through directory ingest. With `--once`, SwarmVault runs one refresh cycle immediately instead of starting a long-running watcher. With `--code-only`, SwarmVault forces the narrower AST-only refresh path and skips non-code semantic re-analysis until you run a normal `compile`. With `--lint`, each cycle also runs linting. Each cycle writes a canonical session artifact to `state/sessions/`, and compatibility run metadata is still appended to `state/jobs.ndjson`.
+Watch the inbox directory and trigger import and compile cycles when files change. With `--repo`, each cycle also refreshes tracked repo roots that were previously ingested through directory ingest. With `--once`, Beehive runs one refresh cycle immediately instead of starting a long-running watcher. With `--code-only`, Beehive forces the narrower AST-only refresh path and skips non-code semantic re-analysis until you run a normal `compile`. With `--lint`, each cycle also runs linting. Each cycle writes a canonical session artifact to `state/sessions/`, and compatibility run metadata is still appended to `state/jobs.ndjson`.
 
-When `--repo` sees non-code changes under tracked repo roots, SwarmVault records those files under `state/watch/pending-semantic-refresh.json`, marks affected compiled pages stale, and exposes the pending set through `watch status` and the local graph workspace instead of silently re-ingesting them.
+When `--repo` sees non-code changes under tracked repo roots, Beehive records those files under `state/watch/pending-semantic-refresh.json`, marks affected compiled pages stale, and exposes the pending set through `watch status` and the local graph workspace instead of silently re-ingesting them.
 
-When `--repo` sees only code-file changes under tracked repo roots, SwarmVault takes the faster code-only path: it refreshes code pages and graph structure without re-running non-code semantic analysis for unchanged sources.
+When `--repo` sees only code-file changes under tracked repo roots, Beehive takes the faster code-only path: it refreshes code pages and graph structure without re-running non-code semantic analysis for unchanged sources.
 
 ### `swarmvault watch status`
 
@@ -498,17 +498,17 @@ Compatibility alias for `swarmvault graph tree`.
 
 Merge multiple graph JSON files into one namespaced graph artifact.
 
-- accepts native SwarmVault `state/graph.json` payloads
+- accepts native Beehive `state/graph.json` payloads
 - accepts NetworkX/node-link style JSON with `nodes` plus `links` or `edges`
 - prefixes ids from every input to avoid collisions
-- maps explicit extracted/inferred/ambiguous edge evidence into SwarmVault edge semantics
+- maps explicit extracted/inferred/ambiguous edge evidence into Beehive edge semantics
 - `--json` returns the merged graph, input summaries, and warnings
 
 ### `swarmvault merge-graphs <graph...> --out <path> [--label <name>]`
 
 Compatibility alias for `swarmvault graph merge`.
 
-- accepts the same SwarmVault and NetworkX/node-link graph inputs
+- accepts the same Beehive and NetworkX/node-link graph inputs
 - returns the same JSON shape as `graph merge`
 
 ### `swarmvault graph status [path]`
@@ -577,17 +577,17 @@ Compatibility alias for `swarmvault graph export --cypher <path>`.
 
 ### `swarmvault hook install|uninstall|status`
 
-Manage SwarmVault's local git hook blocks for the nearest git repository.
+Manage Beehive's local git hook blocks for the nearest git repository.
 
 - `hook install` writes marker-based `post-commit` and `post-checkout` hooks
-- `hook uninstall` removes only the SwarmVault-managed hook block
+- `hook uninstall` removes only the Beehive-managed hook block
 - `hook status` reports whether those managed hook blocks are installed
 
 The installed hooks run `swarmvault watch --repo --once --code-only` from the vault root so commit and checkout refreshes update code pages and graph structure quickly. Run a normal `swarmvault compile` when you also want non-code semantic re-analysis.
 
 ### `swarmvault mcp`
 
-Run SwarmVault as a local MCP server over stdio. Start it with `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>` so resources resolve to the intended workspace; MCP tool calls must include the same `workspace_id`. This exposes the vault to compatible clients and agents through tools and resources such as:
+Run Beehive as a local MCP server over stdio. Start it with `SWARMVAULT_WORKSPACE_ID=<id>` or `--workspace-id <id>` so resources resolve to the intended workspace; MCP tool calls must include the same `workspace_id`. This exposes the vault to compatible clients and agents through tools and resources such as:
 
 - `workspace_info`
 - `search_pages`
@@ -727,7 +727,7 @@ Defaults:
 
 ### `swarmvault install --agent <agent> [--scope project|user]`
 
-Install agent-specific rules into the current project so an agent understands the SwarmVault workspace contract and workflow.
+Install agent-specific rules into the current project so an agent understands the Beehive workspace contract and workflow.
 
 `init`, `quickstart`, `scan`, and `clone` do not write project-local agent rule files by default. Run `swarmvault install --agent <agent> --scope project` for one target at a time, use `--scope user` for supported user-scope skill installs, or list targets in `swarmvault.config.json` and pass `--install-agent-rules` to `init`, `quickstart`, `scan`, or `clone` when you intentionally want configured targets installed together.
 
@@ -762,7 +762,7 @@ Agent target mapping:
 
 `swarmvault install status --agent <agent> [--scope project|user] [--hook]` reports the expected install paths and whether they exist without writing files.
 
-SwarmVault only owns the managed block inside shared markdown rule files. It keeps the SwarmVault block aligned across targets while preserving any user-owned text before or after the block, so `AGENTS.md` and `CLAUDE.md` do not need to be byte-identical.
+Beehive only owns the managed block inside shared markdown rule files. It keeps the Beehive block aligned across targets while preserving any user-owned text before or after the block, so `AGENTS.md` and `CLAUDE.md` do not need to be byte-identical.
 
 Hook semantics:
 
@@ -791,7 +791,7 @@ npm install -g @swarmvaultai/cli
 
 ## Provider Configuration
 
-SwarmVault defaults to a local `heuristic` provider so the CLI works without API keys, but real vaults will usually point at an actual model provider.
+Beehive defaults to a local `heuristic` provider so the CLI works without API keys, but real vaults will usually point at an actual model provider.
 
 CLI registry commands:
 

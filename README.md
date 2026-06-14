@@ -1,4 +1,4 @@
-# SwarmVault
+# Beehive
 
 <!-- readme-language-nav:start -->
 **Languages:** [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
@@ -10,7 +10,7 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)]()
 
-**The local-first LLM Wiki, knowledge graph builder, and RAG knowledge base for AI agents.** SwarmVault turns docs, code, transcripts, notes, and URLs into a durable markdown wiki plus a local graph you can inspect, query, and hand to agents. Start with one command, then learn the deeper graph, review, context-pack, and automation workflows when you need them.
+**The local-first LLM Wiki, knowledge graph builder, and RAG knowledge base for AI agents.** Beehive turns docs, code, transcripts, notes, and URLs into a durable markdown wiki plus a local graph you can inspect, query, and hand to agents. Start with one command, then learn the deeper graph, review, context-pack, and automation workflows when you need them.
 
 Documentation on the website is currently English-first. If wording drifts between translations, [README.md](README.md) is the canonical source.
 
@@ -43,7 +43,7 @@ swarmvault candidate list
 
 Not sure what state the vault is in? `swarmvault next` is read-only and tells you whether to initialize, ingest, compile, query, review, or refresh.
 
-![SwarmVault graph workspace](https://www.swarmvault.ai/images/screenshots/graph-workspace.png)
+![Beehive graph workspace](https://www.swarmvault.ai/images/screenshots/graph-workspace.png)
 
 No API keys are required for the first run. The built-in heuristic provider runs locally and offline.
 
@@ -58,22 +58,22 @@ No API keys are required for the first run. The built-in heuristic provider runs
 
 ### Three-Layer Architecture
 
-SwarmVault uses three layers, following the pattern described by Andrej Karpathy:
+Beehive uses three layers, following the pattern described by Andrej Karpathy:
 
-1. **Raw sources** (`raw/`) — your curated collection of source documents. Books, articles, papers, transcripts, code, images, datasets. These are immutable: SwarmVault reads from them but never modifies them.
+1. **Raw sources** (`raw/`) — your curated collection of source documents. Books, articles, papers, transcripts, code, images, datasets. These are immutable: Beehive reads from them but never modifies them.
 2. **The wiki** (`wiki/`) — LLM-generated and human-authored markdown. Source summaries, entity pages, concept pages, cross-references, dashboards, and outputs. The wiki is the persistent, compounding artifact.
 3. **The schema** (`swarmvault.schema.md`) — defines how the wiki is structured, what conventions to follow, and what matters in your domain. You and the LLM co-evolve this over time.
 
-> In the tradition of Vannevar Bush's Memex (1945) — a personal, curated knowledge store with associative trails between documents — SwarmVault treats the connections between sources as valuable as the sources themselves. The part Bush couldn't solve was who does the maintenance. The LLM handles that.
+> In the tradition of Vannevar Bush's Memex (1945) — a personal, curated knowledge store with associative trails between documents — Beehive treats the connections between sources as valuable as the sources themselves. The part Bush couldn't solve was who does the maintenance. The LLM handles that.
 
 Turn books, articles, notes, transcripts, mail exports, calendars, datasets, slide decks, screenshots, URLs, and code into a persistent knowledge vault with a knowledge graph, local search, dashboards, and reviewable artifacts that stay on disk. Use it for **personal knowledge management**, **research deep-dives**, **book companions**, **code documentation**, **business intelligence**, or any domain where you accumulate knowledge over time and want it organized rather than scattered.
 
-SwarmVault turns the LLM Wiki pattern into a local toolchain with graph navigation, search, review, automation, and optional model-backed synthesis. You can also start with just the [standalone schema template](templates/llm-wiki-schema.md) — zero install, any LLM agent — and graduate to the full CLI when you outgrow it.
+Beehive turns the LLM Wiki pattern into a local toolchain with graph navigation, search, review, automation, and optional model-backed synthesis. You can also start with just the [standalone schema template](templates/llm-wiki-schema.md) — zero install, any LLM agent — and graduate to the full CLI when you outgrow it.
 
 <!-- readme-section:why -->
-## Why SwarmVault
+## Why Beehive
 
-If you liked Karpathy's [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), SwarmVault is the production-grade version. Here's how it addresses the most common concerns from the community:
+If you liked Karpathy's [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), Beehive is the production-grade version. Here's how it addresses the most common concerns from the community:
 
 **"Won't hallucinations compound?"** — Every edge is tagged `extracted`, `inferred`, or `ambiguous`. Contradiction detection flags conflicting claims. `compile --approve` stages all changes into reviewable approval bundles. New concepts land in `wiki/candidates/` first. `lint --conflicts` audits for contradictions on demand.
 
@@ -86,7 +86,7 @@ If you liked Karpathy's [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf
 <!-- readme-section:comparison -->
 ## From Gist to Production
 
-| | Karpathy's Gist | **SwarmVault** |
+| | Karpathy's Gist | **Beehive** |
 |---|:---:|:---:|
 | Three-layer architecture | described | **implemented** |
 | Ingest / query / lint | manual | **CLI commands** |
@@ -119,7 +119,7 @@ Download the desktop app for macOS, Windows, or Linux — bundles its own runtim
 
 ### CLI
 
-SwarmVault requires Node `>=24`.
+Beehive requires Node `>=24`.
 
 ```bash
 npm install -g @swarmvaultai/cli
@@ -217,7 +217,7 @@ When the vault lives inside a git repo, `ingest`, `compile`, and `query` support
 <!-- readme-section:provider-setup -->
 ## Optional: Add a Model Provider
 
-You do not need API keys or an external model provider to start using SwarmVault. The built-in `heuristic` provider supports local/offline vault setup, ingest, compile, graph/report/search workflows, and lightweight query or lint defaults.
+You do not need API keys or an external model provider to start using Beehive. The built-in `heuristic` provider supports local/offline vault setup, ingest, compile, graph/report/search workflows, and lightweight query or lint defaults.
 
 ### Recommended: local LLM via Ollama + Gemma
 
@@ -244,7 +244,7 @@ ollama pull gemma4
 }
 ```
 
-When you run compile/query with only the heuristic provider, SwarmVault surfaces a one-time notice pointing you here. Set `SWARMVAULT_NO_NOTICES=1` to silence it. Any other supported provider (OpenAI, Anthropic, Gemini, OpenRouter, Groq, Together, xAI, Cerebras, openai-compatible, custom) works too.
+When you run compile/query with only the heuristic provider, Beehive surfaces a one-time notice pointing you here. Set `SWARMVAULT_NO_NOTICES=1` to silence it. Any other supported provider (OpenAI, Anthropic, Gemini, OpenRouter, Groq, Together, xAI, Cerebras, openai-compatible, custom) works too.
 
 ### Local Semantic Embeddings
 
@@ -271,7 +271,7 @@ For local semantic graph query without API keys, use an embedding-capable local 
 }
 ```
 
-With an embedding-capable provider available, SwarmVault can also merge semantic page matches into local search by default. `tasks.embeddingProvider` is the explicit way to choose that backend, but SwarmVault can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged top hits before answering.
+With an embedding-capable provider available, Beehive can also merge semantic page matches into local search by default. `tasks.embeddingProvider` is the explicit way to choose that backend, but Beehive can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged top hits before answering.
 
 ### Cloud API Providers
 
@@ -309,7 +309,7 @@ Provider commands preserve unknown `swarmvault.config.json` fields and store sec
 
 ### Voice-first capture (local Whisper)
 
-For audio files (voice memos, meeting recordings, interviews), install whisper.cpp and let SwarmVault drive it locally — no API keys, no network traffic:
+For audio files (voice memos, meeting recordings, interviews), install whisper.cpp and let Beehive drive it locally — no API keys, no network traffic:
 
 ```bash
 # macOS
@@ -326,7 +326,7 @@ Prefer a hosted transcription provider instead? Point `tasks.audioProvider` at a
 
 ## Point It At Recurring Sources
 
-The fastest way to make SwarmVault useful is the managed-source flow:
+The fastest way to make Beehive useful is the managed-source flow:
 
 ```bash
 swarmvault source add ./exports/customer-call.srt --guide
@@ -363,7 +363,7 @@ swarmvault install status --agent kilo --hook
 
 For hook-capable agents, the installed hooks guide graph-first reads, with enforcement as an opt-in. For Claude Code, `--hook` injects graph-first instructions at session start — answer code-understanding questions with the plain `swarmvault graph query|explain|path` commands (avoid `--json`, which produces much larger output), `swarmvault query`, `swarmvault context build`, or `wiki/graph/report.md`, and read source files only when editing them — along with a graph staleness note. `swarmvault graph query "<seed>"` prints the top matches with page paths plus an inline excerpt of the best-matching wiki page, so one command usually answers where-is/what-calls questions without follow-up file reads. For who-calls and impact-of-change questions, the hook guidance recommends `swarmvault graph callers <symbol>`, which lists every caller from graph call edges with exact file:line call-site evidence — scanning only the files the graph identifies as callers — instead of a repo-wide grep. By default the hook runs in advisory mode (`context`): the first broad Grep/Glob/Bash search per session gets a one-time guidance note pointing at those plain graph commands, and nothing is denied. Pass `--graph-first` at install time to opt in to enforcement, where the first broad search per session is denied once with a guided redirect to those plain graph commands and the inline excerpt they return (repeating the same search is then allowed, so work is never blocked). The flag accepts an optional value — `deny` (the default when the flag is passed), `context`, or `off` — and persists the chosen mode as `hooks.graphFirst` in `swarmvault.config.json`; `SWARMVAULT_GRAPH_FIRST=deny|context|off` still overrides per session. After Edit/Write tools the hook spawns a background `swarmvault graph update --file <path>` refresh so the graph tracks your edits. Searches scoped to vault artifact directories (`wiki/`, `raw/`, `state/`) or a single file are never intercepted, and search tools that merely filter piped output (e.g. `some-command | grep …`) do not count as broad searches. The Codex, Gemini, Copilot, OpenCode, and Kilo hooks carry the same graph-first guidance — a session note plus a one-time search redirect appropriate to each tool's hook API.
 
-`swarmvault install --agent claude --mcp` also registers the SwarmVault MCP server in the project's `.mcp.json` (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`). Start that server with `SWARMVAULT_WORKSPACE_ID=<id>` or add `--workspace-id <id>` to the client args, and include the same `workspace_id` in MCP tool calls. Claude installs additionally write a project skill bundle at `.claude/skills/swarmvault/SKILL.md`, and `--scope user` installs the skill, hook, and settings once under `~/.claude` for all repos — the hook no-ops in repos without a compiled graph report.
+`swarmvault install --agent claude --mcp` also registers the Beehive MCP server in the project's `.mcp.json` (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`). Start that server with `SWARMVAULT_WORKSPACE_ID=<id>` or add `--workspace-id <id>` to the client args, and include the same `workspace_id` in MCP tool calls. Claude installs additionally write a project skill bundle at `.claude/skills/swarmvault/SKILL.md`, and `--scope user` installs the skill, hook, and settings once under `~/.claude` for all repos — the hook no-ops in repos without a compiled graph report.
 
 `swarmvault install --agent <agent>` also keeps the host project clean: in git repos the vault artifact directories are appended to `.gitignore`, strict-JSON `tsconfig.json` files get the artifact directories added to `"exclude"` so stored source copies under `raw/` do not break the host typecheck (commented JSONC tsconfigs are left untouched with a warning, linter configs that still cover the artifact directories get an advisory warning, and everything is skipped when `SWARMVAULT_OUT` keeps artifacts outside the repo).
 
@@ -376,7 +376,7 @@ swarmvault install --agent claude --hook --mcp --graph-first
 swarmvault hook install        # git-hook refresh on commit/checkout; accepts an optional repo path (e.g. `swarmvault hook install packages/app`) when the tracked repo lives below the vault root
 ```
 
-SwarmVault never writes these project-local rule files during `init`, `quickstart`, `scan`, or `clone` unless you explicitly opt into configured installs. Use `swarmvault install --agent <agent> [--scope project|user]` for one target at a time, or list agents in `swarmvault.config.json` and run `swarmvault init --install-agent-rules` or `swarmvault quickstart <input> --install-agent-rules` when you want configured targets installed together. `install status` reports the files SwarmVault expects for a target without mutating the workspace.
+Beehive never writes these project-local rule files during `init`, `quickstart`, `scan`, or `clone` unless you explicitly opt into configured installs. Use `swarmvault install --agent <agent> [--scope project|user]` for one target at a time, or list agents in `swarmvault.config.json` and run `swarmvault init --install-agent-rules` or `swarmvault quickstart <input> --install-agent-rules` when you want configured targets installed together. `install status` reports the files Beehive expects for a target without mutating the workspace.
 
 Or expose the vault directly over MCP:
 
@@ -461,7 +461,7 @@ That installs the published `SKILL.md` plus a ClawHub README, examples, referenc
 
 **Knowledge dashboards** - `wiki/dashboards/` gives you recent sources, a reading log, a timeline, source sessions, source guides, a research map, contradictions, and open questions. The pages work as plain markdown first, and `profile.dataviewBlocks` can append Dataview blocks when you want a more Obsidian-native view.
 
-**Retrieval, hybrid search, and rerank** - local retrieval stores its SQLite FTS shard and manifest under `state/retrieval/`. When an embedding-capable provider is available, it can merge full-text hits with semantic page matches. `tasks.embeddingProvider` is the explicit way to choose that backend, but SwarmVault can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged candidate set before `query` answers. Use `swarmvault retrieval status|rebuild|doctor` to inspect or repair the index.
+**Retrieval, hybrid search, and rerank** - local retrieval stores its SQLite FTS shard and manifest under `state/retrieval/`. When an embedding-capable provider is available, it can merge full-text hits with semantic page matches. `tasks.embeddingProvider` is the explicit way to choose that backend, but Beehive can also fall back to a `queryProvider` with embeddings support. Set `retrieval.rerank: true` when you want the configured `queryProvider` to rerank the merged candidate set before `query` answers. Use `swarmvault retrieval status|rebuild|doctor` to inspect or repair the index.
 
 **Token-budgeted compile and auto-commit** - `compile --max-tokens <n>` trims lower-priority pages to keep generated wiki output inside a bounded token budget, and `ingest|compile|query --commit` can immediately commit `wiki/` and `state/` changes when the vault lives in a git repo.
 
@@ -469,7 +469,7 @@ That installs the published `SKILL.md` plus a ClawHub README, examples, referenc
 
 **Visual + post-ready share kit** - every compile writes `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/`; `swarmvault graph share --post` prints concise text, `swarmvault graph share --svg [path]` writes a 1200x630 visual card, and `swarmvault graph share --bundle [dir]` writes markdown, post text, SVG, HTML preview, and JSON metadata for easy posting, linking, or screenshotting.
 
-**Graph blast radius, cycles, status, stats, validation, refresh, query filters, tree, merge, clustering, and report export** - `graph blast <target>` traces reverse import impact through module dependencies, `graph cycles [--relation imports]` finds deterministic directed cycles, `graph status [path]` performs a read-only stale check over graph/report artifacts and tracked repo changes, and `check-update [path]` is the top-level compatibility alias for the same cron-safe status check. `graph stats` prints lightweight counts and relation mix, `graph validate [graph] --strict` checks duplicate ids, dangling references, confidence bounds, and conflicted-edge evidence before export/merge/push workflows, and `graph update [path]` / `graph refresh [path]` runs the code-only repo refresh cycle for graph artifacts with a 25% shrink guard unless `--force` is explicit; `update [path]` is the top-level compatibility alias. `watch [path] --once` can target one repo root without persisting watch config. `graph query` can filter traversal by relation, context group, evidence class, node type, or language, `graph tree` writes an interactive source/module/symbol HTML tree with expand/collapse controls and a node inspector, and `tree` is the top-level alias. `graph merge` combines SwarmVault or node-link JSON graphs into one namespaced artifact, and `merge-graphs` is the top-level alias. `graph cluster [--resolution <n>]` recomputes communities, degrees, god-node flags, and graph report pages from an existing graph without re-ingesting sources, and `cluster-only [vault]` is the top-level compatibility alias. `graph export --report` writes a self-contained HTML report with graph stats, key nodes, communities, and warnings; `graph export --callflow <path>` writes a compact directed relationship HTML view; `graph export --neo4j <path>` is an alias for the Cypher export used before Neo4j imports.
+**Graph blast radius, cycles, status, stats, validation, refresh, query filters, tree, merge, clustering, and report export** - `graph blast <target>` traces reverse import impact through module dependencies, `graph cycles [--relation imports]` finds deterministic directed cycles, `graph status [path]` performs a read-only stale check over graph/report artifacts and tracked repo changes, and `check-update [path]` is the top-level compatibility alias for the same cron-safe status check. `graph stats` prints lightweight counts and relation mix, `graph validate [graph] --strict` checks duplicate ids, dangling references, confidence bounds, and conflicted-edge evidence before export/merge/push workflows, and `graph update [path]` / `graph refresh [path]` runs the code-only repo refresh cycle for graph artifacts with a 25% shrink guard unless `--force` is explicit; `update [path]` is the top-level compatibility alias. `watch [path] --once` can target one repo root without persisting watch config. `graph query` can filter traversal by relation, context group, evidence class, node type, or language, `graph tree` writes an interactive source/module/symbol HTML tree with expand/collapse controls and a node inspector, and `tree` is the top-level alias. `graph merge` combines Beehive or node-link JSON graphs into one namespaced artifact, and `merge-graphs` is the top-level alias. `graph cluster [--resolution <n>]` recomputes communities, degrees, god-node flags, and graph report pages from an existing graph without re-ingesting sources, and `cluster-only [vault]` is the top-level compatibility alias. `graph export --report` writes a self-contained HTML report with graph stats, key nodes, communities, and warnings; `graph export --callflow <path>` writes a compact directed relationship HTML view; `graph export --neo4j <path>` is an alias for the Cypher export used before Neo4j imports.
 
 **Graph diff** - `swarmvault diff` compares the current knowledge graph against the last committed version, showing added/removed nodes, edges, and pages so you can see exactly what a compile changed.
 
@@ -477,7 +477,7 @@ That installs the published `SKILL.md` plus a ClawHub README, examples, referenc
 
 **Obsidian graph export** - `graph export --obsidian` writes an Obsidian-friendly bundle that preserves wiki folders, appends graph connections with typed link frontmatter for Breadcrumbs/Juggl, emits community notes and orphan-node stubs, copies assets, generates Dataview dashboard pages, and includes a full `.obsidian` config with `types.json`, node-type color groups, and `cssclasses` on every page.
 
-**Adaptive graph communities** - SwarmVault auto-tunes Louvain community resolution for very small or sparse graphs, then splits oversized or low-cohesion communities so graph reports stay scannable on larger repos. You can pin a specific value with `graph.communityResolution` in `swarmvault.config.json` or override one recompute with `swarmvault graph cluster --resolution <n>`.
+**Adaptive graph communities** - Beehive auto-tunes Louvain community resolution for very small or sparse graphs, then splits oversized or low-cohesion communities so graph reports stay scannable on larger repos. You can pin a specific value with `graph.communityResolution` in `swarmvault.config.json` or override one recompute with `swarmvault graph cluster --resolution <n>`.
 
 **Optional model providers** - OpenAI, Anthropic, Gemini, Ollama, OpenRouter, Groq, Together, xAI, Cerebras, generic OpenAI-compatible, custom adapters, or the built-in heuristic for offline/local use.
 
@@ -585,7 +585,7 @@ See the [examples guide](https://www.swarmvault.ai/docs/getting-started/examples
 <!-- readme-section:providers -->
 ## Providers
 
-Providers are optional. SwarmVault routes by capability, not brand. Built-in provider types:
+Providers are optional. Beehive routes by capability, not brand. Built-in provider types:
 
 `heuristic` `openai` `anthropic` `gemini` `ollama` `openrouter` `groq` `together` `xai` `cerebras` `openai-compatible` `custom`
 
@@ -594,7 +594,7 @@ See the [provider docs](https://www.swarmvault.ai/docs/providers) for configurat
 <!-- readme-section:privacy -->
 ## Privacy & Data Flow
 
-SwarmVault processes your data locally by default:
+Beehive processes your data locally by default:
 
 - **Code files** are parsed on your machine via the TypeScript compiler API, tree-sitter, or the SQL parser. Source code contents are never sent to external APIs.
 - **Documents and text** are sent to your configured provider for semantic extraction. With the built-in `heuristic` provider, everything stays local.

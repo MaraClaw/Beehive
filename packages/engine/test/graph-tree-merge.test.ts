@@ -140,7 +140,7 @@ describe("graph tree export", () => {
 });
 
 describe("graph merge", () => {
-  it("merges SwarmVault and node-link JSON into a namespaced graph artifact", async () => {
+  it("merges Beehive and node-link JSON into a namespaced graph artifact", async () => {
     const rootDir = await createTempWorkspace();
     const first = path.join(rootDir, "first.json");
     const second = path.join(rootDir, "second.json");

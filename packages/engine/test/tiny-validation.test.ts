@@ -64,7 +64,7 @@ function createSimplePptx(): Buffer {
           '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
           '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">',
           "<dc:title>Tiny Slide Deck</dc:title>",
-          "<dc:creator>SwarmVault Tests</dc:creator>",
+          "<dc:creator>Beehive Tests</dc:creator>",
           "</cp:coreProperties>"
         ].join(""),
         "utf8"
@@ -141,7 +141,7 @@ function createSimpleEpub(): Buffer {
         [
           '<?xml version="1.0" encoding="UTF-8"?>',
           '<package xmlns="http://www.idpf.org/2007/opf" version="3.0">',
-          '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Tiny EPUB</dc:title><dc:creator>SwarmVault Tests</dc:creator></metadata>',
+          '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Tiny EPUB</dc:title><dc:creator>Beehive Tests</dc:creator></metadata>',
           "<manifest>",
           '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
           '<item id="chapter-1" href="chapter-1.xhtml" media-type="application/xhtml+xml"/>',
@@ -187,7 +187,7 @@ function createSimpleOdt(): Buffer {
           '<office:document-meta xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0">',
           "<office:meta>",
           "<dc:title>Tiny ODT Source</dc:title>",
-          "<dc:creator>SwarmVault Tests</dc:creator>",
+          "<dc:creator>Beehive Tests</dc:creator>",
           "<dc:subject>odt fixture</dc:subject>",
           "<meta:keyword>odt</meta:keyword>",
           "</office:meta>",
@@ -503,7 +503,7 @@ describe("tiny validation matrix", () => {
       path.join(repoDir, "docs", "spec.adoc"),
       [
         "= Tiny AsciiDoc Source",
-        "SwarmVault Tests <tests@example.com>",
+        "Beehive Tests <tests@example.com>",
         "",
         "== Introduction",
         "",

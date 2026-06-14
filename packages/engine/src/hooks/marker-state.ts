@@ -222,7 +222,7 @@ export function isBroadSearchInput(input: unknown): boolean {
 const VAULT_ARTIFACT_SEGMENTS = ["wiki", "raw", "state", "agent", "inbox"];
 
 /**
- * True when a search clearly targets SwarmVault-owned artifact directories
+ * True when a search clearly targets Beehive-owned artifact directories
  * (wiki/, raw/, state/, agent/, inbox/) — those searches are exempt from
  * graph-first redirection because the graph is built FROM those artifacts.
  */
@@ -372,7 +372,7 @@ export async function readHookInput(): Promise<unknown> {
 }
 
 export const REPORT_NOTE =
-  "SwarmVault graph report exists at wiki/graph/report.md, at $SWARMVAULT_OUT/wiki/graph/report.md when only SWARMVAULT_OUT is set, or under <artifact-base>/$SWARMVAULT_WORKSPACE_ID/wiki/graph/report.md when a workspace id is active. Read it before broad grep/glob searching.";
+  "Beehive graph report exists at wiki/graph/report.md, at $SWARMVAULT_OUT/wiki/graph/report.md when only SWARMVAULT_OUT is set, or under <artifact-base>/$SWARMVAULT_WORKSPACE_ID/wiki/graph/report.md when a workspace id is active. Read it before broad grep/glob searching.";
 
 const GRAPH_FIRST_COMMANDS = [
   '- `swarmvault graph query "<seed>"` — top matches with page paths plus an inline excerpt of the best page; usually answers where-is/what-calls in one command',
@@ -387,10 +387,10 @@ const GRAPH_FIRST_COMMANDS = [
 /** Session-start context block instructing graph-first reads. */
 export function buildGraphFirstNote(staleness: WatchStaleness | null): string {
   const lines = [
-    "This repo has a SwarmVault code graph. To save tokens, answer code-understanding questions (where is X, what calls Y, how is Z structured, impact of changing W) from the graph instead of reading or grepping source files:",
+    "This repo has a Beehive code graph. To save tokens, answer code-understanding questions (where is X, what calls Y, how is Z structured, impact of changing W) from the graph instead of reading or grepping source files:",
     ...GRAPH_FIRST_COMMANDS,
     "Read source files directly only when you are about to edit them, or when the graph lacks the detail you need.",
-    "After your edits the SwarmVault hook refreshes the graph automatically."
+    "After your edits the Beehive hook refreshes the graph automatically."
   ];
   if (staleness?.pendingSemanticRefreshCount) {
     lines.push(
@@ -420,7 +420,7 @@ function extractSearchTerm(input: unknown): string {
 export function buildDenyReason(toolName: string, input: unknown): string {
   const term = extractSearchTerm(input).slice(0, 120);
   return [
-    `SwarmVault graph-first: this repo has a compiled code graph that answers structure questions in far fewer tokens than ${toolName || "broad search"}.`,
+    `Beehive graph-first: this repo has a compiled code graph that answers structure questions in far fewer tokens than ${toolName || "broad search"}.`,
     `Run: swarmvault graph query "${term}" — it prints the top matches with page paths plus an inline excerpt of the best page, which usually answers the question without reading source. For who-calls/impact questions run swarmvault graph callers "${term}" (exact file:line call sites). Do not add --json (much larger output).`,
     "Trust that answer for orientation questions instead of re-verifying in source files.",
     "If the graph does not answer, repeat this exact search — it will be allowed for the rest of the session."

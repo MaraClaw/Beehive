@@ -56,7 +56,7 @@ describe("provider analysis chunking", () => {
           title: `Chunk ${chunkLabel}`,
           summary: `Summary for chunk ${chunkLabel}.`,
           concepts: [{ name: `Concept ${chunkLabel}`, description: "Chunk concept" }],
-          entities: [{ name: "SwarmVault", description: "Project entity" }],
+          entities: [{ name: "Beehive", description: "Project entity" }],
           claims: [
             {
               text: `Claim from chunk ${chunkLabel}.`,

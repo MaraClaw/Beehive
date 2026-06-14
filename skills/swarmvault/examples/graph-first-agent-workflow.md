@@ -22,7 +22,7 @@ swarmvault install status --agent claude --hook --mcp
 
 ## What To Check
 
-- `.claude/settings.json` contains the SwarmVault hook entries and `.claude/hooks/swarmvault-graph-first.js` exists after `install --agent claude --hook`
+- `.claude/settings.json` contains the Beehive hook entries and `.claude/hooks/swarmvault-graph-first.js` exists after `install --agent claude --hook`
 - `.mcp.json` registers the `swarmvault` MCP server (`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`) after `--mcp`
 - `.claude/skills/swarmvault/SKILL.md` exists as the project skill bundle
 - A new Claude Code session starts with injected graph-first instructions plus a staleness note when `wiki/graph/report.md` exists

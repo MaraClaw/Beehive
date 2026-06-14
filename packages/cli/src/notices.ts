@@ -11,7 +11,7 @@ const NPM_PACKAGE = "@swarmvaultai/cli";
 const SUPPRESSED_COMMANDS = new Set(["graph serve", "mcp", "schedule serve", "watch"]);
 
 export const HEURISTIC_NOTICE_MESSAGE = [
-  "SwarmVault is using the heuristic analyzer for compile/query.",
+  "Beehive is using the heuristic analyzer for compile/query.",
   "For much sharper concepts, entities, and summaries, configure an LLM provider.",
   "Recommended local setup:",
   "  ollama pull gemma4",
@@ -138,7 +138,7 @@ export async function collectCliNotices(options: CliNoticeOptions): Promise<stri
   const nowMs = now.getTime();
 
   if (!state.starPromptShown) {
-    notices.push(`If SwarmVault is useful, star the repo: ${STAR_URL}`);
+    notices.push(`If Beehive is useful, star the repo: ${STAR_URL}`);
     nextState.starPromptShown = true;
   }
 

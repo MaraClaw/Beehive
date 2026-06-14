@@ -1,4 +1,4 @@
-# SwarmVault
+# Beehive
 
 <!-- readme-language-nav:start -->
 **Languages:** [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
@@ -10,7 +10,7 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)]()
 
-**AI エージェント向けのローカルファーストな LLM Wiki、ナレッジグラフビルダー、RAG 知識ベース。** SwarmVault はドキュメント、コード、書き起こし、ノート、URL を、永続的な Markdown wiki とローカルグラフに変換します。まずは 1 コマンドで始め、必要になったら graph、review、context pack、automation を少しずつ学べます。
+**AI エージェント向けのローカルファーストな LLM Wiki、ナレッジグラフビルダー、RAG 知識ベース。** Beehive はドキュメント、コード、書き起こし、ノート、URL を、永続的な Markdown wiki とローカルグラフに変換します。まずは 1 コマンドで始め、必要になったら graph、review、context pack、automation を少しずつ学べます。
 
 ウェブサイトのドキュメントは現在 English-first です。各言語版で表現に差が出た場合は [README.md](README.md) を正としてください。
 
@@ -42,7 +42,7 @@ swarmvault candidate list
 
 vault の状態が分からないときは、読み取り専用の `swarmvault next` を実行してください。init、ingest、compile、query、review、refresh のどれを次に行うべきかを案内します。
 
-![SwarmVault graph workspace](https://www.swarmvault.ai/images/screenshots/graph-workspace.png)
+![Beehive graph workspace](https://www.swarmvault.ai/images/screenshots/graph-workspace.png)
 
 最初の実行に API key は不要です。組み込みの heuristic provider はローカルかつオフラインで動作します。
 
@@ -56,22 +56,22 @@ vault の状態が分からないときは、読み取り専用の `swarmvault n
 
 ### 三層アーキテクチャ
 
-SwarmVault は Andrej Karpathy が提唱したパターンに従い、三つの層を用います：
+Beehive は Andrej Karpathy が提唱したパターンに従い、三つの層を用います：
 
-1. **生のソース** (`raw/`) —— 厳選されたソースドキュメントのコレクション。書籍、記事、論文、書き起こし、コード、画像、データセット。これらは不変です：SwarmVault は読み取るだけで、変更しません。
+1. **生のソース** (`raw/`) —— 厳選されたソースドキュメントのコレクション。書籍、記事、論文、書き起こし、コード、画像、データセット。これらは不変です：Beehive は読み取るだけで、変更しません。
 2. **Wiki** (`wiki/`) —— LLM が生成し、人間が執筆する Markdown ファイル。ソース要約、エンティティページ、コンセプトページ、相互参照、ダッシュボード、出力。Wiki は持続的に蓄積される永続的な成果物です。
 3. **スキーマ** (`swarmvault.schema.md`) —— wiki の構造、従うべき規約、およびあなたのドメインで何が重要かを定義します。あなたと LLM がこのファイルを共に進化させていきます。
 
-> Vannevar Bush の Memex（1945年）の理念を受け継ぎ —— ドキュメント間の連想トレイルを持つ個人的で厳選された知識ストア —— SwarmVault はソース間のつながりをソースそのものと同じくらい重要に扱います。Bush が解決できなかったのは、誰がメンテナンスを行うかという問題でした。LLM がそれを解決します。
+> Vannevar Bush の Memex（1945年）の理念を受け継ぎ —— ドキュメント間の連想トレイルを持つ個人的で厳選された知識ストア —— Beehive はソース間のつながりをソースそのものと同じくらい重要に扱います。Bush が解決できなかったのは、誰がメンテナンスを行うかという問題でした。LLM がそれを解決します。
 
 書籍、記事、ノート、書き起こし、メール書き出し、カレンダー、データセット、スライド、スクリーンショット、URL、コードを、ナレッジグラフ、ローカル検索、ダッシュボード、レビュー可能な成果物を含む永続的な知識ボルトに変換します。**個人知識管理**、**研究の深堀り**、**読書コンパニオン**、**コードドキュメンテーション**、**ビジネスインテリジェンス**、または長期にわたって知識を蓄積し整理したいあらゆる領域に利用できます。
 
-SwarmVault は LLM Wiki パターンを、グラフナビゲーション、検索、レビュー、オートメーション、オプションのモデル強化を備えたローカルなツールチェーンに具体化しています。[スタンドアロンスキーマテンプレート](templates/llm-wiki-schema.md)から始めることもできます —— インストール不要、任意の LLM エージェントで —— 必要に応じてフル CLI にアップグレードできます。
+Beehive は LLM Wiki パターンを、グラフナビゲーション、検索、レビュー、オートメーション、オプションのモデル強化を備えたローカルなツールチェーンに具体化しています。[スタンドアロンスキーマテンプレート](templates/llm-wiki-schema.md)から始めることもできます —— インストール不要、任意の LLM エージェントで —— 必要に応じてフル CLI にアップグレードできます。
 
 <!-- readme-section:why -->
-## なぜ SwarmVault なのか
+## なぜ Beehive なのか
 
-Karpathy の [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) に共感したなら、SwarmVault はその本番グレード版です。コミュニティで最も多い懸念にどう対応しているかを紹介します：
+Karpathy の [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) に共感したなら、Beehive はその本番グレード版です。コミュニティで最も多い懸念にどう対応しているかを紹介します：
 
 **「ハルシネーションが蓄積しないか？」** —— すべてのエッジに `extracted`、`inferred`、`ambiguous` のタグが付きます。矛盾検出が相反する主張をフラグします。`compile --approve` ですべての変更をレビュー可能な approval bundle に段階化。新しいコンセプトはまず `wiki/candidates/` に入ります。`lint --conflicts` でオンデマンドの矛盾監査ができます。
 
@@ -84,7 +84,7 @@ Karpathy の [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9
 <!-- readme-section:comparison -->
 ## Gist からプロダクションへ
 
-| | Karpathy Gist | **SwarmVault** |
+| | Karpathy Gist | **Beehive** |
 |---|:---:|:---:|
 | 三層アーキテクチャ | 記述 | **実装済み** |
 | Ingest / query / lint | 手動 | **CLI コマンド** |
@@ -117,7 +117,7 @@ macOS、Windows、Linux用のデスクトップアプリをダウンロード—
 
 ### CLI
 
-SwarmVault には Node `>=24` が必要です。
+Beehive には Node `>=24` が必要です。
 
 ```bash
 npm install -g @swarmvaultai/cli
@@ -210,7 +210,7 @@ vault が git repo 内にある場合、`ingest`、`compile`、`query` は `--co
 <!-- readme-section:provider-setup -->
 ## 任意: モデルプロバイダーを追加
 
-SwarmVault を始めるのに API キーや外部モデルプロバイダーは必須ではありません。組み込みの `heuristic` プロバイダーで、ローカル/オフラインのボルト初期化、ingest、compile、graph/report/search、軽量な query や lint の既定フローを回せます。
+Beehive を始めるのに API キーや外部モデルプロバイダーは必須ではありません。組み込みの `heuristic` プロバイダーで、ローカル/オフラインのボルト初期化、ingest、compile、graph/report/search、軽量な query や lint の既定フローを回せます。
 
 より高品質な統合結果や、semantic embeddings、vision、ネイティブ画像生成のような追加機能が欲しいときに、モデルプロバイダーを追加してください:
 
@@ -222,7 +222,7 @@ concept・entity・claim の抽出品質を高めたまま完全ローカルで�
 ollama pull gemma4
 ```
 
-SwarmVault は `init`、`quickstart`、`scan`、`clone` 中にこれらのプロジェクトローカル rule files をデフォルトで書きません。明示的に設定済み agent のインストールを選んだ場合だけ書き込みます。1 つずつ入れるなら `swarmvault install --agent <agent>` を使い、複数をまとめて入れるなら `swarmvault.config.json` に agents を列挙してから `swarmvault init --install-agent-rules` または `swarmvault quickstart <input> --install-agent-rules` を実行します。
+Beehive は `init`、`quickstart`、`scan`、`clone` 中にこれらのプロジェクトローカル rule files をデフォルトで書きません。明示的に設定済み agent のインストールを選んだ場合だけ書き込みます。1 つずつ入れるなら `swarmvault install --agent <agent>` を使い、複数をまとめて入れるなら `swarmvault.config.json` に agents を列挙してから `swarmvault init --install-agent-rules` または `swarmvault quickstart <input> --install-agent-rules` を実行します。
 
 ```json
 {
@@ -241,7 +241,7 @@ SwarmVault は `init`、`quickstart`、`scan`、`clone` 中にこれらのプロ
 }
 ```
 
-heuristic プロバイダーのみの構成で compile/query を実行すると、SwarmVault はこの設定を勧める一回限りの通知を表示します。`SWARMVAULT_NO_NOTICES=1` を設定すると非表示にできます。サポートしている他のプロバイダー（OpenAI、Anthropic、Gemini、OpenRouter、Groq、Together、xAI、Cerebras、openai-compatible、custom）もそのまま使えます。
+heuristic プロバイダーのみの構成で compile/query を実行すると、Beehive はこの設定を勧める一回限りの通知を表示します。`SWARMVAULT_NO_NOTICES=1` を設定すると非表示にできます。サポートしている他のプロバイダー（OpenAI、Anthropic、Gemini、OpenRouter、Groq、Together、xAI、Cerebras、openai-compatible、custom）もそのまま使えます。
 
 ### ローカル Semantic Embeddings
 
@@ -268,7 +268,7 @@ API キーなしでローカルの semantic graph query を使いたい場合は
 }
 ```
 
-embedding 対応 provider が利用できる場合、SwarmVault は既定で semantic page match もローカル search に統合します。`tasks.embeddingProvider` はその backend を明示的に選ぶ方法ですが、現在の `queryProvider` が embeddings をサポートしていればそちらに fallback することもあります。さらに `retrieval.rerank: true` を設定すると、現在の `queryProvider` が統合後の上位候補を再ランキングします。
+embedding 対応 provider が利用できる場合、Beehive は既定で semantic page match もローカル search に統合します。`tasks.embeddingProvider` はその backend を明示的に選ぶ方法ですが、現在の `queryProvider` が embeddings をサポートしていればそちらに fallback することもあります。さらに `retrieval.rerank: true` を設定すると、現在の `queryProvider` が統合後の上位候補を再ランキングします。
 
 ### クラウド API プロバイダー
 
@@ -304,7 +304,7 @@ swarmvault provider remove router --fallback local
 
 ### 音声ファースト取り込み（ローカル Whisper）
 
-ボイスメモ、会議録音、インタビューなどの音声は、whisper.cpp をインストールすれば SwarmVault がローカルで駆動します。API キー不要、ネットワーク通信もありません:
+ボイスメモ、会議録音、インタビューなどの音声は、whisper.cpp をインストールすれば Beehive がローカルで駆動します。API キー不要、ネットワーク通信もありません:
 
 ```bash
 # macOS
@@ -321,7 +321,7 @@ swarmvault provider setup --local-whisper --apply
 
 ## 継続的なソースをそのまま追加
 
-SwarmVault をすぐ役立てる最短経路は、managed-source ワークフローです:
+Beehive をすぐ役立てる最短経路は、managed-source ワークフローです:
 
 ```bash
 swarmvault source add ./exports/customer-call.srt --guide
@@ -358,7 +358,7 @@ swarmvault install status --agent kilo --hook
 
 hook 対応エージェントでは、インストールされた hook が graph-first の読み取りをガイドし、強制はオプトインです。Claude Code の場合、`--hook` はセッション開始時に graph-first の指示を注入します — コード理解系の質問にはプレーンな `swarmvault graph query|explain|path` コマンド（`--json` は出力がはるかに大きくなるため避ける）、`swarmvault query`、`swarmvault context build`、または `wiki/graph/report.md` で答え、ソースファイルは編集するときだけ直接読む — に加えてグラフ鮮度の注意書きも添えます。`swarmvault graph query "<seed>"` はページパス付きの上位マッチに加えて、最も一致した wiki ページのインライン抜粋を表示するため、たいてい 1 コマンドで「X はどこか / Y を呼ぶのは何か」という質問にファイルの追加読み込みなしで答えられます。「X を呼ぶのは何か / X を変更したときの影響は」という質問に対しては、hook のガイダンスが `swarmvault graph callers <symbol>` を推奨します。グラフの call edges からシンボルのすべての呼び出し元を正確な file:line の呼び出し箇所エビデンス付きで一覧し、グラフが呼び出し元と特定したファイルだけをスキャンするため、リポジトリ全体の grep を置き換えられます。デフォルトでは hook はアドバイザリーモード（`context`）で動作します: 各セッションで最初の広い Grep/Glob/Bash 検索に対して、これらのプレーンなグラフコマンドを指す一度きりのガイダンスノートが付くだけで、何も拒否されません。インストール時に `--graph-first` を渡すと強制にオプトインでき、その場合は各セッションで最初の広い検索が一度だけ拒否され、これらのプレーンなグラフコマンドとそのインライン抜粋へのガイド付きリダイレクトが返ります（同じ検索を繰り返せばそのまま通るため、作業がブロックされることはありません）。このフラグは省略可能な値 — `deny`（フラグを渡したときのデフォルト）、`context`、`off` — を受け取り、選んだモードを `swarmvault.config.json` の `hooks.graphFirst` として永続化します。`SWARMVAULT_GRAPH_FIRST=deny|context|off` はセッション単位で引き続き上書きできます。Edit/Write ツールの後にはバックグラウンドで `swarmvault graph update --file <path>` を起動してグラフを編集に追従させます。ボルトのアーティファクトディレクトリ（`wiki/`、`raw/`、`state/`）や単一ファイルに限定された検索は決してインターセプトされず、パイプ出力をフィルタするだけの検索ツール（例: `some-command | grep …`）は広いファイル検索として扱われません。Codex、Gemini、Copilot、OpenCode、Kilo の hook にも同じ graph-first ガイダンス — セッションノートと、各ツールの hook API に合わせた一度きりの検索リダイレクト — が入ります。
 
-`swarmvault install --agent claude --mcp` はプロジェクトの `.mcp.json` に SwarmVault MCP server を登録します（`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`）。Claude のインストールでは `.claude/skills/swarmvault/SKILL.md` にプロジェクト skill bundle も書き込まれます。`--scope user` を使うと skill・hook・settings が `~/.claude` 配下に一度だけインストールされ、すべてのリポジトリで有効になります — コンパイル済みグラフレポートのないリポジトリでは hook は何もしません。
+`swarmvault install --agent claude --mcp` はプロジェクトの `.mcp.json` に Beehive MCP server を登録します（`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`）。Claude のインストールでは `.claude/skills/swarmvault/SKILL.md` にプロジェクト skill bundle も書き込まれます。`--scope user` を使うと skill・hook・settings が `~/.claude` 配下に一度だけインストールされ、すべてのリポジトリで有効になります — コンパイル済みグラフレポートのないリポジトリでは hook は何もしません。
 
 `swarmvault install --agent <agent>` はホストプロジェクトもクリーンに保ちます: git リポジトリではボルトのアーティファクトディレクトリが `.gitignore` に追記され、厳密な JSON 形式の `tsconfig.json` ではアーティファクトディレクトリが `"exclude"` に追加されるため、`raw/` 配下に保存されたソースコピーがホストの型チェックを壊しません（コメント付きの JSONC tsconfig は書き換えられず警告のみ、アーティファクトディレクトリをまだカバーしている linter 設定には助言的な警告が出ます。`SWARMVAULT_OUT` でアーティファクトをリポジトリ外に置いている場合はすべてスキップされます）。
 
@@ -462,7 +462,7 @@ clawhub install swarmvault
 
 **ビジュアル + 投稿しやすい share kit** - すべての compile が `wiki/graph/share-card.md`、`wiki/graph/share-card.svg`、`wiki/graph/share-kit/` を生成します。`swarmvault graph share --post` は短いテキストを出力し、`swarmvault graph share --svg [path]` は 1200x630 のビジュアルカードを書き出し、`swarmvault graph share --bundle [dir]` は markdown、投稿テキスト、SVG、HTML preview、JSON metadata を書き出して、投稿、リンク共有、スクリーンショットに使いやすくします。
 
-**graph blast radius、cycles、status、stats、validation、refresh、query filters、tree、merge、clustering、report export** - `graph blast <target>` は module dependency の reverse import をたどって変更影響範囲を示し、`graph cycles [--relation imports]` は決定的な directed cycle を検出し、`graph status [path]` は graph/report artifacts と tracked repo changes の stale 状態を read-only で確認します。`check-update [path]` は同じ cron-safe status check の top-level compatibility alias です。`graph stats` は軽量な counts と relation mix を出力し、`graph validate [graph] --strict` は export/merge/push workflow の前に duplicate id、dangling reference、confidence range、conflicted-edge evidence を検査します。`graph update [path]` / `graph refresh [path]` は graph artifacts 向けに code-only repo refresh cycle を実行し、node/edge が 25% を超えて減る場合は明示的な `--force` がない限り停止します。`update [path]` は top-level compatibility alias です。`watch [path] --once` は watch config に保存せずに 1 つの repo root を対象にできます。`graph query` は relation、context group、evidence class、node type、language で traversal を絞り込めます。`graph tree` は expand/collapse controls と node inspector 付きの interactive source/module/symbol HTML tree を書き出し、`tree` は top-level alias です。`graph merge` は SwarmVault または node-link JSON graph を namespace 付きの 1 つの artifact に統合し、`merge-graphs` は top-level alias です。`graph cluster [--resolution <n>]` は再 ingest なしで既存 graph から communities、degree、god-node flags、graph report pages を再計算し、`cluster-only [vault]` は top-level compatibility alias です。`graph export --report` は統計、主要ノード、コミュニティ、warning を含む self-contained HTML report を出力します。`graph export --callflow <path>` は compact な directed relationship HTML view を書き出します。`graph export --neo4j <path>` は Neo4j import 前に使う Cypher export alias です。
+**graph blast radius、cycles、status、stats、validation、refresh、query filters、tree、merge、clustering、report export** - `graph blast <target>` は module dependency の reverse import をたどって変更影響範囲を示し、`graph cycles [--relation imports]` は決定的な directed cycle を検出し、`graph status [path]` は graph/report artifacts と tracked repo changes の stale 状態を read-only で確認します。`check-update [path]` は同じ cron-safe status check の top-level compatibility alias です。`graph stats` は軽量な counts と relation mix を出力し、`graph validate [graph] --strict` は export/merge/push workflow の前に duplicate id、dangling reference、confidence range、conflicted-edge evidence を検査します。`graph update [path]` / `graph refresh [path]` は graph artifacts 向けに code-only repo refresh cycle を実行し、node/edge が 25% を超えて減る場合は明示的な `--force` がない限り停止します。`update [path]` は top-level compatibility alias です。`watch [path] --once` は watch config に保存せずに 1 つの repo root を対象にできます。`graph query` は relation、context group、evidence class、node type、language で traversal を絞り込めます。`graph tree` は expand/collapse controls と node inspector 付きの interactive source/module/symbol HTML tree を書き出し、`tree` は top-level alias です。`graph merge` は Beehive または node-link JSON graph を namespace 付きの 1 つの artifact に統合し、`merge-graphs` は top-level alias です。`graph cluster [--resolution <n>]` は再 ingest なしで既存 graph から communities、degree、god-node flags、graph report pages を再計算し、`cluster-only [vault]` は top-level compatibility alias です。`graph export --report` は統計、主要ノード、コミュニティ、warning を含む self-contained HTML report を出力します。`graph export --callflow <path>` は compact な directed relationship HTML view を書き出します。`graph export --neo4j <path>` は Neo4j import 前に使う Cypher export alias です。
 
 **グラフ diff** - `swarmvault diff` は現在のナレッジグラフを最後にコミットされたバージョンと比較し、追加/削除されたノード、エッジ、ページを表示して、compile で何が変わったかを正確に確認できます。
 
@@ -470,7 +470,7 @@ clawhub install swarmvault
 
 **Obsidian グラフ export** - `graph export --obsidian` は、既存 wiki フォルダ構成を保ちつつ、Breadcrumbs/Juggl 対応の型付きリンク frontmatter 付きグラフ接続、community note、orphan node stub、Dataview ダッシュボードページ、コピー済みアセット、`types.json`・ノードタイプ別カラーグループ・`cssclasses` を含む完全な `.obsidian` 設定を含む Obsidian 向け note bundle を書き出します。
 
-**適応的なコミュニティ分割** - SwarmVault は小規模または疎なグラフでは Louvain の community resolution を自動調整し、さらに大きすぎるまたは cohesion の低いコミュニティを分割して、大きな repo でも graph report を読みやすく保ちます。クラスタリング結果を固定したい場合は `swarmvault.config.json` で `graph.communityResolution` を設定し、単発の再計算だけなら `swarmvault graph cluster --resolution <n>` を使えます。
+**適応的なコミュニティ分割** - Beehive は小規模または疎なグラフでは Louvain の community resolution を自動調整し、さらに大きすぎるまたは cohesion の低いコミュニティを分割して、大きな repo でも graph report を読みやすく保ちます。クラスタリング結果を固定したい場合は `swarmvault.config.json` で `graph.communityResolution` を設定し、単発の再計算だけなら `swarmvault graph cluster --resolution <n>` を使えます。
 
 **任意のモデルプロバイダー** - OpenAI、Anthropic、Gemini、Ollama、OpenRouter、Groq、Together、xAI、Cerebras、汎用 OpenAI-compatible、custom adapters、そしてオフライン/ローカル既定の heuristic を使えます。
 
@@ -578,7 +578,7 @@ Codex、Claude Code、OpenCode、Gemini CLI、Copilot、Kilo は `--hook` にも
 <!-- readme-section:providers -->
 ## Providers
 
-モデルプロバイダーは任意です。SwarmVault はブランド名ではなく能力でルーティングします。組み込みの provider type:
+モデルプロバイダーは任意です。Beehive はブランド名ではなく能力でルーティングします。組み込みの provider type:
 
 `heuristic` `openai` `anthropic` `gemini` `ollama` `openrouter` `groq` `together` `xai` `cerebras` `openai-compatible` `custom`
 
@@ -587,7 +587,7 @@ Codex、Claude Code、OpenCode、Gemini CLI、Copilot、Kilo は `--hook` にも
 <!-- readme-section:privacy -->
 ## プライバシーとデータフロー
 
-SwarmVault はデフォルトでデータをローカル処理します：
+Beehive はデフォルトでデータをローカル処理します：
 
 - **コードファイル** は TypeScript compiler API、tree-sitter、または SQL parser によりローカルで解析されます。ソースコードの内容が外部 API に送信されることはありません。
 - **ドキュメントとテキスト** はセマンティック抽出のために設定されたプロバイダーに送信されます。組み込みの `heuristic` プロバイダーを使用すれば、すべてローカルで完結します。

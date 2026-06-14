@@ -1795,7 +1795,7 @@ async function buildGuidedUpdatePages(
             `# ${title}`,
             "",
             useCanonicalTargets
-              ? "Canonical page maintained by SwarmVault. Guided sessions stage replaceable update blocks here for approval."
+              ? "Canonical page maintained by Beehive. Guided sessions stage replaceable update blocks here for approval."
               : "Human-curated insight page. Guided sessions stage replaceable update blocks here.",
             ""
           ].join("\n");

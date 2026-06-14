@@ -70,7 +70,7 @@ describe("collectCliNotices", () => {
       stdoutIsTTY: true
     });
 
-    expect(notices).toEqual(["If SwarmVault is useful, star the repo: https://github.com/swarmclawai/swarmvault"]);
+    expect(notices).toEqual(["If Beehive is useful, star the repo: https://github.com/swarmclawai/swarmvault"]);
     expect(fetchLatestVersion).toHaveBeenCalledTimes(1);
 
     const persisted = JSON.parse(await readFile(statePath, "utf8")) as {
@@ -100,7 +100,7 @@ describe("collectCliNotices", () => {
     });
     expect(first).toEqual([
       "Update available: 0.1.26 (current 0.1.25). Upgrade with: npm install -g @swarmvaultai/cli@latest",
-      "If SwarmVault is useful, star the repo: https://github.com/swarmclawai/swarmvault"
+      "If Beehive is useful, star the repo: https://github.com/swarmclawai/swarmvault"
     ]);
 
     const second = await collectCliNotices({

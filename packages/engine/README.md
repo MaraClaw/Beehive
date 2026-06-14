@@ -1,6 +1,6 @@
 # @swarmvaultai/engine
 
-`@swarmvaultai/engine` is the runtime library behind SwarmVault.
+`@swarmvaultai/engine` is the runtime library behind Beehive.
 
 It exposes the primitives for initializing a workspace, ingesting sources, importing an inbox, compiling a wiki, querying the vault, recording agent tasks, maintaining retrieval, running lint, serving the graph viewer, watching the inbox, and exposing the vault over MCP.
 
@@ -8,12 +8,12 @@ It exposes the primitives for initializing a workspace, ingesting sources, impor
 
 Use this package if you want to:
 
-- build your own interface on top of the SwarmVault runtime
+- build your own interface on top of the Beehive runtime
 - integrate vault operations into another Node application
 - embed watch or MCP behavior without shelling out to the CLI
 - customize provider loading or orchestration in code
 
-If you only want to use SwarmVault as a tool, install `@swarmvaultai/cli` instead.
+If you only want to use Beehive as a tool, install `@swarmvaultai/cli` instead.
 
 ## Core Exports
 
@@ -341,7 +341,7 @@ Running the engine produces a local workspace with these main areas:
 - `state/code-index.json`: repo-aware code module aliases and local resolution data
 - `state/benchmark.json`: latest benchmark/trust summary for the current vault
 - `state/graph.json`: compiled graph, including semantic-similarity edges and hyperedge-style group patterns
-- graph helpers include tree export, graph merge for SwarmVault/node-link JSON, read-only status checks, shrink-guarded code refresh, community refresh, graph query/path/explain, blast radius, and file exports
+- graph helpers include tree export, graph merge for Beehive/node-link JSON, read-only status checks, shrink-guarded code refresh, community refresh, graph query/path/explain, blast radius, and file exports
 - `state/context-packs/`: JSON context-pack artifacts for agent kickoff, review, and handoff workflows
 - `state/memory/tasks/`: JSON task records for the agent task ledger
 - `state/retrieval/`: local retrieval index directory, including the SQLite FTS shard and manifest
@@ -354,7 +354,7 @@ Running the engine produces a local workspace with these main areas:
 Saved outputs are indexed immediately into the graph page registry and search index, then linked back into compiled source, concept, and entity pages immediately through the lightweight artifact sync path. New concept and entity pages stage into `wiki/candidates/` first and promote to active pages on the next matching compile. Insight pages are indexed into search and page reads, but compile does not mutate them. Project-scoped pages receive `project_ids`, project tags, and layered root-plus-project schema hashes when all contributing sources resolve to the same configured project.
 Code sources also emit module, symbol, and parser-backed rationale nodes into `state/graph.json`, so local imports, exports, inheritance, same-module call edges, and rationale links are queryable through the same viewer and search pipeline.
 Ingest, inbox import, compile, query, lint, review, and candidate operations also append human-readable entries to `wiki/log.md`.
-PDF sources now go through a local text-extraction pass before analysis, and image sources use the configured `visionProvider` for structured OCR/diagram extraction when a real multimodal provider is available. When image extraction is unavailable, SwarmVault records an explicit warning in the extraction sidecar and carries that warning forward into analysis instead of silently treating the source as empty.
+PDF sources now go through a local text-extraction pass before analysis, and image sources use the configured `visionProvider` for structured OCR/diagram extraction when a real multimodal provider is available. When image extraction is unavailable, Beehive records an explicit warning in the extraction sidecar and carries that warning forward into analysis instead of silently treating the source as empty.
 Compile and repo-refresh runs also keep benchmark artifacts current by default, so graph report consumers can show freshness and stale-state without requiring a separate benchmark command first. The graph report now also carries deterministic “why this is surprising” explanations plus group-pattern sections built from hyperedges.
 
 ## Notes

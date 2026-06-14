@@ -30,7 +30,7 @@
 - Added graph-first read enforcement for agent integrations: the Claude Code hook now intercepts the first broad Grep/Glob/Bash search per session with a guided redirect to `swarmvault graph query|explain|blast` and `wiki/graph/report.md` (retrying the same search is always allowed), surfaces graph staleness at session start, and triggers a background single-file graph refresh after every Edit/Write. Configure with `SWARMVAULT_GRAPH_FIRST=deny|context|off` or `hooks.graphFirst` in `swarmvault.config.json`; `off` disables the whole integration, and searches scoped to vault artifacts or single files are never intercepted.
 - Reworked `graph query` output for agent consumption, validated with live token A/B runs against an uninstrumented baseline: summaries now lead with ranked top matches (label, type, score, wiki page path) before the capped seed list across CLI, MCP, serve, and standalone HTML surfaces, and the plain CLI output inlines a bounded excerpt of the best-matching wiki page so where-is/what-calls questions resolve in one command instead of a search-plus-read chain.
 - Added `swarmvault graph update --file <path>` (repeatable): a code-only fast path that refreshes just the named files instead of walking every tracked repo root, with a refresh lock plus queue so rapid edit bursts coalesce instead of stacking concurrent compiles.
-- Added `swarmvault install --agent claude --mcp` to register the SwarmVault MCP server in the project's `.mcp.json`, project skill bundles at `.claude/skills/`, and user-scope Claude installs (`--scope user`) covering `~/.claude` skills, hooks, and settings.
+- Added `swarmvault install --agent claude --mcp` to register the Beehive MCP server in the project's `.mcp.json`, project skill bundles at `.claude/skills/`, and user-scope Claude installs (`--scope user`) covering `~/.claude` skills, hooks, and settings.
 - Upgraded the Codex, Gemini, Copilot, OpenCode, and Kilo integrations to the same graph-first guidance (session-start instructions with staleness notes and a one-time search redirect), and refreshed the shared agent rule bullets to direct code-structure questions at the graph before source files.
 - Added `graph_status` and `update_graph` MCP tools for read-only freshness checks and code-only (optionally per-file) graph refreshes over MCP.
 - Migrated previously installed Claude hook settings entries to the new matcher layout on reinstall; user-owned hook entries are preserved, and legacy agent rule files written by older releases are still recognized during cleanup.
@@ -71,7 +71,7 @@
 
 - Hardened compile for larger heuristic vaults by bounding source analysis concurrency, graph co-occurrence projection, concept conflict pairing, and contradiction comparisons.
 - Made JSON state writes atomic and parse failures path-aware, so corrupt derived state reports the exact JSON file instead of a bare `Unexpected end of JSON input`.
-- Documented agent rule-file behavior: shared managed SwarmVault blocks stay in sync, while user-owned content in files such as `AGENTS.md` and `CLAUDE.md` is preserved and may intentionally differ.
+- Documented agent rule-file behavior: shared managed Beehive blocks stay in sync, while user-owned content in files such as `AGENTS.md` and `CLAUDE.md` is preserved and may intentionally differ.
 - Added regression coverage for corrupt compile state, larger heuristic markdown compiles, and managed agent-rule parity.
 - Bumped OSS packages, viewer, Obsidian plugin metadata, MCP-facing version, ClawHub skill metadata, and desktop package metadata to `3.14.2`.
 
@@ -165,7 +165,7 @@
 ## 3.7.0
 
 - Added `swarmvault graph tree` for a collapsible HTML source/module/symbol tree, defaulting to `wiki/graph/tree.html`.
-- Added `swarmvault graph merge <graph...> --out <path>` to combine SwarmVault and NetworkX/node-link JSON graphs into one namespaced graph artifact with explicit evidence-class mapping.
+- Added `swarmvault graph merge <graph...> --out <path>` to combine Beehive and NetworkX/node-link JSON graphs into one namespaced graph artifact with explicit evidence-class mapping.
 - Extended public GitHub repo source handling with `--branch`, `--ref`, and `--checkout-dir` on `source add` and `scan`, and allowed `scan` to quick-start from a public GitHub repo URL.
 - Added a graph refresh shrink guard for `graph update` / one-shot watch refreshes; updates now abort when nodes or edges drop by more than 25% unless `--force` or `SWARMVAULT_FORCE_UPDATE=1` is explicit.
 - Added Svelte single-file component code coverage with nested TypeScript/JavaScript script parsing, plus detection and explicit parser-asset diagnostics for Julia, Verilog/SystemVerilog, and R sources.
@@ -262,7 +262,7 @@
 - Added `swarmvault graph share [--post]` for post-ready graph summaries — the command reads the compiled graph/report artifacts, prints the same markdown shape written to `wiki/graph/share-card.md`, emits only the compact copyable text with `--post`, and preserves structured output under `--json` for scripts and agents
 - Compile, `swarmvault scan`, and `swarmvault demo` now surface `wiki/graph/share-card.md` as a first-run artifact, with source/page/node/edge/community counts, top hubs, bridge nodes, surprising connections, suggested next questions, knowledge gaps, and reproducible install/run instructions
 - Graph viewer node selection now clears explicitly when the canvas background is tapped, which makes the live viewer behavior and installed-package browser smoke more deterministic
-- Kept release preflight focused on installed SwarmVault artifacts by making the Codex host-agent smoke explicit opt-in via `SWARMVAULT_RUN_CODEX_AGENT_SMOKE=1`, matching the existing opt-in behavior for other external model-dependent host checks, and by having browser validation wait on rendered graph hooks instead of `networkidle` or coordinate-sensitive canvas clicks
+- Kept release preflight focused on installed Beehive artifacts by making the Codex host-agent smoke explicit opt-in via `SWARMVAULT_RUN_CODEX_AGENT_SMOKE=1`, matching the existing opt-in behavior for other external model-dependent host checks, and by having browser validation wait on rendered graph hooks instead of `networkidle` or coordinate-sensitive canvas clicks
 - Refreshed the OSS README trio, package docs, ClawHub skill bundle, website docs, and product `spec.md` around the share-card loop so a new user can scan a repo, copy a concise public update, and then open the richer graph/report workflow without extra setup
 
 ## 1.1.0
@@ -345,9 +345,9 @@
 
 ## 0.7.29
 
-- Added first-party Obsidian plugin (`@swarmvaultai/obsidian-plugin`) that drives the SwarmVault CLI from inside Obsidian: status bar shows workspace + compile freshness, command palette runs init/ingest/add/compile/lint/watch/serve, Query from current note returns answers with page_id→wikilink citations, Run Log view streams live stdout/stderr of every invocation, and long-running `watch`/`graph serve` processes are tracked in a managed-processes registry that drains on plugin unload
+- Added first-party Obsidian plugin (`@swarmvaultai/obsidian-plugin`) that drives the Beehive CLI from inside Obsidian: status bar shows workspace + compile freshness, command palette runs init/ingest/add/compile/lint/watch/serve, Query from current note returns answers with page_id→wikilink citations, Run Log view streams live stdout/stderr of every invocation, and long-running `watch`/`graph serve` processes are tracked in a managed-processes registry that drains on plugin unload
 - Extended the release-sync check to pin the plugin `package.json`, `manifest.json`, and `swarmvaultCliMinVersion` to the monorepo root version so the plugin never ships ahead of the CLI it talks to
-- Fixed citation rewriting to handle real SwarmVault page IDs containing colons and slashes (e.g. `concept:foo`, `source:arxiv/2401.00001`)
+- Fixed citation rewriting to handle real Beehive page IDs containing colons and slashes (e.g. `concept:foo`, `source:arxiv/2401.00001`)
 
 ## 0.7.28
 
@@ -495,7 +495,7 @@
 
 ## 0.3.0
 
-- Broadened non-code ingest so SwarmVault now treats books, datasets, spreadsheets, and slide decks as first-class sources with library-backed EPUB, CSV/TSV, XLSX, and PPTX extraction instead of repo/code-only workflows
+- Broadened non-code ingest so Beehive now treats books, datasets, spreadsheets, and slide decks as first-class sources with library-backed EPUB, CSV/TSV, XLSX, and PPTX extraction instead of repo/code-only workflows
 - Added grouped multi-part ingest support and a uniform single-input summary envelope so one source file can expand into multiple manifests safely, including chapter-split EPUB ingestion with stable group metadata and stale-part pruning
 - Expanded source-page rendering, searchable extracted text, validation fixtures, installed-package heuristic smoke, localized README parity, ClawHub skill docs, and site copy for mainstream knowledge-work sources rather than code-first messaging
 
@@ -511,7 +511,7 @@
 - Added parser-backed Lua and Zig code ingestion, including repo-aware module/import resolution, module pages, code-index integration, and graph/search coverage through the existing local analyzer pipeline
 - Updated the tiny validation matrix and code-ingestion tests to require Lua, Zig, JSX, and TSX so packaged releases keep proving the full shipped code-language set instead of relying on docs-only claims
 - Corrected the OSS README trio, package READMEs, ClawHub skill docs, and site support tables so they accurately list the languages and file types already supported today, including JSX, TSX, reStructuredText, Lua, and Zig
-- Tightened the packaged live-smoke gate so the required heuristic/browser release path remains focused on SwarmVault correctness, while the slower OpenCode host-agent smoke stays available as an explicit opt-in check
+- Tightened the packaged live-smoke gate so the required heuristic/browser release path remains focused on Beehive correctness, while the slower OpenCode host-agent smoke stays available as an explicit opt-in check
 
 ## 0.2.0
 
@@ -669,7 +669,7 @@
 
 - Fixed the OpenAI provider structured-output path so `gpt-4o-mini` and other strict-schema models work for provider-backed `lint --deep`, including Responses API payload extraction, strict JSON-schema normalization, and null-placeholder cleanup before Zod parsing
 - Added provider regression coverage for OpenAI structured responses and optional-field normalization, plus a successful installed-path OpenAI smoke run with `gpt-4o-mini`
-- Updated the SwarmVault ClawHub/OpenClaw skill frontmatter to the parser-safe JSON metadata shape with explicit installer metadata so skill catalog/install metadata stays consistent with the documented OpenClaw format
+- Updated the Beehive ClawHub/OpenClaw skill frontmatter to the parser-safe JSON metadata shape with explicit installer metadata so skill catalog/install metadata stays consistent with the documented OpenClaw format
 
 ## 0.1.12
 
@@ -751,6 +751,6 @@
 
 ## 0.1.0
 
-- Initial open source release of the SwarmVault engine and CLI
+- Initial open source release of the Beehive engine and CLI
 - Added the local-first vault workflow: `init`, `ingest`, `compile`, `query`, `lint`, `graph serve`, and `install`
 - Added the first graph viewer and provider abstraction layer

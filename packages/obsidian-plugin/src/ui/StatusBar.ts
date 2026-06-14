@@ -39,7 +39,7 @@ export class StatusBar {
   private build(): void {
     this.workspaceEl = this.root.createSpan({ cls: "swarmvault-status-bar__workspace" });
     this.workspaceEl.onClickEvent?.(() => this.callbacks.onWorkspaceClick?.());
-    this.workspaceEl.setAttr("aria-label", "SwarmVault workspace");
+    this.workspaceEl.setAttr("aria-label", "Beehive workspace");
 
     this.freshnessEl = this.root.createSpan({ cls: "swarmvault-status-bar__freshness" });
     this.freshnessDot = this.freshnessEl.createSpan({

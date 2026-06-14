@@ -1,6 +1,6 @@
 import { MarkdownView, Notice, TFile } from "obsidian";
 import { rewriteCitations } from "../citations/rewrite";
-import type SwarmVaultPlugin from "../main";
+import type BeehivePlugin from "../main";
 import { QueryModal, type QueryModalResult } from "../modals/QueryModal";
 import { workspaceArtifactRoot } from "../workspace/artifacts";
 import { loadPageIdIndex } from "../workspace/page-id-index";
@@ -12,7 +12,7 @@ interface QueryJsonResult {
   error?: string;
 }
 
-export function runQueryFromNote(plugin: SwarmVaultPlugin): void {
+export function runQueryFromNote(plugin: BeehivePlugin): void {
   const initial = inferInitialQuestion(plugin);
   const hasSelection = Boolean(getSelectionText(plugin));
   new QueryModal(plugin.app, {
@@ -23,7 +23,7 @@ export function runQueryFromNote(plugin: SwarmVaultPlugin): void {
   }).open();
 }
 
-export function runAsk(plugin: SwarmVaultPlugin): void {
+export function runAsk(plugin: BeehivePlugin): void {
   new QueryModal(plugin.app, {
     defaultOutputMode: plugin.settings.defaultQueryOutputMode,
     hasSelection: false,
@@ -31,15 +31,15 @@ export function runAsk(plugin: SwarmVaultPlugin): void {
   }).open();
 }
 
-async function executeQuery(plugin: SwarmVaultPlugin, req: QueryModalResult): Promise<void> {
-  const progress = new Notice("SwarmVault: querying…", 0);
+async function executeQuery(plugin: BeehivePlugin, req: QueryModalResult): Promise<void> {
+  const progress = new Notice("Beehive: querying…", 0);
   const args: string[] = ["query", req.question, "--format", req.format, "--json"];
   if (!req.save) args.push("--no-save");
 
   try {
     const res = await executeCli<QueryJsonResult>(plugin, {
       args,
-      commandLabel: "SwarmVault: Query",
+      commandLabel: "Beehive: Query",
       notifyOnSuccess: () => null
     });
     progress.hide();
@@ -66,7 +66,7 @@ async function executeQuery(plugin: SwarmVaultPlugin, req: QueryModalResult): Pr
   }
 }
 
-async function placeAnswer(plugin: SwarmVaultPlugin, req: QueryModalResult, answer: string, savedPath: string | null): Promise<void> {
+async function placeAnswer(plugin: BeehivePlugin, req: QueryModalResult, answer: string, savedPath: string | null): Promise<void> {
   switch (req.outputMode) {
     case "inline-replace":
       replaceSelection(plugin, answer);
@@ -90,7 +90,7 @@ async function placeAnswer(plugin: SwarmVaultPlugin, req: QueryModalResult, answ
   }
 }
 
-function replaceSelection(plugin: SwarmVaultPlugin, answer: string): void {
+function replaceSelection(plugin: BeehivePlugin, answer: string): void {
   const view = plugin.app.workspace.getActiveViewOfType(MarkdownView);
   if (!view) {
     new Notice("No active markdown view for inline replace.");
@@ -99,7 +99,7 @@ function replaceSelection(plugin: SwarmVaultPlugin, answer: string): void {
   view.editor.replaceSelection(answer);
 }
 
-function appendToActive(plugin: SwarmVaultPlugin, answer: string): void {
+function appendToActive(plugin: BeehivePlugin, answer: string): void {
   const view = plugin.app.workspace.getActiveViewOfType(MarkdownView);
   if (!view) {
     new Notice("No active markdown view to append to.");
@@ -111,7 +111,7 @@ function appendToActive(plugin: SwarmVaultPlugin, answer: string): void {
   editor.replaceRange(`\n\n${answer}\n`, { line: lastLine, ch: lastLineLength });
 }
 
-async function openSavedPath(plugin: SwarmVaultPlugin, absPath: string): Promise<void> {
+async function openSavedPath(plugin: BeehivePlugin, absPath: string): Promise<void> {
   const root = plugin.workspaceRoot;
   if (!root) {
     new Notice(`Answer saved to ${absPath}`);
@@ -126,7 +126,7 @@ async function openSavedPath(plugin: SwarmVaultPlugin, absPath: string): Promise
   }
 }
 
-async function openEphemeralPane(plugin: SwarmVaultPlugin, question: string, answer: string): Promise<void> {
+async function openEphemeralPane(plugin: BeehivePlugin, question: string, answer: string): Promise<void> {
   const leaf = plugin.app.workspace.getLeaf(true);
   const tmpName = `swarmvault-query-${Date.now()}.md`;
   try {
@@ -139,14 +139,14 @@ async function openEphemeralPane(plugin: SwarmVaultPlugin, question: string, ans
   }
 }
 
-function inferInitialQuestion(plugin: SwarmVaultPlugin): string {
+function inferInitialQuestion(plugin: BeehivePlugin): string {
   const selection = getSelectionText(plugin);
   if (selection) return selection;
   const active = plugin.app.workspace.getActiveFile();
   return active?.basename ?? "";
 }
 
-function getSelectionText(plugin: SwarmVaultPlugin): string | null {
+function getSelectionText(plugin: BeehivePlugin): string | null {
   const view = plugin.app.workspace.getActiveViewOfType(MarkdownView);
   if (!view) return null;
   const sel = view.editor.getSelection();

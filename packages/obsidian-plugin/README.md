@@ -1,6 +1,6 @@
-# SwarmVault for Obsidian
+# Beehive for Obsidian
 
-Drive your SwarmVault workspace from inside Obsidian — ingest, compile, query, lint, candidates, approvals, graph — without leaving the editor.
+Drive your Beehive workspace from inside Obsidian — ingest, compile, query, lint, candidates, approvals, graph — without leaving the editor.
 
 ## Requirements
 
@@ -9,7 +9,7 @@ Drive your SwarmVault workspace from inside Obsidian — ingest, compile, query,
   ```sh
   npm i -g @swarmvaultai/cli
   ```
-- A SwarmVault workspace (a folder with `swarmvault.config.json`, or a legacy folder with root `swarmvault.schema.md`). Open that folder as an Obsidian vault, or open a descendant folder — the plugin walks up to find the workspace root.
+- A Beehive workspace (a folder with `swarmvault.config.json`, or a legacy folder with root `swarmvault.schema.md`). Open that folder as an Obsidian vault, or open a descendant folder — the plugin walks up to find the workspace root.
 
 ## Install
 
@@ -17,7 +17,7 @@ Until the plugin lands in the Obsidian community registry, install via [BRAT](ht
 
 ## Configure
 
-Open `Settings → Community plugins → SwarmVault`:
+Open `Settings → Community plugins → Beehive`:
 - **CLI binary path** — leave blank to use `swarmvault` from PATH, or point at a specific binary.
 - **Verify CLI** — runs `swarmvault --version --json` and confirms the version matches the plugin's minimum.
 - **Workspace root** — leave blank to auto-detect, or override.
@@ -26,11 +26,12 @@ Open `Settings → Community plugins → SwarmVault`:
 
 ## Commands
 
-Full list in the command palette under `SwarmVault:`. Highlights:
-- `SwarmVault: Compile` — runs `swarmvault compile`.
-- `SwarmVault: Query from current note` — runs a query using the active note's selection/title, streams the answer back into your note.
-- `SwarmVault: Open graph pane` — embeds the live graph viewer.
-- `SwarmVault: Candidates` / `Approvals` — review pending wiki changes.
+Full list in the command palette under `Beehive:`. Highlights:
+
+- `Beehive: Compile` — runs `swarmvault compile`.
+- `Beehive: Query from current note` — runs a query using the active note's selection/title, streams the answer back into your note.
+- `Beehive: Open graph pane` — embeds the live graph viewer.
+- `Beehive: Candidates` / `Approvals` — review pending wiki changes.
 
 ## Development
 

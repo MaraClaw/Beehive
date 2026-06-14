@@ -163,7 +163,7 @@ function buildPrompt(session: VaultChatSession, question: string, maxHistoryTurn
     )
     .join("\n\n");
   return [
-    "Continue this SwarmVault chat session using the compiled wiki as the source of truth.",
+    "Continue this Beehive chat session using the compiled wiki as the source of truth.",
     "Use prior turns only for conversational continuity. Prefer current vault evidence over prior wording.",
     "",
     "Prior turns:",

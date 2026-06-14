@@ -427,7 +427,7 @@ export function renderContextPackMarkdown(pack: ContextPack): string {
     "",
     "## Agent Instructions",
     "",
-    "Use this pack as bounded SwarmVault context. Prefer cited source IDs and page IDs over unsupported inference. If the task needs omitted context, ask for a larger budget or a narrower target.",
+    "Use this pack as bounded Beehive context. Prefer cited source IDs and page IDs over unsupported inference. If the task needs omitted context, ask for a larger budget or a narrower target.",
     "",
     "## Graph Orientation",
     "",

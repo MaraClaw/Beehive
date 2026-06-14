@@ -37,7 +37,7 @@ export class QueryModal extends Modal {
   onOpen(): void {
     const { contentEl } = this;
     contentEl.empty();
-    contentEl.createEl("h3", { text: "SwarmVault query" });
+    contentEl.createEl("h3", { text: "Beehive query" });
 
     new Setting(contentEl).setName("Question").addTextArea((t) => {
       t.setValue(this.question);

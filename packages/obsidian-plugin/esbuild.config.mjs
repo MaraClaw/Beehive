@@ -10,7 +10,7 @@ const watch = process.argv.includes("--watch");
 mkdirSync(distDir, { recursive: true });
 
 const banner = `/*
-SwarmVault Obsidian plugin — generated bundle.
+Beehive Obsidian plugin — generated bundle.
 Source: https://github.com/swarmclawai/swarmvault
 */`;
 

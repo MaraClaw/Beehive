@@ -1,7 +1,7 @@
 {
   "name": "@swarmvaultai/engine",
   "version": "3.21.0",
-  "description": "Core engine for SwarmVault: ingest, compile, query, lint, and provider abstractions.",
+  "description": "Core engine for Beehive: ingest, compile, query, lint, and provider abstractions.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

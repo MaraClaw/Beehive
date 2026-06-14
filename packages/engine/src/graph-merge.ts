@@ -29,7 +29,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function isSwarmVaultGraph(value: unknown): value is GraphArtifact {
+function isBeehiveGraph(value: unknown): value is GraphArtifact {
   return (
     isRecord(value) &&
     Array.isArray(value.nodes) &&
@@ -99,7 +99,7 @@ function mapNodeType(value: unknown): GraphNode["type"] {
   return "concept";
 }
 
-function remapSwarmVaultGraph(inputPath: string, graph: GraphArtifact, prefix: string): GraphArtifact {
+function remapBeehiveGraph(inputPath: string, graph: GraphArtifact, prefix: string): GraphArtifact {
   const sourceMap = new Map(graph.sources.map((source) => [source.sourceId, prefixed(prefix, source.sourceId)]));
   const pageMap = new Map(graph.pages.map((page) => [page.id, prefixed(prefix, page.id)]));
   const nodeMap = new Map(graph.nodes.map((node) => [node.id, prefixed(prefix, node.id)]));
@@ -202,7 +202,7 @@ function endpointId(value: unknown): string | undefined {
 function remapNodeLinkGraph(inputPath: string, raw: Record<string, unknown>, prefix: string, now: string): GraphArtifact {
   const arrays = nodeLinkArrays(raw);
   if (!arrays) {
-    throw new Error(`${inputPath} is not a SwarmVault graph or node-link graph.`);
+    throw new Error(`${inputPath} is not a Beehive graph or node-link graph.`);
   }
   const syntheticSourceId = prefixed(prefix, "source");
   const source: SourceManifest = {
@@ -354,8 +354,8 @@ export async function mergeGraphFiles(
       inputPaths.length === 1 && options.label ? slugify(options.label) : safePrefix(resolvedInputPath, index),
       usedPrefixes
     );
-    if (isSwarmVaultGraph(raw)) {
-      const graph = remapSwarmVaultGraph(resolvedInputPath, raw, prefix);
+    if (isBeehiveGraph(raw)) {
+      const graph = remapBeehiveGraph(resolvedInputPath, raw, prefix);
       graphs.push(graph);
       inputGraphs.push({
         path: resolvedInputPath,

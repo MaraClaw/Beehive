@@ -19,7 +19,7 @@ raw/
 └── goals-q2-2026.md             quarterly goals
 ```
 
-The sources are intentionally varied. SwarmVault's value shows when the compiler finds connections you did not plan: the journal mentions poor sleep, the podcast explains why, the health log confirms the pattern, and the goals depend on fixing it.
+The sources are intentionally varied. Beehive's value shows when the compiler finds connections you did not plan: the journal mentions poor sleep, the podcast explains why, the health log confirms the pattern, and the goals depend on fixing it.
 
 ## Workflow
 

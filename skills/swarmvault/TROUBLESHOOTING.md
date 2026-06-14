@@ -13,7 +13,7 @@ If the binary still is not found, check that npm's global bin directory is on `P
 
 ## Node version too old
 
-SwarmVault requires Node `>=24`.
+Beehive requires Node `>=24`.
 
 ```bash
 node --version
@@ -29,7 +29,7 @@ For local semantic graph query, `embeddingProvider` must point at an embedding-c
 
 ## Audio or video files ingest, but no transcript appears
 
-Audio and video ingest need `tasks.audioProvider` to point at a provider with `audio` capability. Without that, SwarmVault still ingests the source and records an extraction warning instead of failing the whole run.
+Audio and video ingest need `tasks.audioProvider` to point at a provider with `audio` capability. Without that, Beehive still ingests the source and records an extraction warning instead of failing the whole run.
 
 The quickest fully-local fix is `swarmvault provider setup --local-whisper --apply`, which installs a `local-whisper` provider (whisper.cpp shell-out), downloads the default ggml model into `~/.swarmvault/models/`, and wires `tasks.audioProvider` at it. If the command reports the binary missing, install whisper.cpp first (`brew install whisper-cpp` on macOS, `sudo apt install whisper.cpp` on Debian/Ubuntu) and re-run. Override binary or model paths with `localWhisper.binaryPath` / `localWhisper.modelPath` in `swarmvault.config.json` or `SWARMVAULT_WHISPER_BINARY` in the environment.
 
@@ -108,7 +108,7 @@ Before exporting, merging, pushing, or publishing graph artifacts, run `swarmvau
 
 ## Compile fails on a larger note set
 
-If an older CLI fails with heap exhaustion, `Map maximum size exceeded`, or a bare `Unexpected end of JSON input`, upgrade SwarmVault and rerun compile:
+If an older CLI fails with heap exhaustion, `Map maximum size exceeded`, or a bare `Unexpected end of JSON input`, upgrade Beehive and rerun compile:
 
 ```bash
 npm install -g @swarmvaultai/cli@latest
@@ -119,7 +119,7 @@ Current releases bound source-analysis concurrency and graph projection during c
 
 ## Agent rule files differ
 
-That can be expected. SwarmVault owns only the managed block between `swarmvault:managed:start` and `swarmvault:managed:end`. The managed SwarmVault block should match across compatible agent rule files, but user-owned text before or after that block is preserved and may differ per tool.
+That can be expected. Beehive owns only the managed block between `swarmvault:managed:start` and `swarmvault:managed:end`. The managed Beehive block should match across compatible agent rule files, but user-owned text before or after that block is preserved and may differ per tool.
 
 New vaults do not receive agent rule files during `init`, `quickstart`, `scan`, or `clone` unless you pass `--install-agent-rules` with configured `agents`. For one-off setup, run `swarmvault install --agent <agent>` instead.
 
@@ -160,7 +160,7 @@ First verify the installed CLI version used by the MCP client:
 swarmvault --version
 ```
 
-SwarmVault 3.14.1 and newer normalize optional MCP response fields and retry hyphenated retrieval targets with conservative SQLite FTS tokenization. Upgrade and restart the MCP client subprocess if you see `unacceptable kind of an object to dump [object Undefined]` from `query_vault`, `build_context_pack`, `start_task`, or `start_memory_task`, or if a hyphenated target such as `concept:distributionally-robust-receive-combining` reports `no such column`.
+Beehive 3.14.1 and newer normalize optional MCP response fields and retry hyphenated retrieval targets with conservative SQLite FTS tokenization. Upgrade and restart the MCP client subprocess if you see `unacceptable kind of an object to dump [object Undefined]` from `query_vault`, `build_context_pack`, `start_task`, or `start_memory_task`, or if a hyphenated target such as `concept:distributionally-robust-receive-combining` reports `no such column`.
 
 ```bash
 npm install -g @swarmvaultai/cli@latest
@@ -211,7 +211,7 @@ Reinstall the hook in the project root and verify the settings entries:
 swarmvault install --agent claude --hook
 ```
 
-Then check that `.claude/settings.json` contains the SwarmVault hook entries (session start, search interception, and post-edit refresh matchers) and that `.claude/hooks/swarmvault-graph-first.js` exists. Reinstalling migrates older installed hook entries to the current matcher layout while preserving user-owned hook entries. For user-scope installs under `~/.claude` (`install --agent claude --hook --scope user`), remember the hook intentionally no-ops in repos without a compiled `wiki/graph/report.md`, so run `swarmvault compile` first if the session shows no graph-first behavior.
+Then check that `.claude/settings.json` contains the Beehive hook entries (session start, search interception, and post-edit refresh matchers) and that `.claude/hooks/swarmvault-graph-first.js` exists. Reinstalling migrates older installed hook entries to the current matcher layout while preserving user-owned hook entries. For user-scope installs under `~/.claude` (`install --agent claude --hook --scope user`), remember the hook intentionally no-ops in repos without a compiled `wiki/graph/report.md`, so run `swarmvault compile` first if the session shows no graph-first behavior.
 
 ## Agent install or hooks seem stale
 

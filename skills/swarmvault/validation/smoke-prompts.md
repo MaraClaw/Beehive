@@ -20,7 +20,7 @@ Expected shape:
 
 Prompt:
 
-> Set up a SwarmVault workspace for this repo and explain what files I should inspect first.
+> Set up a Beehive workspace for this repo and explain what files I should inspect first.
 
 Expected shape:
 
@@ -57,7 +57,7 @@ Expected shape:
 
 Prompt:
 
-> Compile this repo into SwarmVault and tell me how auth works.
+> Compile this repo into Beehive and tell me how auth works.
 
 Expected shape:
 
@@ -163,7 +163,7 @@ Expected shape:
 - may use `graph stats` when the user needs lightweight counts or relation mix without opening the viewer
 - may use `graph validate [graph] --strict` before sharing, merging, pushing, or publishing graph artifacts
 - may use `graph tree [--output <html>]` or `tree [--output <html>]` when the user wants file/module/symbol browsing
-- may use `graph merge <graph...> --out <path>` or `merge-graphs <graph...> --out <path>` when the user needs to combine SwarmVault or node-link graph JSON
+- may use `graph merge <graph...> --out <path>` or `merge-graphs <graph...> --out <path>` when the user needs to combine Beehive or node-link graph JSON
 - may use `graph cluster [--resolution <n>]` or `cluster-only [vault]` when the graph exists but community/report metrics need to be recomputed
 - may use `watch [path] --once --code-only` when one repo root should be refreshed without persisting watch config
 - may run `swarmvault doctor` before opening the live workspace when the vault health is uncertain

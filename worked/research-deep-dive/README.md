@@ -2,7 +2,7 @@
 
 Use this when you want to build an evolving thesis wiki from multiple research sources, with contradiction detection across claims.
 
-This example uses the topic "RAG vs. Compiled Knowledge Bases" to demonstrate how SwarmVault synthesizes conflicting perspectives into a navigable knowledge structure.
+This example uses the topic "RAG vs. Compiled Knowledge Bases" to demonstrate how Beehive synthesizes conflicting perspectives into a navigable knowledge structure.
 
 ## What this demonstrates
 

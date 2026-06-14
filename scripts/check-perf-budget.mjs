@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Performance regression lane for SwarmVault.
+ * Performance regression lane for Beehive.
  *
  * Measures a small set of tight operations against a deterministic in-memory
  * workload, compares each median against an absolute budget recorded in

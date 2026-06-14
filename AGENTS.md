@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-SwarmVault is a pnpm TypeScript monorepo for local-first vault ingestion, wiki/graph generation, CLI workflows, viewer UI, agent installs, and a published ClawHub skill.
+Beehive is a pnpm TypeScript monorepo for local-first vault ingestion, wiki/graph generation, CLI workflows, viewer UI, agent installs, and a published ClawHub skill.
 Runtime assumptions are Node >=24, ESM packages, Biome formatting, Vitest tests, and a build order of viewer -> engine -> CLI.
 
 ## STRUCTURE

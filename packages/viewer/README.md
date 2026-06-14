@@ -1,6 +1,6 @@
 # @swarmvaultai/viewer
 
-`@swarmvaultai/viewer` is the graph UI package for SwarmVault.
+`@swarmvaultai/viewer` is the graph UI package for Beehive.
 
 It powers `swarmvault graph serve` and renders `state/graph.json` as an interactive graph of sources, concepts, entities, agent tasks, and decisions.
 
@@ -16,7 +16,7 @@ The viewer loads graph data from `/api/graph` and renders:
 - the workflow rail for approvals, candidates, refresh state, lint findings, activity, and the Memory dashboard
 - the vault workbench for prioritized doctor recommendations, full doctor checks, copyable suggested commands, safe repair, title/tag capture mode selection, budgeted context-pack creation, and task starts
 
-Its main purpose is to support the SwarmVault runtime, but the package also exports lightweight types and helpers for custom integrations.
+Its main purpose is to support the Beehive runtime, but the package also exports lightweight types and helpers for custom integrations.
 
 ## Package Use
 

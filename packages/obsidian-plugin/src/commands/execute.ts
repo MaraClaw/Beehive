@@ -1,5 +1,5 @@
 import { Notice } from "obsidian";
-import type SwarmVaultPlugin from "../main";
+import type BeehivePlugin from "../main";
 import { CliInvocationError, CliNotFoundError } from "../types";
 import type { RunLogEntry } from "../views/RunLogView";
 import { workspaceCliEnv } from "../workspace/artifacts";
@@ -23,7 +23,7 @@ export interface ExecuteResult<T = unknown> {
 
 let runCounter = 0;
 
-export async function executeCli<T = unknown>(plugin: SwarmVaultPlugin, options: ExecuteOptions): Promise<ExecuteResult<T>> {
+export async function executeCli<T = unknown>(plugin: BeehivePlugin, options: ExecuteOptions): Promise<ExecuteResult<T>> {
   const runLog = await plugin.ensureRunLog();
   const id = `run-${++runCounter}`;
   const controller = new AbortController();
@@ -78,7 +78,7 @@ export async function executeCli<T = unknown>(plugin: SwarmVaultPlugin, options:
     const msg = options.notifyOnError
       ? options.notifyOnError(err)
       : err instanceof CliNotFoundError
-        ? "SwarmVault CLI not found. Install with `npm i -g @swarmvaultai/cli`."
+        ? "Beehive CLI not found. Install with `npm i -g @swarmvaultai/cli`."
         : err instanceof Error
           ? err.message
           : String(err);

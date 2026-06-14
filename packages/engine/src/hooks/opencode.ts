@@ -64,7 +64,7 @@ export default async function swarmvaultGraphFirst({ client }: OpencodePluginCon
   }
 
   const graphFirstNote =
-    "SwarmVault graph-first: this repo has a compiled code graph. Answer structure questions (where is X, what calls Y) with `swarmvault graph query|explain|path --json`, `swarmvault query`, or wiki/graph/report.md instead of broad grep/glob. Read source files only when editing them or when the graph lacks detail.";
+    "Beehive graph-first: this repo has a compiled code graph. Answer structure questions (where is X, what calls Y) with `swarmvault graph query|explain|path --json`, `swarmvault query`, or wiki/graph/report.md instead of broad grep/glob. Read source files only when editing them or when the graph lacks detail.";
 
   return {
     async "session.created"(input: OpencodeSessionInput) {

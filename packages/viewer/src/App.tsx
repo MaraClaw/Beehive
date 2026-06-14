@@ -728,7 +728,7 @@ export function App() {
         >
           ☰
         </button>
-        <span className="app-bar-title">SwarmVault</span>
+        <span className="app-bar-title">Beehive</span>
         <span className="app-bar-subtitle">Graph Viewer</span>
         <span className="app-bar-spacer" />
         <div className="app-bar-actions">

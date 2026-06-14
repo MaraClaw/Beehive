@@ -1,6 +1,6 @@
 # Contributing
 
-SwarmVault is early-stage. Contributions are welcome, but changes should preserve the core product direction:
+Beehive is early-stage. Contributions are welcome, but changes should preserve the core product direction:
 
 - Local-first by default
 - Markdown and graph artifacts as first-class outputs
@@ -63,4 +63,4 @@ This sync is currently manual. Documentation PRs should be opened against the `s
 
 ## Design Notes
 
-SwarmVault is not trying to be a generic chat wrapper around a file upload. The intended contribution direction is toward a compounding vault workflow where outputs become reusable artifacts.
+Beehive is not trying to be a generic chat wrapper around a file upload. The intended contribution direction is toward a compounding vault workflow where outputs become reusable artifacts.

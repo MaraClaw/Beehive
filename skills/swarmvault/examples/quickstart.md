@@ -63,7 +63,7 @@ swarmvault export ai --out ./exports/ai
 - `graph cluster` and `cluster-only` refresh graph communities and report artifacts from the existing graph without another ingest
 - `graph query` can focus traversal with relation/context/evidence/node/language filters
 - `graph tree` and `tree` write an interactive source/module/symbol HTML tree with a node inspector when the user wants file-oriented browsing
-- `graph merge` and `merge-graphs` combine SwarmVault or node-link graph JSON artifacts
+- `graph merge` and `merge-graphs` combine Beehive or node-link graph JSON artifacts
 - `wiki/graph/share-card.md`, `wiki/graph/share-card.svg`, and `wiki/graph/share-kit/` exist after compile; `graph share --post` prints copyable text, `graph share --svg [path]` writes the visual card, and `graph share --bundle [dir]` writes the portable share kit
 - `graph export --report` writes a shareable HTML report when the user wants a lighter artifact than the full workspace; `graph export --neo4j` writes a Cypher import file for Neo4j workflows
 - `wiki/outputs/source-briefs/` contains a source brief

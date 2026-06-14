@@ -1,8 +1,8 @@
-# SwarmVault Stability Contract
+# Beehive Stability Contract
 
-This document is the public-API contract for SwarmVault. Every surface in the **Stable** tables is covered by the semantic-versioning promise: breaking changes require a major version bump (e.g. `1.x.y` → `2.0.0`). **Experimental** surfaces may change in any minor release. **Internal** surfaces are not part of the public API and may change in any release.
+This document is the public-API contract for Beehive. Every surface in the **Stable** tables is covered by the semantic-versioning promise: breaking changes require a major version bump (e.g. `1.x.y` → `2.0.0`). **Experimental** surfaces may change in any minor release. **Internal** surfaces are not part of the public API and may change in any release.
 
-SwarmVault follows [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html). Once `1.0.0` is cut:
+Beehive follows [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html). Once `1.0.0` is cut:
 
 - `MAJOR` — breaking changes to anything listed as Stable below.
 - `MINOR` — additions to the public surface (new CLI subcommands, new config keys, new MCP tools, new frontmatter fields). Existing stable surfaces keep working unchanged.

@@ -1,7 +1,7 @@
 {
   "name": "@swarmvaultai/cli",
   "version": "3.21.0",
-  "description": "Global CLI for SwarmVault.",
+  "description": "Global CLI for Beehive.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

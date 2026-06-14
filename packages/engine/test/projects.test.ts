@@ -95,7 +95,7 @@ describe("project-aware vault organization", () => {
     const alphaMarker = "ALPHA_RULE_MARKER";
     await fs.writeFile(
       path.join(rootDir, "swarmvault.schema.md"),
-      ["# SwarmVault Schema", "", "## Grounding Rules", "", `- Always include ${rootMarker}.`, ""].join("\n"),
+      ["# Beehive Schema", "", "## Grounding Rules", "", `- Always include ${rootMarker}.`, ""].join("\n"),
       "utf8"
     );
     await fs.writeFile(

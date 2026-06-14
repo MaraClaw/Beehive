@@ -85,7 +85,7 @@ const publishArgs = [
   "--slug",
   "swarmvault",
   "--name",
-  "SwarmVault",
+  "Beehive",
   "--version",
   version,
   "--changelog",

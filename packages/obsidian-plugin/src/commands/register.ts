@@ -1,9 +1,9 @@
-import type SwarmVaultPlugin from "../main";
+import type BeehivePlugin from "../main";
 import { runAdd, runCompile, runIngest, runInit, runLint } from "./core";
 import { runWatchOnce, showWatchStatus, startServe, startWatch, stopServe, stopWatch } from "./processes";
 import { runAsk, runQueryFromNote } from "./query";
 
-export function registerCommands(plugin: SwarmVaultPlugin): void {
+export function registerCommands(plugin: BeehivePlugin): void {
   plugin.addCommand({
     id: "swarmvault-init",
     name: "Init workspace",

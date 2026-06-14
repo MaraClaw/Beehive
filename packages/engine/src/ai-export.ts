@@ -84,7 +84,7 @@ function renderLlmsIndex(input: { generatedAt: string; vaultName: string; graph:
     .join("\n");
 
   return [
-    "# SwarmVault AI Index",
+    "# Beehive AI Index",
     "",
     `Generated: ${input.generatedAt}`,
     `Vault: ${input.vaultName}`,
@@ -132,7 +132,7 @@ function renderAiReadme(input: { generatedAt: string; vaultName: string; truncat
     `Generated: ${input.generatedAt}`,
     `Vault: ${input.vaultName}`,
     "",
-    "This folder is a portable, static export of the compiled SwarmVault wiki for agents, crawlers, and documentation systems.",
+    "This folder is a portable, static export of the compiled Beehive wiki for agents, crawlers, and documentation systems.",
     "",
     "## Files",
     "",
@@ -160,7 +160,7 @@ function renderFullText(input: { generatedAt: string; vaultName: string; pages: 
   truncated: boolean;
 } {
   const chunks = [
-    "# SwarmVault Full Wiki Export",
+    "# Beehive Full Wiki Export",
     "",
     `Generated: ${input.generatedAt}`,
     `Vault: ${input.vaultName}`,
@@ -212,7 +212,7 @@ function buildJsonLd(input: { generatedAt: string; vaultName: string; graph: Gra
       name: input.vaultName,
       dateModified: input.graph.generatedAt,
       datePublished: input.generatedAt,
-      additionalType: "SwarmVaultKnowledgeGraph"
+      additionalType: "BeehiveKnowledgeGraph"
     },
     ...input.graph.sources.map((source) => ({
       "@id": `swarmvault:source:${encodeURIComponent(source.sourceId)}`,

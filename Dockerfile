@@ -1,6 +1,6 @@
-# SwarmVault MCP server
+# Beehive MCP server
 #
-# Builds the SwarmVault CLI from the workspace and exposes the MCP server over
+# Builds the Beehive CLI from the workspace and exposes the MCP server over
 # stdio (the same transport that Claude Code, Codex, OpenCode, and other MCP
 # clients use). Used by the Glama MCP registry to verify that the server starts
 # and responds to MCP introspection.

@@ -155,7 +155,7 @@ describe("graph share card", () => {
     const artifact = buildGraphShareArtifact({ graph: graph(), report: report(), vaultName: "demo-vault" });
     const markdown = renderGraphShareMarkdown(artifact);
 
-    expect(markdown).toContain("# SwarmVault Share Card");
+    expect(markdown).toContain("# Beehive Share Card");
     expect(markdown).toContain("## Share Post");
     expect(markdown).toContain("swarmvault graph share --post");
   });
@@ -170,7 +170,7 @@ describe("graph share card", () => {
     const svg = renderGraphShareSvg(artifact);
 
     expect(svg).toContain('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"');
-    expect(svg).toContain("<title>SwarmVault share card for demo-vault</title>");
+    expect(svg).toContain("<title>Beehive share card for demo-vault</title>");
     expect(svg).toContain("Sources");
     expect(svg).toContain("Graph nodes");
     expect(svg).toContain("Knowledge &lt;script&gt;alert(1)&lt;/script&gt;");
@@ -187,9 +187,9 @@ describe("graph share card", () => {
     const html = renderGraphSharePreviewHtml(artifact);
 
     expect(html).toContain("<!doctype html>");
-    expect(html).toContain("<title>SwarmVault Share Kit - demo-vault</title>");
+    expect(html).toContain("<title>Beehive Share Kit - demo-vault</title>");
     expect(html).toContain('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"');
-    expect(html).toContain("I scanned demo-vault with SwarmVault");
+    expect(html).toContain("I scanned demo-vault with Beehive");
     expect(html).toContain("1 sources -&gt; 2 wiki pages");
     expect(html).toContain("Top hubs: Knowledge &lt;script&gt;alert(1)&lt;/script&gt;");
     expect(html).toContain("npm install -g @swarmvaultai/cli && swarmvault quickstart ./your-repo");
@@ -208,7 +208,7 @@ describe("graph share card", () => {
       "share-post.txt",
       "share-preview.html"
     ]);
-    expect(files.find((file) => file.relativePath === "share-card.md")?.content).toContain("# SwarmVault Share Card");
+    expect(files.find((file) => file.relativePath === "share-card.md")?.content).toContain("# Beehive Share Card");
     expect(files.find((file) => file.relativePath === "share-post.txt")?.content).toBe(`${artifact.shortPost}\n`);
     expect(files.find((file) => file.relativePath === "share-card.svg")?.content).toContain('width="1200" height="630"');
     expect(files.find((file) => file.relativePath === "share-preview.html")?.content).toContain("<!doctype html>");

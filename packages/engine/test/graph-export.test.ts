@@ -413,7 +413,7 @@ describe("obsidian vault export", () => {
 
     expect(result.format).toBe("callflow");
     const html = await fs.readFile(outputPath, "utf8");
-    expect(html).toContain("SwarmVault Callflow");
+    expect(html).toContain("Beehive Callflow");
     expect(html).toContain("Alpha Source");
     expect(html).toContain("Authentication");
     expect(html).toContain("mentions");

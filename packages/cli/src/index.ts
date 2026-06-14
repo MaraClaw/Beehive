@@ -138,7 +138,7 @@ let workspaceIdWasSetForCommand = false;
 
 program
   .name("swarmvault")
-  .description("SwarmVault is a local-first knowledge compiler with graph outputs and optional provider-backed workflows.")
+  .description("Beehive is a local-first knowledge compiler with graph outputs and optional provider-backed workflows.")
   .version(CLI_VERSION)
   .enablePositionalOptions()
   .option("--workspace-id <id>", "Workspace id for generated artifacts and behavior commands")
@@ -436,7 +436,7 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
           id: "workspace",
           label: "Workspace",
           status: "error",
-          summary: "No SwarmVault workspace files were found in this directory.",
+          summary: "No Beehive workspace files were found in this directory.",
           command: "swarmvault quickstart ./your-repo"
         }
       ],
@@ -472,7 +472,7 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
           id: "config",
           label: "Config",
           status: "error",
-          summary: "SwarmVault workspace files exist, but the config could not be loaded.",
+          summary: "Beehive workspace files exist, but the config could not be loaded.",
           detail: error instanceof Error ? error.message : String(error),
           command: "swarmvault doctor"
         }
@@ -597,11 +597,11 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
 
 function printNextCommandReport(report: NextCommandReport): void {
   if (report.status === "uninitialized") {
-    log(`SwarmVault is not initialized in ${report.rootDir}.`);
+    log(`Beehive is not initialized in ${report.rootDir}.`);
     log("");
     log("Start here:");
   } else {
-    log(`SwarmVault workspace: ${report.rootDir}`);
+    log(`Beehive workspace: ${report.rootDir}`);
     log(`Config: ${report.paths.configPath}`);
     log(`Schema: ${report.paths.schemaPath}`);
     log(`Raw sources: ${report.paths.rawDir}`);
@@ -1173,7 +1173,7 @@ program
 
 program
   .command("init")
-  .description("Initialize a SwarmVault workspace in the current directory.")
+  .description("Initialize a Beehive workspace in the current directory.")
   .option("--obsidian", "Generate a minimal .obsidian workspace alongside the vault", false)
   .option(
     "--profile <profile>",
@@ -1202,14 +1202,14 @@ program
         installAgentRules: options.installAgentRules ?? false
       });
     } else {
-      log(options.lite ? "Initialized SwarmVault lite workspace." : "Initialized SwarmVault workspace.");
+      log(options.lite ? "Initialized Beehive lite workspace." : "Initialized Beehive workspace.");
       log("Next: swarmvault next");
     }
   });
 
 program
   .command("ingest")
-  .description("Ingest a local file path, directory path, or URL into the raw SwarmVault workspace.")
+  .description("Ingest a local file path, directory path, or URL into the raw Beehive workspace.")
   .argument("<input>", "Local file path, directory path, or URL")
   .option("--review", "Stage a source review artifact after ingest and compile", false)
   .option("--guide", "Stage a guided source integration bundle after ingest and compile (default: from config)")
@@ -1726,8 +1726,8 @@ program
 
 program
   .command("query")
-  .description("Query the compiled SwarmVault wiki.")
-  .argument("<question>", "Question to ask SwarmVault")
+  .description("Query the compiled Beehive wiki.")
+  .argument("<question>", "Question to ask Beehive")
   .option("--no-save", "Do not persist the answer to wiki/outputs")
   .option("--commit", "Auto-commit wiki changes after query")
   .option("--gap-fill", "Pull external web-search evidence when the local wiki has gaps (requires webSearch.tasks.queryProvider).")
@@ -2277,7 +2277,7 @@ program
     }
   });
 
-const exportCommand = program.command("export").description("Export portable SwarmVault artifacts.");
+const exportCommand = program.command("export").description("Export portable Beehive artifacts.");
 
 exportCommand
   .command("ai")
@@ -2358,7 +2358,7 @@ graph
 
 graph
   .command("merge")
-  .description("Merge SwarmVault or node-link JSON graph files into one namespaced graph artifact.")
+  .description("Merge Beehive or node-link JSON graph files into one namespaced graph artifact.")
   .argument("<graphs...>", "Graph JSON files to merge")
   .requiredOption("--out <path>", "Output graph JSON path")
   .option("--label <name>", "Label/prefix to use when merging one graph")
@@ -3383,7 +3383,7 @@ hook
 
 hook
   .command("uninstall")
-  .description("Remove the SwarmVault-managed git hook blocks from the nearest git repository or an explicit repo path.")
+  .description("Remove the Beehive-managed git hook blocks from the nearest git repository or an explicit repo path.")
   .argument("[repo]", "Optional git repo path when the tracked repo lives below the vault root")
   .action(async (repo: string | undefined) => {
     const status = await uninstallGitHooks(process.cwd(), { repoPath: repo });
@@ -3391,12 +3391,12 @@ hook
       emitJson(status);
       return;
     }
-    log(`Removed SwarmVault hook blocks from ${status.repoRoot ?? "the current workspace"}`);
+    log(`Removed Beehive hook blocks from ${status.repoRoot ?? "the current workspace"}`);
   });
 
 hook
   .command("status")
-  .description("Show whether SwarmVault-managed git hooks are installed.")
+  .description("Show whether Beehive-managed git hooks are installed.")
   .argument("[repo]", "Optional git repo path when the tracked repo lives below the vault root")
   .action(async (repo: string | undefined) => {
     const status = await getGitHookStatus(process.cwd(), { repoPath: repo });
@@ -3497,7 +3497,7 @@ program
 
 program
   .command("mcp")
-  .description("Run SwarmVault as a local MCP server over stdio.")
+  .description("Run Beehive as a local MCP server over stdio.")
   .action(async () => {
     if (isJson()) {
       process.stderr.write(`${JSON.stringify({ status: "running", transport: "stdio" })}\n`);
@@ -3511,11 +3511,11 @@ program
     });
   });
 
-const install = program.command("install").description("Install SwarmVault instructions for an agent in the current project.");
+const install = program.command("install").description("Install Beehive instructions for an agent in the current project.");
 
 install
   .command("status")
-  .description("Show whether SwarmVault instructions are installed for an agent.")
+  .description("Show whether Beehive instructions are installed for an agent.")
   .requiredOption("--agent <agent>", "Agent name")
   .option("--hook", "Include hook/plugin targets in the status check", false)
   .option("--mcp", "Include MCP config targets in the status check", false)
@@ -3543,7 +3543,7 @@ install
     "claude, codex, cursor, gemini, goose, opencode, copilot, aider, droid, pi, trae, claw, kiro, kilo, hermes, antigravity, vscode, amp, augment, adal, bob, cline, codebuddy, command-code, continue, cortex, crush, deepagents, devin, firebender, iflow, junie, kilo-code, kimi, kode, mcpjam, mistral-vibe, mux, neovate, openclaw, openhands, pochi, qoder, qwen-code, replit, roo-code, trae-cn, warp, windsurf, or zencoder"
   )
   .option("--hook", "Also install hook/plugin guidance when the target agent supports it", false)
-  .option("--mcp", "Also register the SwarmVault MCP server in the agent's project MCP config", false)
+  .option("--mcp", "Also register the Beehive MCP server in the agent's project MCP config", false)
   .option(
     "--graph-first [mode]",
     "Opt in to graph-first search enforcement for installed hooks: deny (default when the flag is passed), context, or off; persisted as hooks.graphFirst"
@@ -3598,7 +3598,7 @@ install
 
 program
   .command("demo")
-  .description("Try SwarmVault with a bundled sample vault — zero config, zero API keys.")
+  .description("Try Beehive with a bundled sample vault — zero config, zero API keys.")
   .option("--port <port>", "Port for the graph viewer")
   .option("--no-serve", "Skip launching the graph viewer after compile")
   .action(async (options: { port?: string; serve?: boolean }) => {

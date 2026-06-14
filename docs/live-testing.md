@@ -1,6 +1,6 @@
 # Live Testing
 
-SwarmVault has a separate live-testing track for the **published npm package**, not just the source checkout.
+Beehive has a separate live-testing track for the **published npm package**, not just the source checkout.
 
 The goal is to verify the real user install path for `@swarmvaultai/cli` and the core vault flows against a temporary workspace.
 
@@ -156,7 +156,7 @@ Confirm the published skill includes `README.md` plus the expected examples, ref
 - verify the installed package writes `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CONVENTIONS.md`, `.aider.conf.yml`, `.github/copilot-instructions.md`, `.trae/rules/swarmvault.md`, `.claw/skills/swarmvault/SKILL.md`, `.factory/rules/swarmvault.md`, and the expected hook/plugin artifacts
 - verify the managed git hook block invokes `swarmvault watch --repo --once --code-only`
 - when local binaries and credentials are available, run Claude Code against `CLAUDE.md` and Gemini CLI against `GEMINI.md`
-- run the Codex host-agent check only when `SWARMVAULT_RUN_CODEX_AGENT_SMOKE=1` is set, because it depends on the local Codex CLI configuration and model access rather than the installed SwarmVault artifact
+- run the Codex host-agent check only when `SWARMVAULT_RUN_CODEX_AGENT_SMOKE=1` is set, because it depends on the local Codex CLI configuration and model access rather than the installed Beehive artifact
 - run the OpenCode host-agent check only when `SWARMVAULT_RUN_OPENCODE_AGENT_SMOKE=1` is set, because it depends on an external model path and is not part of the required packaged-artifact release gate
 - run the Ollama local-embeddings check only when `SWARMVAULT_RUN_LOCAL_EMBEDDINGS_SMOKE=1` is set, because it depends on a reachable embedding-capable local model and is not part of the required packaged-artifact release gate
 - on live npm-installed runs, execute `swarmvault source add https://github.com/karpathy/micrograd` and verify the registry entry, compile artifacts, and source brief
@@ -203,7 +203,7 @@ The default Anthropic model is `claude-sonnet-4-20250514`, and you can override 
 - start a temporary local Neo4j container over Bolt
 - run `swarmvault graph push neo4j --dry-run`
 - run `swarmvault graph push neo4j`
-- verify `SwarmNode`, relationship, `GROUP_MEMBER`, and `SwarmVaultSync` records exist for the pushed `vaultId`
+- verify `SwarmNode`, relationship, `GROUP_MEMBER`, and `BeehiveSync` records exist for the pushed `vaultId`
 
 This lane is the direct-graph-sink validation path and complements the file-export checks from `graph export --cypher`.
 

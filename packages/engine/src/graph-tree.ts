@@ -181,7 +181,7 @@ function sortAndCapTree(node: GraphTreeNode, maxChildren: number): GraphTreeNode
 export function buildGraphTree(graph: GraphArtifact, options: GraphTreeOptions & { rootDir?: string } = {}): GraphTreeNode {
   const root: GraphTreeNode = {
     id: "tree:root",
-    label: options.label ?? "SwarmVault Graph Tree",
+    label: options.label ?? "Beehive Graph Tree",
     kind: "root",
     count: graph.sources.length,
     children: []

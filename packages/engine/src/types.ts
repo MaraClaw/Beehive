@@ -1932,7 +1932,7 @@ export interface WatchController {
 export interface InstallAgentOptions {
   hook?: boolean;
   scope?: "project" | "user";
-  /** Register the SwarmVault MCP server in the agent's project MCP config. */
+  /** Register the Beehive MCP server in the agent's project MCP config. */
   mcp?: boolean;
   /**
    * Persist `hooks.graphFirst` in swarmvault.config.json. Enforcement

@@ -54,7 +54,7 @@ async function readBuiltHook(hookFile: string): Promise<string> {
     return content;
   } catch (error) {
     throw new Error(
-      `SwarmVault hook bundle not found at ${hookPath}. ` +
+      `Beehive hook bundle not found at ${hookPath}. ` +
         `Run 'pnpm --filter @swarmvaultai/engine build' so the hook scripts are emitted to dist/hooks/. ` +
         `Underlying error: ${error instanceof Error ? error.message : String(error)}`
     );
@@ -276,12 +276,12 @@ const SWARMVAULT_RULE_BULLETS = [
   "- Treat `raw/` as immutable source input.",
   "- Treat `wiki/` as generated markdown owned by the agent and compiler workflow.",
   "- If `SWARMVAULT_OUT` or `SWARMVAULT_WORKSPACE_ID` is set, resolve generated artifact paths like `raw/`, `wiki/`, and `state/` under the active artifact root (`<artifact-base>/<workspace_id>` when a workspace id is active).",
-  "- Run SwarmVault behavior commands with `--workspace-id <id>` or set `SWARMVAULT_WORKSPACE_ID` so CLI, MCP, and generated artifacts use the same workspace.",
+  "- Run Beehive behavior commands with `--workspace-id <id>` or set `SWARMVAULT_WORKSPACE_ID` so CLI, MCP, and generated artifacts use the same workspace.",
   "- Read `wiki/graph/report.md` before broad file searching when it exists under the active artifact root; otherwise start with `wiki/index.md`.",
   "- For code and graph questions (where is X, what calls Y, structure, impact), prefer `swarmvault graph query`, `swarmvault graph path`, and `swarmvault graph explain` over broad grep/glob searching; read source files directly only when editing them or when the graph lacks detail.",
   "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
   "- When asked for durable research, reviews, or handoff artifacts, save the answer into `wiki/outputs/`; answer quick questions directly in chat without writing files.",
-  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks."
+  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for Beehive maintenance tasks."
 ];
 
 // Frozen pre-3.17 wording of changed bullets, kept only so legacy-file
@@ -305,12 +305,12 @@ const PRE_WORKSPACE_RULE_BULLETS = [
   PRE_GRAPH_FIRST_BULLET,
   "- Preserve frontmatter fields including `page_id`, `source_ids`, `node_ids`, `freshness`, and `source_hashes`.",
   PRE_GRAPH_FIRST_SAVE_BULLET,
-  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for SwarmVault maintenance tasks."
+  "- Prefer `swarmvault ingest`, `swarmvault compile`, `swarmvault query`, and `swarmvault lint` for Beehive maintenance tasks."
 ];
 
 function buildManagedBlock(target: keyof typeof agentFileKinds): string {
   const heading =
-    target === "aider" ? "# SwarmVault Conventions" : target === "copilot" ? "# SwarmVault Repository Instructions" : "# SwarmVault Rules";
+    target === "aider" ? "# Beehive Conventions" : target === "copilot" ? "# Beehive Repository Instructions" : "# Beehive Rules";
   const extra =
     target === "copilot"
       ? [
@@ -329,16 +329,16 @@ function buildManagedBlock(target: keyof typeof agentFileKinds): string {
 function buildSkillFrontmatter(): string {
   const frontmatter = YAML.stringify({
     name: "swarmvault",
-    description: "SwarmVault graph-first workflow. Use to read the compiled wiki and query the knowledge graph before broad file search."
+    description: "Beehive graph-first workflow. Use to read the compiled wiki and query the knowledge graph before broad file search."
   }).trimEnd();
   return ["---", frontmatter, "---"].join("\n");
 }
 
 function buildSkillBody(): string {
   return [
-    "# SwarmVault",
+    "# Beehive",
     "",
-    "SwarmVault compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json` under the active artifact root.",
+    "Beehive compiles curated sources in `raw/` into a queryable wiki in `wiki/` and a knowledge graph in `state/graph.json` under the active artifact root.",
     "",
     "## Rules",
     "",
@@ -362,51 +362,51 @@ function buildStandaloneSkillFile(): string {
 function buildKiroSteeringFile(): string {
   const frontmatter = YAML.stringify({
     inclusion: "always",
-    description: "Always-on SwarmVault rules."
+    description: "Always-on Beehive rules."
   }).trimEnd();
-  return ["---", frontmatter, "---", "", "# SwarmVault Rules", "", ...SWARMVAULT_RULE_BULLETS, ""].join("\n");
+  return ["---", frontmatter, "---", "", "# Beehive Rules", "", ...SWARMVAULT_RULE_BULLETS, ""].join("\n");
 }
 
 function buildAntigravityRulesFile(ruleBullets = SWARMVAULT_RULE_BULLETS): string {
   const frontmatter = YAML.stringify({
     alwaysApply: true,
-    description: "SwarmVault graph-first repository rules."
+    description: "Beehive graph-first repository rules."
   }).trimEnd();
   return [
     "---",
     frontmatter,
     "---",
     "",
-    "# SwarmVault Rules",
+    "# Beehive Rules",
     "",
     ...ruleBullets,
     "",
-    "> MCP navigation hint: SwarmVault exposes a local MCP server via `SWARMVAULT_WORKSPACE_ID=<id> swarmvault mcp`. Wire it into your Antigravity MCP config and include the same `workspace_id` in tool calls to query the graph without shelling out."
+    "> MCP navigation hint: Beehive exposes a local MCP server via `SWARMVAULT_WORKSPACE_ID=<id> swarmvault mcp`. Wire it into your Antigravity MCP config and include the same `workspace_id` in tool calls to query the graph without shelling out."
   ].join("\n");
 }
 
 function buildLegacyAntigravityRulesFile(ruleBullets: string[]): string {
   const frontmatter = YAML.stringify({
     alwaysApply: true,
-    description: "SwarmVault graph-first repository rules."
+    description: "Beehive graph-first repository rules."
   }).trimEnd();
   return [
     "---",
     frontmatter,
     "---",
     "",
-    "# SwarmVault Rules",
+    "# Beehive Rules",
     "",
     ...ruleBullets,
     "",
-    "> MCP navigation hint: SwarmVault exposes a local MCP server via `swarmvault mcp`. Wire it into your Antigravity MCP config to query the graph without shelling out."
+    "> MCP navigation hint: Beehive exposes a local MCP server via `swarmvault mcp`. Wire it into your Antigravity MCP config to query the graph without shelling out."
   ].join("\n");
 }
 
 function buildAntigravityWorkflowFile(): string {
   const frontmatter = YAML.stringify({
     command: "swarmvault",
-    description: "Compile, query, and lint the SwarmVault vault."
+    description: "Compile, query, and lint the Beehive vault."
   }).trimEnd();
   return [
     "---",
@@ -415,7 +415,7 @@ function buildAntigravityWorkflowFile(): string {
     "",
     "# /swarmvault",
     "",
-    "Run SwarmVault against the current directory.",
+    "Run Beehive against the current directory.",
     "",
     "## Steps",
     "",
@@ -432,7 +432,7 @@ function buildKiloCommandFile(): string {
   return [
     "# /swarmvault",
     "",
-    "Use SwarmVault's graph-first workflow in the current project.",
+    "Use Beehive's graph-first workflow in the current project.",
     "",
     "1. If no vault exists, run `swarmvault init`.",
     "2. Read `wiki/graph/report.md` under the active artifact root before broad source search when it exists.",
@@ -444,7 +444,7 @@ function buildKiloCommandFile(): string {
 
 function buildKiloPluginFile(): string {
   return [
-    "export default async function SwarmVaultPlugin({ project }) {",
+    "export default async function BeehivePlugin({ project }) {",
     "  return {",
     "    name: 'swarmvault-graph-first',",
     "    async beforeToolUse(event) {",
@@ -452,7 +452,7 @@ function buildKiloPluginFile(): string {
     "      if (!['bash', 'shell', 'terminal', 'search', 'grep', 'glob'].includes(String(toolName).toLowerCase())) return;",
     "      const root = project?.root ?? process.cwd();",
     "      return {",
-    "        message: `SwarmVault graph-first: from $" +
+    "        message: `Beehive graph-first: from $" +
       "{root}, answer structure questions with swarmvault graph query/explain/path or swarmvault query instead of broad search; wiki/graph/report.md under the active artifact root has the orientation report. Read source files only when editing them or when the graph lacks detail.`",
     "      };",
     "    }",
@@ -464,7 +464,7 @@ function buildKiloPluginFile(): string {
 
 function buildVscodeChatmodeFile(): string {
   const frontmatter = YAML.stringify({
-    description: "SwarmVault graph-first workflow for VS Code Copilot Chat.",
+    description: "Beehive graph-first workflow for VS Code Copilot Chat.",
     tools: ["codebase", "terminal"]
   }).trimEnd();
   return [
@@ -472,9 +472,9 @@ function buildVscodeChatmodeFile(): string {
     frontmatter,
     "---",
     "",
-    "# SwarmVault mode",
+    "# Beehive mode",
     "",
-    "You are working inside a SwarmVault vault. Follow these rules before other actions:",
+    "You are working inside a Beehive vault. Follow these rules before other actions:",
     "",
     "For any question about this repo's architecture, structure, components, relationships, or where/how to add or modify code, first read `wiki/graph/report.md` under the active artifact root when it exists. If `SWARMVAULT_OUT` or `SWARMVAULT_WORKSPACE_ID` is set, include those path segments when resolving the report.",
     "",
@@ -487,7 +487,7 @@ function buildVscodeChatmodeFile(): string {
 
 function buildCursorRule(): string {
   const frontmatter = YAML.stringify({
-    description: "SwarmVault graph-first repository instructions.",
+    description: "Beehive graph-first repository instructions.",
     alwaysApply: true
   }).trimEnd();
   return ["---", frontmatter, "---", "", buildManagedBlock("cursor").trimEnd(), ""].join("\n");
@@ -691,7 +691,7 @@ async function removeLegacyOwnedFile(filePath: string, ownedContents: string[], 
     await fs.rm(filePath, { force: true });
     return null;
   }
-  return `${warningLabel} already exists at ${filePath}. Left it unchanged because it no longer matches SwarmVault's managed content.`;
+  return `${warningLabel} already exists at ${filePath}. Left it unchanged because it no longer matches Beehive's managed content.`;
 }
 
 async function cleanupLegacyAntigravityFiles(rootDir: string): Promise<string[]> {
@@ -829,8 +829,8 @@ function isSwarmvaultClaudeEntry(entry: ClaudeHookEntry): boolean {
 }
 
 /**
- * Merge the SwarmVault hook entries into a Claude settings file. Existing
- * SwarmVault-owned entries whose matcher or command no longer matches the
+ * Merge the Beehive hook entries into a Claude settings file. Existing
+ * Beehive-owned entries whose matcher or command no longer matches the
  * current layout are migrated (removed and re-added); user-owned entries are
  * never touched.
  */
@@ -926,7 +926,7 @@ async function ensureHostProjectHygiene(rootDir: string): Promise<{ notices: str
     if (!existing.includes(GITIGNORE_HYGIENE_MARKER)) {
       const block = `\n${GITIGNORE_HYGIENE_MARKER}\n${ARTIFACT_DIRS.map((dir) => `${dir}/`).join("\n")}\nswarmvault.config.json\nswarmvault.schema.md\n`;
       await fs.writeFile(gitignorePath, `${existing.replace(/\n*$/, "\n")}${block}`, "utf8");
-      notices.push("Added SwarmVault artifact directories to .gitignore.");
+      notices.push("Added Beehive artifact directories to .gitignore.");
     }
   }
 
@@ -952,7 +952,7 @@ async function ensureHostProjectHygiene(rootDir: string): Promise<{ notices: str
       if (missing.length > 0) {
         parsed.exclude = [...exclude, ...missing];
         await fs.writeFile(tsconfigPath, `${JSON.stringify(parsed, null, 2)}\n`, "utf8");
-        notices.push(`Excluded SwarmVault artifact directories from tsconfig.json (${missing.join(", ")}).`);
+        notices.push(`Excluded Beehive artifact directories from tsconfig.json (${missing.join(", ")}).`);
       }
     } else {
       let parsesAsJsonc = false;
@@ -979,7 +979,7 @@ async function ensureHostProjectHygiene(rootDir: string): Promise<{ notices: str
         !ARTIFACT_DIRS.some((dir) => content.includes(`"${dir}/**"`) || content.includes(`'${dir}/**'`) || content.includes(`"${dir}"`))
       ) {
         warnings.push(
-          `Add SwarmVault artifact directories (${ARTIFACT_DIRS.map((dir) => `${dir}/**`).join(", ")}) to the ignore list in ${candidate} so stored source copies are not linted.`
+          `Add Beehive artifact directories (${ARTIFACT_DIRS.map((dir) => `${dir}/**`).join(", ")}) to the ignore list in ${candidate} so stored source copies are not linted.`
         );
       }
       break;
@@ -1015,7 +1015,7 @@ async function persistGraphFirstMode(rootDir: string, mode: "deny" | "context" |
   }
 }
 
-/** Register the SwarmVault MCP server in the project's `.mcp.json`. */
+/** Register the Beehive MCP server in the project's `.mcp.json`. */
 async function installClaudeMcp(rootDir: string): Promise<{ path: string; warnings: string[] }> {
   const mcpConfigPath = path.join(rootDir, ".mcp.json");
   const { data: config, warnings } = await readJsonWithWarnings<McpConfig>(mcpConfigPath, {}, ".mcp.json");
