@@ -15,7 +15,7 @@ Scripts are operational release, validation, live-smoke, manifest, ClawHub skill
 | Published manifests | `check-published-manifests.mjs` | No `workspace:` runtime deps, exact published versions. |
 | README parity | `check-readme-parity.mjs` | User-facing docs consistency. |
 | ClawHub skill | `check-clawhub-skill.mjs`, `publish-clawhub-skill.mjs` | Skill file set, metadata, publish/inspect. |
-| Live smoke | `live-smoke.mjs`, `live-oss-corpus.mjs`, `cli-surface-smoke.mjs` | Installed CLI, provider lanes, pinned repos, Commander surface. |
+| Live smoke | `live-smoke.mjs`, `live-oss-corpus.mjs`, `cli-surface-smoke.mjs` | Installed CLI, provider lanes, pinned repos, Commander surface and JSON behavior checks. |
 | Assets/perf | `copy-engine-grammar-assets.mjs`, `sync-docs-screenshots.mjs`, `check-perf-budget.mjs`, `perf-budgets.json` | Build artifacts and docs helpers. |
 
 ## CONVENTIONS
@@ -26,6 +26,8 @@ Scripts are operational release, validation, live-smoke, manifest, ClawHub skill
 - `--skip-build` in preflight also skips direct CLI surface smoke.
 - Smoke/corpus artifacts are deleted only on success unless keep flags/env vars are set.
 - Live smoke loads env from `/Volumes/Data/oss/oc/.env.local` and repo `.env.local`.
+- `SURFACE_MANIFEST` must classify every Commander path; behavior commands should get JSON checks or an explicit help/external/long-running classification.
+- Surface smoke covers dry-run/default-safe paths for consolidation, migration, provider setup, candidate scoring, graph callers, and per-file graph update.
 
 ## ANTI-PATTERNS
 
@@ -35,6 +37,7 @@ Scripts are operational release, validation, live-smoke, manifest, ClawHub skill
 - Do not assume viewer tarball install is directly smoked; viewer coverage is via root build/version and engine bundling.
 - Do not rely on corpus branch heads; corpus uses pinned 40-char SHAs.
 - Do not delete failed smoke/corpus artifacts before diagnosis.
+- Do not add a CLI command or alias without updating surface smoke, README parity expectations, and stability docs when public.
 
 ## COMMANDS
 

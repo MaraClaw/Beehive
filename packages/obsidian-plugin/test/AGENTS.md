@@ -10,6 +10,7 @@ Tests run in Vitest Node with a hand-written Obsidian API mock and focused cover
 fixtures/obsidian.ts    # aliased external obsidian module mock
 cli/run.test.ts         # fake child process and CLI output parsing
 workspace/resolve-root.test.ts # marker walk-up and maxDepth behavior
+workspace/artifacts.test.ts    # workspace id/env and BEEHIVE_OUT artifact roots
 citations/rewrite.test.ts      # page_id token to wikilink behavior
 ```
 
@@ -20,7 +21,8 @@ citations/rewrite.test.ts      # page_id token to wikilink behavior
 | Test config | `../vitest.config.ts` | Node environment, alias `obsidian` to `test/fixtures/obsidian.ts`. |
 | Obsidian mock | `fixtures/obsidian.ts` | Minimal imported API surface only. |
 | CLI process tests | `cli/run.test.ts` | Fake child process, stream chunking, last-line JSON, ENOENT, abort. |
-| Workspace tests | `workspace/resolve-root.test.ts` | `beehive.schema.md` marker, override, maxDepth. |
+| Workspace tests | `workspace/resolve-root.test.ts` | Config/schema marker priority, override, maxDepth. |
+| Artifact root tests | `workspace/artifacts.test.ts` | Workspace id validation, CLI env, relative/absolute `BEEHIVE_OUT`. |
 | Citation tests | `citations/rewrite.test.ts` | Wikilink aliases and IDs with colons/slashes/dots. |
 
 ## CONVENTIONS
@@ -28,7 +30,8 @@ citations/rewrite.test.ts      # page_id token to wikilink behavior
 - Grow the Obsidian mock only when code-under-test imports more API surface.
 - CLI runner tests intentionally split stdout/stderr mid-line to verify raw stream preservation and JSON parsing.
 - Last-line JSON parsing is a contract; preserve raw streams for diagnostics.
-- Workspace root discovery is marker-based on `beehive.schema.md`.
+- Workspace root discovery prefers `beehive.config.json` and falls back to `beehive.schema.md` during walk-up.
+- Workspace artifact tests must restore `BEEHIVE_OUT` after each case.
 - Citation rewriting preserves aliases and supports page IDs that are not simple slugs.
 
 ## ANTI-PATTERNS

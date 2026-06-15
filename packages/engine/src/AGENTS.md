@@ -2,17 +2,18 @@
 
 ## OVERVIEW
 
-This directory is the engine's contract-heavy core: vault orchestration, ingest/extraction, graph/query/export, generated wiki pages, MCP, watch, agents, memory, and context packs.
+This directory is the engine's contract-heavy core: vault orchestration, ingest/extraction, graph/query/export, generated wiki pages, MCP, watch, agents, memory, context packs, consolidation, and migration.
 
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
 | --- | --- | --- |
-| Compile orchestration | `vault.ts` | Largest hotspot; coordinates manifests, pages, graph, approvals, candidates. |
+| Compile orchestration | `vault.ts` | Largest hotspot; coordinates manifests, pages, graph, approvals, candidates, freshness, and consolidation hooks. |
 | Shared contracts | `types.ts`, `config.ts` | Public types, zod enums, defaults, profiles, artifact roots. |
 | Ingest pipeline | `ingest.ts`, `extraction.ts`, `sources.ts` | Files, dirs, URLs, media, inbox, managed source sync. |
 | Code intelligence | `code-analysis.ts`, `code-tree-sitter.ts` | TS/compiler extraction plus multi-language tree-sitter parsing. |
-| Graph behavior | `graph-tools.ts`, `graph-query-core.ts`, `graph-export.ts`, `graph-enrichment.ts`, `markdown.ts` | Query, validation, export, hyperedges, wiki rendering. |
+| Graph behavior | `graph-tools.ts`, `graph-query-core.ts`, `graph-callers.ts`, `graph-export.ts`, `graph-enrichment.ts`, `markdown.ts` | Query, caller evidence, validation, export, hyperedges, wiki rendering. |
+| Freshness and migrations | `freshness.ts`, `consolidate.ts`, `migrate.ts`, `pages.ts` | Decay metadata, tier rollups, supersession, vault version upgrades. |
 | Integration boundaries | `agents.ts`, `mcp.ts`, `watch.ts`, `viewer.ts`, `schedule.ts` | External agents, MCP tools, refresh loops, viewer server. |
 | Retrieval/search | `search.ts`, `retrieval.ts`, `embeddings.ts`, `context-packs.ts` | Node sqlite search, retrieval scoring, token-bounded packs. |
 
@@ -26,6 +27,10 @@ This directory is the engine's contract-heavy core: vault orchestration, ingest/
 - Optional media/code tools must degrade with warnings or diagnostics: vision providers, whisper, ffmpeg, yt-dlp, tree-sitter grammars.
 - Swift tree-sitter is gated by `BEEHIVE_ENABLE_SWIFT_TREE_SITTER`.
 - `watch.ts` shrink guard aborts graph drops over 25% unless `force` or `BEEHIVE_FORCE_UPDATE=1/true` is set.
+- `syncTrackedFiles` powers `beehive graph update --file`; keep per-file refresh scoped to tracked roots and generated-artifact excludes.
+- Graph caller lookup must follow graph `calls` edges first, then scan only caller source files for capped file:line evidence.
+- Consolidation never deletes lower-tier insight pages; use `supersededBy`, `tier`, and `consolidatedFromPageIds` for traceability.
+- CLI migrations are dry-run by default; apply through `runMigration` and record vault version state under the resolved `state/` root.
 
 ## ANTI-PATTERNS
 
@@ -34,6 +39,7 @@ This directory is the engine's contract-heavy core: vault orchestration, ingest/
 - Do not let code-only refresh silently erase semantic graph data; it marks non-code pending semantic refresh.
 - Do not return unbounded MCP payloads; handlers need safe wrappers, zod validation, and bounded text.
 - Do not make `lint --web` run without deep lint expectations.
+- Do not widen graph callers, per-file graph refresh, or context-pack selection into broad repo scans when graph/manifests already bound the candidate set.
 
 ## LOCAL TESTS
 

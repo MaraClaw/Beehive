@@ -30,7 +30,7 @@ vitest.config.ts # jsdom test config
 
 ## CONVENTIONS
 
-- React 19, Vite 7, Cytoscape, `react-markdown`, GFM, slug, and highlight plugins are package-level assumptions.
+- React 19, Vite 8, Cytoscape, `react-markdown`, GFM, slug, and highlight plugins are package-level assumptions.
 - Styling is plain global CSS in `src/styles.css`; there is no Tailwind or shadcn convention here.
 - Viewer payload types in `src/lib.ts` must stay aligned with engine `viewer.ts` and graph/wiki outputs.
 - Mutating API helpers throw in embedded standalone-export mode; keep read-only embedded behavior intact.
