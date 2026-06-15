@@ -1115,7 +1115,7 @@ describe("beehive workflow", () => {
     };
     const beehiveEntries = settings.hooks?.PreToolUse?.filter((entry) => JSON.stringify(entry).includes("beehive-graph-first.js")) ?? [];
     expect(beehiveEntries.map((entry) => entry.matcher).sort()).toEqual(["Bash", "Grep|Glob"]);
-    expect(JSON.stringify(settings)).not.toContain("beehive-graph-first.js");
+    expect(beehiveEntries).toHaveLength(2);
     expect(settings.hooks?.PreToolUse?.some((entry) => JSON.stringify(entry).includes("echo user-owned"))).toBe(true);
   });
 
