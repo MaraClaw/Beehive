@@ -7,7 +7,7 @@ import { compileVault, ingestDirectory, initVault, listGraphCallers } from "../s
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-graph-callers-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-graph-callers-"));
   tempDirs.push(dir);
   return dir;
 }

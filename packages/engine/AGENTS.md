@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-`@swarmvaultai/engine` is the public runtime library behind ingest, compile, graph/wiki output, search, watch, providers, MCP, and agent installation.
+`@beehive/engine` is the public runtime library behind ingest, compile, graph/wiki output, search, watch, providers, MCP, and agent installation.
 
 ## STRUCTURE
 
@@ -37,15 +37,15 @@ tsup.hooks.config.ts # standalone hook build
 
 - Do not expose internal modules through package exports to solve an app-local import.
 - Do not duplicate provider, graph, or ingest behavior in CLI or viewer packages.
-- Do not assume generated artifacts live under the repo root when `SWARMVAULT_OUT` is set.
-- Do not weaken SSRF/private URL protections; tests enable local/private URLs with `SWARMVAULT_ALLOW_PRIVATE_URLS=1`.
+- Do not assume generated artifacts live under the repo root when `BEEHIVE_OUT` is set.
+- Do not weaken SSRF/private URL protections; tests enable local/private URLs with `BEEHIVE_ALLOW_PRIVATE_URLS=1`.
 
 ## COMMANDS
 
 ```bash
-pnpm --filter @swarmvaultai/engine build
-pnpm --filter @swarmvaultai/engine test
-pnpm --filter @swarmvaultai/engine typecheck
+pnpm --filter @beehive/engine build
+pnpm --filter @beehive/engine test
+pnpm --filter @beehive/engine typecheck
 ```
 
 ## NOTES

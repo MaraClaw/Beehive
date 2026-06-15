@@ -46,7 +46,7 @@ import {
   type ViewerSearchResult
 } from "./lib";
 
-const RECENT_SEARCH_KEY = "swarmvault.viewer.recentSearches";
+const RECENT_SEARCH_KEY = "beehive.viewer.recentSearches";
 const MAX_RECENT_SEARCHES = 6;
 
 function uniqueStrings(values: string[]): string[] {
@@ -728,7 +728,7 @@ export function App() {
         >
           ☰
         </button>
-        <span className="app-bar-title">SwarmVault</span>
+        <span className="app-bar-title">Beehive</span>
         <span className="app-bar-subtitle">Graph Viewer</span>
         <span className="app-bar-spacer" />
         <div className="app-bar-actions">

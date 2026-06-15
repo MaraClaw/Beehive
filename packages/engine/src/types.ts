@@ -454,7 +454,7 @@ export interface VaultConfig {
 }
 
 /**
- * Explicit user control over which repository roots `swarmvault watch --repo` tracks.
+ * Explicit user control over which repository roots `beehive watch --repo` tracks.
  * Absent config preserves the existing auto-discovery behavior over managed sources and manifests.
  */
 export interface WatchConfig {
@@ -689,7 +689,7 @@ export interface IngestOptions {
   exclude?: string[];
   maxFiles?: number;
   gitignore?: boolean;
-  swarmvaultignore?: boolean;
+  beehiveignore?: boolean;
   video?: boolean;
   extractClasses?: SourceClass[];
   resume?: string;
@@ -1829,7 +1829,7 @@ export interface WatchOptions {
   /**
    * Explicit file fast path: refresh only these files (code-only) instead of
    * walking every tracked repo root. Used by agent post-edit hooks and
-   * `swarmvault graph update --file <path>`.
+   * `beehive graph update --file <path>`.
    */
   files?: string[];
 }
@@ -1932,10 +1932,10 @@ export interface WatchController {
 export interface InstallAgentOptions {
   hook?: boolean;
   scope?: "project" | "user";
-  /** Register the SwarmVault MCP server in the agent's project MCP config. */
+  /** Register the Beehive MCP server in the agent's project MCP config. */
   mcp?: boolean;
   /**
-   * Persist `hooks.graphFirst` in swarmvault.config.json. Enforcement
+   * Persist `hooks.graphFirst` in beehive.config.json. Enforcement
    * ("deny") is opt-in at install time; the hook default without config is
    * advisory "context".
    */

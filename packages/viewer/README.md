@@ -1,8 +1,8 @@
-# @swarmvaultai/viewer
+# @beehive/viewer
 
-`@swarmvaultai/viewer` is the graph UI package for SwarmVault.
+`@beehive/viewer` is the graph UI package for Beehive.
 
-It powers `swarmvault graph serve` and renders `state/graph.json` as an interactive graph of sources, concepts, entities, agent tasks, and decisions.
+It powers `beehive graph serve` and renders `state/graph.json` as an interactive graph of sources, concepts, entities, agent tasks, and decisions.
 
 ## What It Does
 
@@ -16,12 +16,12 @@ The viewer loads graph data from `/api/graph` and renders:
 - the workflow rail for approvals, candidates, refresh state, lint findings, activity, and the Memory dashboard
 - the vault workbench for prioritized doctor recommendations, full doctor checks, copyable suggested commands, safe repair, title/tag capture mode selection, budgeted context-pack creation, and task starts
 
-Its main purpose is to support the SwarmVault runtime, but the package also exports lightweight types and helpers for custom integrations.
+Its main purpose is to support the Beehive runtime, but the package also exports lightweight types and helpers for custom integrations.
 
 ## Package Use
 
 ```ts
-import { fetchGraphArtifact } from "@swarmvaultai/viewer";
+import { fetchGraphArtifact } from "@beehive/viewer";
 
 const graph = await fetchGraphArtifact("/api/graph");
 console.log(graph.nodes.length);
@@ -29,7 +29,7 @@ console.log(graph.nodes.length);
 
 ## Notes
 
-- End users do not need to install this package separately to use `swarmvault graph serve`
+- End users do not need to install this package separately to use `beehive graph serve`
 - The CLI and engine bundle the built viewer assets for the normal install path
 
 ## Development
@@ -42,6 +42,6 @@ pnpm test
 
 ## Links
 
-- Website: https://www.swarmvault.ai
-- Docs: https://www.swarmvault.ai/docs
-- GitHub: https://github.com/swarmclawai/swarmvault
+- Website: <https://www.beehive.ai>
+- Docs: <https://www.beehive.ai/docs>
+- GitHub: <https://github.com/MaraClaw/Beehive>

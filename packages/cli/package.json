@@ -1,7 +1,7 @@
 {
-  "name": "@swarmvaultai/cli",
-  "version": "3.20.0",
-  "description": "Global CLI for SwarmVault.",
+  "name": "@beehive/cli",
+  "version": "3.21.0",
+  "description": "Global CLI for Beehive.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,14 +10,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swarmclawai/swarmvault.git"
+    "url": "git+https://github.com/beehive/beehive.git"
   },
-  "homepage": "https://www.swarmvault.ai",
+  "homepage": "https://www.beehive.ai",
   "bugs": {
-    "url": "https://github.com/swarmclawai/swarmvault/issues"
+    "url": "https://github.com/beehive/beehive/issues"
   },
   "keywords": [
-    "swarmvault",
+    "beehive",
     "llm",
     "knowledge-base",
     "markdown",
@@ -28,7 +28,7 @@
   ],
   "license": "MIT",
   "bin": {
-    "swarmvault": "dist/index.js",
+    "beehive": "dist/index.js",
     "vault": "dist/index.js"
   },
   "publishConfig": {
@@ -44,12 +44,12 @@
     "prepublishOnly": "node ../../scripts/check-release-sync.mjs && node ../../scripts/check-published-manifests.mjs"
   },
   "dependencies": {
-    "@swarmvaultai/engine": "3.20.0",
-    "commander": "^14.0.1"
+    "@beehive/engine": "3.21.0",
+    "commander": "^15.0.0"
   },
   "devDependencies": {
-    "@types/node": "^24.6.0",
-    "tsup": "^8.5.0",
-    "vitest": "^3.2.4"
+    "@types/node": "^25.9.3",
+    "tsup": "^8.5.1",
+    "vitest": "^4.1.8"
   }
 }

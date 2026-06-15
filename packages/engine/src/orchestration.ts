@@ -223,7 +223,7 @@ export async function runConfiguredRoles(
     selected.map(
       (entry) => () =>
         runRole(rootDir, entry.role, entry.config, {
-          system: `You are the ${entry.role} role in SwarmVault orchestration. Return JSON only.`,
+          system: `You are the ${entry.role} role in Beehive orchestration. Return JSON only.`,
           prompt: [`Title: ${input.title}`, "", input.instructions, "", input.context].join("\n")
         })
     ),

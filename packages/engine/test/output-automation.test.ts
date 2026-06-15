@@ -18,7 +18,7 @@ import {
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-output-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-output-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -67,7 +67,7 @@ describe("output artifacts and automation", () => {
     await ingestInput(rootDir, "schedule.md");
     await compileVault(rootDir);
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       schedules?: Record<string, unknown>;
     };
@@ -136,7 +136,7 @@ describe("output artifacts and automation", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -203,7 +203,7 @@ describe("output artifacts and automation", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       orchestration?: unknown;

@@ -1,34 +1,34 @@
 import { Notice } from "obsidian";
 import type { ManagedProcessHandle } from "../cli/managed-processes";
-import type SwarmVaultPlugin from "../main";
+import type BeehivePlugin from "../main";
 import { CliInvocationError, CliNotFoundError } from "../types";
 import { workspaceCliEnv } from "../workspace/artifacts";
 
-export async function startWatch(plugin: SwarmVaultPlugin): Promise<void> {
+export async function startWatch(plugin: BeehivePlugin): Promise<void> {
   await spawnManaged(plugin, {
     kind: "watch",
-    label: "swarmvault watch",
+    label: "beehive watch",
     args: ["watch", "--json"]
   });
 }
 
-export async function runWatchOnce(plugin: SwarmVaultPlugin): Promise<void> {
+export async function runWatchOnce(plugin: BeehivePlugin): Promise<void> {
   const { executeCli } = await import("./execute");
   await executeCli(plugin, {
     args: ["watch", "--once", "--json"],
-    commandLabel: "SwarmVault: Watch once",
+    commandLabel: "Beehive: Watch once",
     notifyOnSuccess: () => "Watch cycle complete."
   }).catch(() => undefined);
 }
 
-export async function showWatchStatus(plugin: SwarmVaultPlugin): Promise<void> {
+export async function showWatchStatus(plugin: BeehivePlugin): Promise<void> {
   const { executeCli } = await import("./execute");
   const res = await executeCli<{
     watchedRepoRoots?: unknown[];
     pendingSemanticRefresh?: unknown[];
   }>(plugin, {
     args: ["watch-status", "--json"],
-    commandLabel: "SwarmVault: Watch status"
+    commandLabel: "Beehive: Watch status"
   }).catch(() => null);
   if (!res?.json) return;
   const roots = res.json.watchedRepoRoots?.length ?? 0;
@@ -36,15 +36,15 @@ export async function showWatchStatus(plugin: SwarmVaultPlugin): Promise<void> {
   new Notice(`Watched repos: ${roots} · pending semantic refresh: ${pending}`);
 }
 
-export function stopWatch(plugin: SwarmVaultPlugin): void {
+export function stopWatch(plugin: BeehivePlugin): void {
   const stopped = plugin.managedProcesses.stopByKind("watch");
   if (stopped > 0) new Notice(`Stopped ${stopped} watch process(es).`);
 }
 
-export async function startServe(plugin: SwarmVaultPlugin): Promise<void> {
+export async function startServe(plugin: BeehivePlugin): Promise<void> {
   const url = await spawnManaged(plugin, {
     kind: "serve",
-    label: "swarmvault graph serve",
+    label: "beehive graph serve",
     args: ["graph", "serve", "--json"],
     awaitInitialJson: true
   });
@@ -53,7 +53,7 @@ export async function startServe(plugin: SwarmVaultPlugin): Promise<void> {
   }
 }
 
-export function stopServe(plugin: SwarmVaultPlugin): void {
+export function stopServe(plugin: BeehivePlugin): void {
   const stopped = plugin.managedProcesses.stopByKind("serve");
   if (stopped > 0) new Notice("Graph viewer stopped.");
 }
@@ -65,7 +65,7 @@ interface SpawnManagedOptions {
   awaitInitialJson?: boolean;
 }
 
-async function spawnManaged(plugin: SwarmVaultPlugin, opts: SpawnManagedOptions): Promise<unknown | null> {
+async function spawnManaged(plugin: BeehivePlugin, opts: SpawnManagedOptions): Promise<unknown | null> {
   const existing = plugin.managedProcesses.snapshot().find((h) => h.kind === opts.kind);
   if (existing) {
     new Notice(`${opts.label} is already running.`);
@@ -76,7 +76,7 @@ async function spawnManaged(plugin: SwarmVaultPlugin, opts: SpawnManagedOptions)
   const entryId = `managed-${handle.id}`;
   runLog.recordEntry({
     id: entryId,
-    command: "swarmvault",
+    command: "beehive",
     args: opts.args,
     startedAt: Date.now(),
     status: "running",

@@ -8,7 +8,7 @@ import { compileVault, getWebSearchAdapterForTask, ingestInput, initVault, query
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-web-gap-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-web-gap-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -52,11 +52,11 @@ type RawConfig = {
 };
 
 async function readConfig(rootDir: string): Promise<RawConfig> {
-  return JSON.parse(await fs.readFile(path.join(rootDir, "swarmvault.config.json"), "utf8")) as RawConfig;
+  return JSON.parse(await fs.readFile(path.join(rootDir, "beehive.config.json"), "utf8")) as RawConfig;
 }
 
 async function writeConfig(rootDir: string, config: RawConfig): Promise<void> {
-  await fs.writeFile(path.join(rootDir, "swarmvault.config.json"), `${JSON.stringify(config, null, 2)}\n`, "utf8");
+  await fs.writeFile(path.join(rootDir, "beehive.config.json"), `${JSON.stringify(config, null, 2)}\n`, "utf8");
 }
 
 afterEach(async () => {

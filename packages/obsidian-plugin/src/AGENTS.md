@@ -10,7 +10,7 @@ Source code handles Obsidian plugin lifecycle, commands, CLI process integration
 main.ts          # plugin entry and lifecycle
 commands/        # addCommand registrations and command implementations
 cli/             # shell-out runner, managed processes, version check, Windows shim
-workspace/       # marker-based SwarmVault workspace root resolution
+workspace/       # marker-based Beehive workspace root resolution
 citations/       # page_id token to Obsidian wikilink rewriting
 modals/          # query/input modals
 settings/        # defaults and settings tab
@@ -25,7 +25,7 @@ ui/              # status bar UI
 | Startup/shutdown | `main.ts` | Loads settings, view, status, settings tab, commands, workspace freshness, CLI verification. |
 | Command registration | `commands/register.ts` | Most commands live here; verify/open run log also appear in `main.ts`. |
 | CLI execution | `cli/run.ts`, `cli/managed-processes.ts` | Raw stream preservation, JSON parsing, abort, process cleanup. |
-| Workspace root | `workspace/resolve-root.ts` | Requires `FileSystemAdapter`; walks up for `swarmvault.schema.md`. |
+| Workspace root | `workspace/resolve-root.ts` | Requires `FileSystemAdapter`; walks up for `beehive.schema.md`. |
 | Citation rewrite | `citations/rewrite.ts` | `[[page_id:...]]` to Obsidian wikilinks with aliases. |
 | Settings | `settings/defaults.ts`, `settings/SettingsTab.ts` | CLI binary, workspace override, default query output mode, auto-compile. |
 
@@ -48,7 +48,7 @@ ui/              # status bar UI
 
 ## COMMAND INVENTORY
 
-`swarmvault-init`, `ingest`, `add`, `compile`, `lint`, `query-from-note`, `ask`, `watch-start`, `watch-stop`, `watch-once`, `watch-status`, `serve-start`, `serve-stop`, `verify-cli`, `open-run-log`.
+`beehive-init`, `ingest`, `add`, `compile`, `lint`, `query-from-note`, `ask`, `watch-start`, `watch-stop`, `watch-once`, `watch-status`, `serve-start`, `serve-stop`, `verify-cli`, `open-run-log`.
 
 ## NOTES
 

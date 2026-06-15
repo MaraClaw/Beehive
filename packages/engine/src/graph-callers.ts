@@ -88,7 +88,7 @@ export async function listGraphCallers(rootDir: string, target: string): Promise
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("No compiled graph found. Run `swarmvault compile` first.");
+    throw new Error("No compiled graph found. Run `beehive compile` first.");
   }
 
   const node = resolveCoreNode(graph, target) as GraphNode | undefined;

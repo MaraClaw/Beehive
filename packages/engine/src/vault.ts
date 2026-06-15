@@ -234,20 +234,20 @@ function createCompileProgressReporter(
 
   let completed = 0;
   let nextUpdate = Math.min(COMPILE_PROGRESS_UPDATE_INTERVAL, totalItems);
-  process.stderr.write(`[swarmvault compile] ${phase}: 0/${totalItems}\n`);
+  process.stderr.write(`[beehive compile] ${phase}: 0/${totalItems}\n`);
 
   return {
     tick: (label) => {
       completed += 1;
       if (completed >= nextUpdate || completed === totalItems) {
-        process.stderr.write(`[swarmvault compile] ${phase}: ${completed}/${totalItems}${label ? ` (${label})` : ""}\n`);
+        process.stderr.write(`[beehive compile] ${phase}: ${completed}/${totalItems}${label ? ` (${label})` : ""}\n`);
         while (completed >= nextUpdate) {
           nextUpdate += COMPILE_PROGRESS_UPDATE_INTERVAL;
         }
       }
     },
     finish: (summary) => {
-      process.stderr.write(`[swarmvault compile] ${phase}: ${totalItems}/${totalItems}${summary ? ` (${summary})` : ""}\n`);
+      process.stderr.write(`[beehive compile] ${phase}: ${totalItems}/${totalItems}${summary ? ` (${summary})` : ""}\n`);
     }
   };
 }
@@ -3459,7 +3459,7 @@ async function syncVaultArtifacts(
     page: emptyGraphPage({
       id: "index",
       path: "index.md",
-      title: "SwarmVault Index",
+      title: "Beehive Index",
       kind: "index",
       sourceIds: [],
       projectIds: [],
@@ -4042,7 +4042,7 @@ async function executeQuery(
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(
-        `gap-fill requested but no usable "${gapFillTask}" web search provider is configured. ${message} Add webSearch.providers and webSearch.tasks.${gapFillTask} to swarmvault.config.json.`
+        `gap-fill requested but no usable "${gapFillTask}" web search provider is configured. ${message} Add webSearch.providers and webSearch.tasks.${gapFillTask} to beehive.config.json.`
       );
     }
   }
@@ -4866,7 +4866,7 @@ export async function createSupersessionEdge(
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("No compiled graph found. Run `swarmvault compile` first.");
+    throw new Error("No compiled graph found. Run `beehive compile` first.");
   }
   const byIdOrPath = (target: string): GraphPage | undefined => graph.pages.find((page) => page.id === target || page.path === target);
   const oldPage = byIdOrPath(oldPageIdOrPath);
@@ -5092,11 +5092,11 @@ async function initLiteVault(rootDir: string, options: InitOptions): Promise<voi
         [
           "# Wiki Index",
           "",
-          "This lite vault is agent-maintained. Drop sources into `raw/`, edit `swarmvault.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.",
+          "This lite vault is agent-maintained. Drop sources into `raw/`, edit `beehive.schema.md` to teach the agent how the wiki should be organized, then ask your agent to read sources and update pages here.",
           "",
           "- Summaries, entity pages, and concept pages live under `wiki/`.",
           "- Append every ingest/query/lint operation to `wiki/log.md`.",
-          "- Run `swarmvault init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.",
+          "- Run `beehive init` (without `--lite`) when you want the full toolchain with graph, search, and approvals.",
           ""
         ].join("\n"),
         {
@@ -5207,8 +5207,8 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
             "",
             "Human-authored notes live here.",
             "",
-            "- SwarmVault can read these pages during compile and query.",
-            "- SwarmVault can stage insight-page updates through guided sessions, but it never applies them without review.",
+            "- Beehive can read these pages during compile and query.",
+            "- Beehive can stage insight-page updates through guided sessions, but it never applies them without review.",
             ""
           ]
       ).join("\n"),
@@ -5236,7 +5236,7 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
   );
   await writeFileIfChanged(
     path.join(paths.wikiDir, "projects", "index.md"),
-    matter.stringify(["# Projects", "", "- Run `swarmvault compile` to build project rollups.", ""].join("\n"), {
+    matter.stringify(["# Projects", "", "- Run `beehive compile` to build project rollups.", ""].join("\n"), {
       page_id: "projects:index",
       kind: "index",
       title: "Projects",
@@ -5259,7 +5259,7 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
   );
   await writeFileIfChanged(
     path.join(paths.wikiDir, "candidates", "index.md"),
-    matter.stringify(["# Candidates", "", "- Run `swarmvault compile` to stage candidate pages.", ""].join("\n"), {
+    matter.stringify(["# Candidates", "", "- Run `beehive compile` to stage candidate pages.", ""].join("\n"), {
       page_id: "candidates:index",
       kind: "index",
       title: "Candidates",
@@ -5291,11 +5291,11 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
         [
           `# ${requestedProfile === "personal-research" ? "Personal Research Playbook" : "Research Playbook"}`,
           "",
-          "- Add one source at a time with `swarmvault ingest <input> --guide` or `swarmvault source add <input> --guide`.",
-          "- Resume a guided session with `swarmvault source session <source-id-or-session-id>` whenever you want to answer the session prompts directly.",
+          "- Add one source at a time with `beehive ingest <input> --guide` or `beehive source add <input> --guide`.",
+          "- Resume a guided session with `beehive source session <source-id-or-session-id>` whenever you want to answer the session prompts directly.",
           "- Review `wiki/outputs/source-briefs/`, `wiki/outputs/source-reviews/`, `wiki/outputs/source-guides/`, and `wiki/outputs/source-sessions/` before accepting staged updates.",
           ...(profile.guidedSessionMode === "canonical_review"
-            ? ["- Use `swarmvault review show --diff` to inspect staged canonical page edits before accepting them."]
+            ? ["- Use `beehive review show --diff` to inspect staged canonical page edits before accepting them."]
             : ["- Keep exploratory synthesis in `wiki/insights/` until you are ready to promote it into canonical pages."]),
           ...(profile.dataviewBlocks
             ? [
@@ -5304,7 +5304,7 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
             : []),
           ...(profile.presets.length ? [`- Active profile presets: ${profile.presets.map((preset) => `\`${preset}\``).join(", ")}.`] : []),
           "- Keep unresolved questions visible in `wiki/dashboards/open-questions.md`.",
-          "- Use `swarmvault review list` and `swarmvault review show --diff` to decide what becomes canonical.",
+          "- Use `beehive review list` and `beehive review show --diff` to decide what becomes canonical.",
           ""
         ].join("\n"),
         {
@@ -6204,7 +6204,7 @@ async function ensureCompiledGraph(rootDir: string): Promise<GraphArtifact> {
   }
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` first.");
+    throw new Error("Graph artifact not found. Run `beehive compile` first.");
   }
   return graph;
 }
@@ -6402,7 +6402,7 @@ export async function refreshGraphClusters(rootDir: string, options: { resolutio
   const schemas = await loadVaultSchemas(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("No compiled graph found. Run `swarmvault compile` first.");
+    throw new Error("No compiled graph found. Run `beehive compile` first.");
   }
 
   const metrics = deriveGraphMetrics(resetGraphNodeMetrics(graph.nodes), graph.edges, {
@@ -6832,7 +6832,7 @@ export async function lintVault(rootDir: string, options: LintOptions = {}): Pro
       {
         severity: "warning",
         code: "graph_missing",
-        message: "No graph artifact found. Run `swarmvault compile` first."
+        message: "No graph artifact found. Run `beehive compile` first."
       }
     ];
     await recordSession(rootDir, {

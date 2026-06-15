@@ -28,7 +28,7 @@ const tempDirs: string[] = [];
 const fixtureDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-compound-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-compound-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -65,7 +65,7 @@ async function ensureViewerDistFixture(): Promise<void> {
       ].join("\n"),
       "utf8"
     ),
-    fs.writeFile(path.join(assetsDir, "index.js"), 'document.getElementById("root")?.replaceChildren("SwarmVault Viewer");\n', "utf8"),
+    fs.writeFile(path.join(assetsDir, "index.js"), 'document.getElementById("root")?.replaceChildren("Beehive Viewer");\n', "utf8"),
     fs.writeFile(path.join(assetsDir, "index.css"), "body{margin:0;font-family:sans-serif;}\n", "utf8")
   ]);
 }
@@ -189,7 +189,7 @@ describe("compounding loop", () => {
     await initVault(rootDir);
     await fs.writeFile(
       path.join(rootDir, "research.md"),
-      ["# Research", "", "SwarmVault compiles research notes into a persistent wiki and graph."].join("\n"),
+      ["# Research", "", "Beehive compiles research notes into a persistent wiki and graph."].join("\n"),
       "utf8"
     );
     await ingestInput(rootDir, "research.md");
@@ -251,7 +251,7 @@ describe("compounding loop", () => {
     );
     await fs.writeFile(path.join(rootDir, "state", "watch-fail-once.txt"), "fail-once\n", "utf8");
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -343,7 +343,7 @@ describe("compounding loop", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -407,7 +407,7 @@ describe("compounding loop", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -470,7 +470,7 @@ describe("compounding loop", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -527,7 +527,7 @@ describe("compounding loop", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -599,7 +599,7 @@ describe("compounding loop", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -659,7 +659,7 @@ describe("compounding loop", () => {
       "utf8"
     );
 
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
       providers: Record<string, unknown>;
       tasks: Record<string, string>;
@@ -701,8 +701,8 @@ describe("compounding loop", () => {
 
     const exportPath = await exportGraphHtml(rootDir, path.join(rootDir, "exports", "graph.html"));
     const exportedHtml = await fs.readFile(exportPath, "utf8");
-    expect(exportedHtml).toContain("__SWARMVAULT_EMBEDDED_DATA__");
-    expect(exportedHtml).toContain("SwarmVault Graph Export");
+    expect(exportedHtml).toContain("__BEEHIVE_EMBEDDED_DATA__");
+    expect(exportedHtml).toContain("Beehive Graph Export");
   });
 
   it("escapes hostile graph and page strings in standalone HTML exports", async () => {

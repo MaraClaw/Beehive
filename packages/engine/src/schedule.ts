@@ -270,7 +270,7 @@ export async function serveSchedules(rootDir: string, pollMs = 30_000): Promise<
       try {
         schedules = await listSchedules(rootDir);
       } catch (error) {
-        console.error(`[swarmvault-schedule] failed to list schedules: ${error instanceof Error ? error.message : String(error)}`);
+        console.error(`[beehive-schedule] failed to list schedules: ${error instanceof Error ? error.message : String(error)}`);
       }
       const due = schedules
         .filter((item) => item.enabled)
@@ -287,7 +287,7 @@ export async function serveSchedules(rootDir: string, pollMs = 30_000): Promise<
         try {
           await runSchedule(rootDir, schedule.jobId);
         } catch (error) {
-          console.error(`[swarmvault-schedule] job ${schedule.jobId} crashed: ${error instanceof Error ? error.message : String(error)}`);
+          console.error(`[beehive-schedule] job ${schedule.jobId} crashed: ${error instanceof Error ? error.message : String(error)}`);
         }
       }
     } finally {

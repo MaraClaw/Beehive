@@ -55,7 +55,7 @@ export async function rebuildRetrievalIndex(rootDir: string): Promise<RetrievalS
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` before rebuilding retrieval.");
+    throw new Error("Graph artifact not found. Run `beehive compile` before rebuilding retrieval.");
   }
   await rebuildSearchIndex(paths.searchDbPath, graph.pages, paths.wikiDir, { rootDir, stateDir: paths.stateDir });
   await writeRetrievalManifest(rootDir, graph);
@@ -74,13 +74,13 @@ export async function getRetrievalStatus(rootDir: string): Promise<RetrievalStat
   ]);
   const warnings: string[] = [];
   if (!graphExists) {
-    warnings.push("Graph artifact is missing. Run `swarmvault compile`.");
+    warnings.push("Graph artifact is missing. Run `beehive compile`.");
   }
   if (!indexExists) {
-    warnings.push("Retrieval index is missing. Run `swarmvault retrieval rebuild`.");
+    warnings.push("Retrieval index is missing. Run `beehive retrieval rebuild`.");
   }
   if (!manifestExists) {
-    warnings.push("Retrieval manifest is missing. Run `swarmvault retrieval rebuild`.");
+    warnings.push("Retrieval manifest is missing. Run `beehive retrieval rebuild`.");
   }
   if (manifest && graph && manifest.graphHash !== graphHash(graph)) {
     warnings.push("Retrieval index is stale relative to the current graph.");

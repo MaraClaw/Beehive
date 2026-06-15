@@ -10,7 +10,7 @@ import type { CompileState } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-projects-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-projects-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -19,7 +19,7 @@ async function updateConfig(
   rootDir: string,
   mutate: (config: { providers: Record<string, unknown>; tasks: Record<string, string>; projects?: Record<string, unknown> }) => void
 ): Promise<void> {
-  const configPath = path.join(rootDir, "swarmvault.config.json");
+  const configPath = path.join(rootDir, "beehive.config.json");
   const config = JSON.parse(await fs.readFile(configPath, "utf8")) as {
     providers: Record<string, unknown>;
     tasks: Record<string, string>;
@@ -94,8 +94,8 @@ describe("project-aware vault organization", () => {
     const rootMarker = "ROOT_RULE_MARKER";
     const alphaMarker = "ALPHA_RULE_MARKER";
     await fs.writeFile(
-      path.join(rootDir, "swarmvault.schema.md"),
-      ["# SwarmVault Schema", "", "## Grounding Rules", "", `- Always include ${rootMarker}.`, ""].join("\n"),
+      path.join(rootDir, "beehive.schema.md"),
+      ["# Beehive Schema", "", "## Grounding Rules", "", `- Always include ${rootMarker}.`, ""].join("\n"),
       "utf8"
     );
     await fs.writeFile(

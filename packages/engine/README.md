@@ -1,6 +1,6 @@
-# @swarmvaultai/engine
+# @beehive/engine
 
-`@swarmvaultai/engine` is the runtime library behind SwarmVault.
+`@beehive/engine` is the runtime library behind Beehive.
 
 It exposes the primitives for initializing a workspace, ingesting sources, importing an inbox, compiling a wiki, querying the vault, recording agent tasks, maintaining retrieval, running lint, serving the graph viewer, watching the inbox, and exposing the vault over MCP.
 
@@ -8,12 +8,12 @@ It exposes the primitives for initializing a workspace, ingesting sources, impor
 
 Use this package if you want to:
 
-- build your own interface on top of the SwarmVault runtime
+- build your own interface on top of the Beehive runtime
 - integrate vault operations into another Node application
 - embed watch or MCP behavior without shelling out to the CLI
 - customize provider loading or orchestration in code
 
-If you only want to use SwarmVault as a tool, install `@swarmvaultai/cli` instead.
+If you only want to use Beehive as a tool, install `@beehive/cli` instead.
 
 ## Core Exports
 
@@ -76,7 +76,7 @@ import {
   uninstallGitHooks,
   updateMemoryTask,
   watchVault,
-} from "@swarmvaultai/engine";
+} from "@beehive/engine";
 ```
 
 The engine also exports the main runtime types for providers, graph artifacts, pages, manifests, query results, task records, vault doctor reports with prioritized recommendations, retrieval status, lint findings, and watch records.
@@ -116,7 +116,7 @@ import {
   startMemoryTask,
   updateMemoryTask,
   watchVault
-} from "@swarmvaultai/engine";
+} from "@beehive/engine";
 
 const rootDir = process.cwd();
 
@@ -187,14 +187,14 @@ const watcher = await watchVault(rootDir, { lint: true, repo: true });
 
 ## Schema Layer
 
-Each workspace carries a root markdown file named `swarmvault.schema.md`.
+Each workspace carries a root markdown file named `beehive.schema.md`.
 
 The engine treats that file as vault-specific operating guidance for compile and query work. Currently:
 
 - `initVault()` creates the default schema file
 - `initVault()` also creates a human-only `wiki/insights/` area
 - `initVault({ obsidian: true })` can also seed a minimal `.obsidian/` workspace
-- `swarmvault.config.json` can define `projects` with root matching and optional per-project schema files
+- `beehive.config.json` can define `projects` with root matching and optional per-project schema files
 - compile and query prompts include the schema content
 - generated pages store `schema_hash`
 - generated pages also carry lifecycle metadata such as `status`, `created_at`, `updated_at`, `compiled_from`, `managed_by`, and `project_ids`
@@ -294,7 +294,7 @@ This matters because many "OpenAI-compatible" backends only implement part of th
 - `installGitHooks(rootDir)`, `uninstallGitHooks(rootDir)`, and `getGitHookStatus(rootDir)` manage local `post-commit` and `post-checkout` hook blocks for the nearest git repository
 - `installAgent(rootDir, agent, { hook, scope })` writes agent instructions and returns the primary `target`, all touched `targets`, and optional merge warnings for agents such as Aider and Kilo
 - `getAgentInstallStatus(rootDir, agent, { scope })` reports expected install targets, presence, and managed-block status
-- `addProviderConfig`, `listProviderConfigEntries`, `getProviderConfigEntry`, and `removeProviderConfig` manage named provider entries and task routing in `swarmvault.config.json`
+- `addProviderConfig`, `listProviderConfigEntries`, `getProviderConfigEntry`, and `removeProviderConfig` manage named provider entries and task routing in `beehive.config.json`
 - `lintVault(rootDir, options)` runs structural lint, optional deep lint, optional contradiction-only filtering through `{ conflicts: true }`, and optional web-augmented evidence gathering
 - `listSchedules(rootDir)`, `runSchedule(rootDir, jobId)`, and `serveSchedules(rootDir)` manage recurring local jobs from config
 - compile, query, explore, lint, and watch also write canonical markdown session artifacts to `state/sessions/`
@@ -320,7 +320,7 @@ The MCP surface includes tools for workspace info, page search, page reads, sour
 
 Running the engine produces a local workspace with these main areas:
 
-- `swarmvault.schema.md`: vault-specific compile and query instructions
+- `beehive.schema.md`: vault-specific compile and query instructions
 - `inbox/`: capture staging area for markdown bundles and imported files
 - `raw/sources/`: immutable source copies
 - `raw/assets/`: copied attachments referenced by ingested markdown bundles and remote URL ingests
@@ -341,7 +341,7 @@ Running the engine produces a local workspace with these main areas:
 - `state/code-index.json`: repo-aware code module aliases and local resolution data
 - `state/benchmark.json`: latest benchmark/trust summary for the current vault
 - `state/graph.json`: compiled graph, including semantic-similarity edges and hyperedge-style group patterns
-- graph helpers include tree export, graph merge for SwarmVault/node-link JSON, read-only status checks, shrink-guarded code refresh, community refresh, graph query/path/explain, blast radius, and file exports
+- graph helpers include tree export, graph merge for Beehive/node-link JSON, read-only status checks, shrink-guarded code refresh, community refresh, graph query/path/explain, blast radius, and file exports
 - `state/context-packs/`: JSON context-pack artifacts for agent kickoff, review, and handoff workflows
 - `state/memory/tasks/`: JSON task records for the agent task ledger
 - `state/retrieval/`: local retrieval index directory, including the SQLite FTS shard and manifest
@@ -354,17 +354,17 @@ Running the engine produces a local workspace with these main areas:
 Saved outputs are indexed immediately into the graph page registry and search index, then linked back into compiled source, concept, and entity pages immediately through the lightweight artifact sync path. New concept and entity pages stage into `wiki/candidates/` first and promote to active pages on the next matching compile. Insight pages are indexed into search and page reads, but compile does not mutate them. Project-scoped pages receive `project_ids`, project tags, and layered root-plus-project schema hashes when all contributing sources resolve to the same configured project.
 Code sources also emit module, symbol, and parser-backed rationale nodes into `state/graph.json`, so local imports, exports, inheritance, same-module call edges, and rationale links are queryable through the same viewer and search pipeline.
 Ingest, inbox import, compile, query, lint, review, and candidate operations also append human-readable entries to `wiki/log.md`.
-PDF sources now go through a local text-extraction pass before analysis, and image sources use the configured `visionProvider` for structured OCR/diagram extraction when a real multimodal provider is available. When image extraction is unavailable, SwarmVault records an explicit warning in the extraction sidecar and carries that warning forward into analysis instead of silently treating the source as empty.
+PDF sources now go through a local text-extraction pass before analysis, and image sources use the configured `visionProvider` for structured OCR/diagram extraction when a real multimodal provider is available. When image extraction is unavailable, Beehive records an explicit warning in the extraction sidecar and carries that warning forward into analysis instead of silently treating the source as empty.
 Compile and repo-refresh runs also keep benchmark artifacts current by default, so graph report consumers can show freshness and stale-state without requiring a separate benchmark command first. The graph report now also carries deterministic “why this is surprising” explanations plus group-pattern sections built from hyperedges.
 
 ## Notes
 
 - The engine expects Node `>=24`
 - The local search layer uses the built-in `node:sqlite` module on Node `>=24`; current CLI releases suppress the upstream experimental warning during normal runs
-- The viewer source lives in the companion `@swarmvaultai/viewer` package, and the built assets are bundled into the engine package for CLI installs
+- The viewer source lives in the companion `@beehive/viewer` package, and the built assets are bundled into the engine package for CLI installs
 
 ## Links
 
-- Website: https://www.swarmvault.ai
-- Docs: https://www.swarmvault.ai/docs
-- GitHub: https://github.com/swarmclawai/swarmvault
+- Website: <https://www.beehive.ai>
+- Docs: <https://www.beehive.ai/docs>
+- GitHub: <https://github.com/MaraClaw/Beehive>

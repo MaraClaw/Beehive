@@ -46,7 +46,7 @@ import {
 } from "./vault.js";
 import { getWatchStatus, runWatchCycle } from "./watch.js";
 
-const SERVER_VERSION = "3.20.0";
+const SERVER_VERSION = "3.21.0";
 const workspaceIdSchema = z.string().min(1).describe("Workspace id to run this tool against");
 type WorkspaceToolShape<Shape extends z.ZodRawShape> = Shape & { workspace_id: typeof workspaceIdSchema };
 type FlexibleToolHandler<Args> = { run(args: Args): Promise<unknown> }["run"];
@@ -91,9 +91,9 @@ const codeLanguageSchema = z.enum([
 
 export async function createMcpServer(rootDir: string): Promise<McpServer> {
   const server = new McpServer({
-    name: "swarmvault",
+    name: "beehive",
     version: SERVER_VERSION,
-    websiteUrl: "https://www.swarmvault.ai"
+    websiteUrl: "https://www.beehive.ai"
   });
   const serverWorkspaceId = getActiveWorkspaceId();
   const runWithServerWorkspace = async <T>(run: () => Promise<T>): Promise<T> =>
@@ -146,7 +146,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "workspace_info",
     {
-      description: "Return the current SwarmVault workspace paths and high-level counts."
+      description: "Return the current Beehive workspace paths and high-level counts."
     },
     safeHandler(async () => {
       const info = await getWorkspaceInfo(rootDir);
@@ -172,7 +172,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "retrieval_status",
     {
-      description: "Read SwarmVault retrieval index health and configuration."
+      description: "Read Beehive retrieval index health and configuration."
     },
     safeHandler(async () => {
       return asToolText(await getRetrievalStatus(rootDir));
@@ -293,7 +293,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       description: "Return the machine-readable graph report and trust artifact."
     },
     safeHandler(async () => {
-      return asToolText((await readGraphReport(rootDir)) ?? { error: "Graph report not found. Run `swarmvault compile` first." });
+      return asToolText((await readGraphReport(rootDir)) ?? { error: "Graph report not found. Run `beehive compile` first." });
     })
   );
 
@@ -457,7 +457,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "list_context_packs",
     {
-      description: "List saved SwarmVault context packs."
+      description: "List saved Beehive context packs."
     },
     safeHandler(async () => {
       return asToolText(await listContextPacks(rootDir));
@@ -467,7 +467,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "read_context_pack",
     {
-      description: "Read a saved SwarmVault context pack by id.",
+      description: "Read a saved Beehive context pack by id.",
       inputSchema: {
         id: z.string().min(1).describe("Context pack id")
       }
@@ -484,7 +484,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "start_memory_task",
     {
-      description: "Start a durable SwarmVault agent memory task and build its initial context pack.",
+      description: "Start a durable Beehive agent memory task and build its initial context pack.",
       inputSchema: {
         goal: z.string().min(1).describe("Task goal to preserve in agent memory"),
         target: z.string().optional().describe("Optional page, node, path, project, or label to anchor the initial context pack"),
@@ -501,7 +501,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "update_memory_task",
     {
-      description: "Append a note, decision, path, context pack, or status change to a SwarmVault memory task.",
+      description: "Append a note, decision, path, context pack, or status change to a Beehive memory task.",
       inputSchema: {
         id: z.string().min(1).describe("Memory task id"),
         note: z.string().optional().describe("Task note to append"),
@@ -524,7 +524,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "finish_memory_task",
     {
-      description: "Finish a SwarmVault memory task with an outcome and optional follow-up.",
+      description: "Finish a Beehive memory task with an outcome and optional follow-up.",
       inputSchema: {
         id: z.string().min(1).describe("Memory task id"),
         outcome: z.string().min(1).describe("Outcome to record"),
@@ -539,7 +539,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "list_memory_tasks",
     {
-      description: "List saved SwarmVault agent memory tasks."
+      description: "List saved Beehive agent memory tasks."
     },
     safeHandler(async () => {
       return asToolText(await listMemoryTasks(rootDir));
@@ -549,7 +549,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "read_memory_task",
     {
-      description: "Read a saved SwarmVault agent memory task by id.",
+      description: "Read a saved Beehive agent memory task by id.",
       inputSchema: {
         id: z.string().min(1).describe("Memory task id")
       }
@@ -566,7 +566,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "resume_memory_task",
     {
-      description: "Render a saved SwarmVault memory task as a next-agent handoff.",
+      description: "Render a saved Beehive memory task as a next-agent handoff.",
       inputSchema: {
         id: z.string().min(1).describe("Memory task id"),
         format: z.enum(["markdown", "json", "llms"]).optional().describe("Rendered output format")
@@ -580,7 +580,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "start_task",
     {
-      description: "Start a durable SwarmVault agent task and build its initial context pack.",
+      description: "Start a durable Beehive agent task and build its initial context pack.",
       inputSchema: {
         goal: z.string().min(1).describe("Task goal to preserve"),
         target: z.string().optional().describe("Optional page, node, path, project, or label to anchor the initial context pack"),
@@ -597,7 +597,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "update_task",
     {
-      description: "Append a note, decision, path, context pack, or status change to a SwarmVault task.",
+      description: "Append a note, decision, path, context pack, or status change to a Beehive task.",
       inputSchema: {
         id: z.string().min(1).describe("Task id"),
         note: z.string().optional().describe("Task note to append"),
@@ -620,7 +620,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "finish_task",
     {
-      description: "Finish a SwarmVault task with an outcome and optional follow-up.",
+      description: "Finish a Beehive task with an outcome and optional follow-up.",
       inputSchema: {
         id: z.string().min(1).describe("Task id"),
         outcome: z.string().min(1).describe("Outcome to record"),
@@ -635,7 +635,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "list_tasks",
     {
-      description: "List saved SwarmVault agent tasks."
+      description: "List saved Beehive agent tasks."
     },
     safeHandler(async () => {
       return asToolText(await listMemoryTasks(rootDir));
@@ -645,7 +645,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "read_task",
     {
-      description: "Read a saved SwarmVault agent task by id.",
+      description: "Read a saved Beehive agent task by id.",
       inputSchema: {
         id: z.string().min(1).describe("Task id")
       }
@@ -662,7 +662,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "resume_task",
     {
-      description: "Render a saved SwarmVault task as a next-agent handoff.",
+      description: "Render a saved Beehive task as a next-agent handoff.",
       inputSchema: {
         id: z.string().min(1).describe("Task id"),
         format: z.enum(["markdown", "json", "llms"]).optional().describe("Rendered output format")
@@ -676,7 +676,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "ingest_input",
     {
-      description: "Ingest a local file path or URL into the SwarmVault workspace.",
+      description: "Ingest a local file path or URL into the Beehive workspace.",
       inputSchema: {
         input: z.string().min(1).describe("Local path or URL to ingest")
       }
@@ -889,7 +889,7 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   registerWorkspaceTool(
     "migrate",
     {
-      description: "Detect the vault's version and preview the migration plan to the current SwarmVault version.",
+      description: "Detect the vault's version and preview the migration plan to the current Beehive version.",
       inputSchema: {
         target: z.string().optional().describe("Optional target version cap (migrations with toVersion above this are skipped)")
       }
@@ -901,24 +901,24 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
   );
 
   server.registerResource(
-    "swarmvault-config",
-    "swarmvault://config",
+    "beehive-config",
+    "beehive://config",
     {
-      title: "SwarmVault Config",
-      description: "The resolved SwarmVault config file.",
+      title: "Beehive Config",
+      description: "The resolved Beehive config file.",
       mimeType: "application/json"
     },
     bindServerWorkspace(async () => {
       const { config } = await loadVaultConfig(rootDir);
-      return asTextResource("swarmvault://config", JSON.stringify(config, null, 2));
+      return asTextResource("beehive://config", JSON.stringify(config, null, 2));
     })
   );
 
   server.registerResource(
-    "swarmvault-graph",
-    "swarmvault://graph",
+    "beehive-graph",
+    "beehive://graph",
     {
-      title: "SwarmVault Graph",
+      title: "Beehive Graph",
       description: "The compiled graph artifact for the current workspace.",
       mimeType: "application/json"
     },
@@ -926,45 +926,45 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       const { paths } = await loadVaultConfig(rootDir);
       const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
       return asTextResource(
-        "swarmvault://graph",
-        JSON.stringify(graph ?? { error: "Graph artifact not found. Run `swarmvault compile` first." }, null, 2)
+        "beehive://graph",
+        JSON.stringify(graph ?? { error: "Graph artifact not found. Run `beehive compile` first." }, null, 2)
       );
     })
   );
 
   server.registerResource(
-    "swarmvault-manifests",
-    "swarmvault://manifests",
+    "beehive-manifests",
+    "beehive://manifests",
     {
-      title: "SwarmVault Manifests",
+      title: "Beehive Manifests",
       description: "All source manifests in the workspace.",
       mimeType: "application/json"
     },
     bindServerWorkspace(async () => {
       const manifests = await listManifests(rootDir);
-      return asTextResource("swarmvault://manifests", JSON.stringify(manifests, null, 2));
+      return asTextResource("beehive://manifests", JSON.stringify(manifests, null, 2));
     })
   );
 
   server.registerResource(
-    "swarmvault-schema",
-    "swarmvault://schema",
+    "beehive-schema",
+    "beehive://schema",
     {
-      title: "SwarmVault Schema",
+      title: "Beehive Schema",
       description: "The vault schema file that guides compile and query behavior.",
       mimeType: "text/markdown"
     },
     bindServerWorkspace(async () => {
       const schema = await loadVaultSchema(rootDir);
-      return asTextResource("swarmvault://schema", schema.content);
+      return asTextResource("beehive://schema", schema.content);
     })
   );
 
   server.registerResource(
-    "swarmvault-sessions",
-    "swarmvault://sessions",
+    "beehive-sessions",
+    "beehive://sessions",
     {
-      title: "SwarmVault Sessions",
+      title: "Beehive Sessions",
       description: "Canonical session artifacts for compile, query, explore, lint, and watch runs.",
       mimeType: "application/json"
     },
@@ -974,67 +974,67 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
         .filter((filePath) => filePath.endsWith(".md"))
         .map((filePath) => toPosix(path.relative(paths.sessionsDir, filePath)))
         .sort();
-      return asTextResource("swarmvault://sessions", JSON.stringify(files, null, 2));
+      return asTextResource("beehive://sessions", JSON.stringify(files, null, 2));
     })
   );
 
   server.registerResource(
-    "swarmvault-context-packs",
-    "swarmvault://context-packs",
+    "beehive-context-packs",
+    "beehive://context-packs",
     {
-      title: "SwarmVault Context Packs",
+      title: "Beehive Context Packs",
       description: "Saved token-bounded context packs for agent tasks.",
       mimeType: "application/json"
     },
     bindServerWorkspace(async () => {
-      return asTextResource("swarmvault://context-packs", JSON.stringify(await listContextPacks(rootDir), null, 2));
+      return asTextResource("beehive://context-packs", JSON.stringify(await listContextPacks(rootDir), null, 2));
     })
   );
 
   server.registerResource(
-    "swarmvault-memory-tasks",
-    "swarmvault://memory-tasks",
+    "beehive-memory-tasks",
+    "beehive://memory-tasks",
     {
-      title: "SwarmVault Agent Memory Tasks",
+      title: "Beehive Agent Memory Tasks",
       description: "Saved git-backed agent memory task ledger entries.",
       mimeType: "application/json"
     },
     bindServerWorkspace(async () => {
-      return asTextResource("swarmvault://memory-tasks", JSON.stringify(await listMemoryTasks(rootDir), null, 2));
+      return asTextResource("beehive://memory-tasks", JSON.stringify(await listMemoryTasks(rootDir), null, 2));
     })
   );
 
   server.registerResource(
-    "swarmvault-tasks",
-    "swarmvault://tasks",
+    "beehive-tasks",
+    "beehive://tasks",
     {
-      title: "SwarmVault Agent Tasks",
+      title: "Beehive Agent Tasks",
       description: "Saved git-backed agent task ledger entries.",
       mimeType: "application/json"
     },
     bindServerWorkspace(async () => {
-      return asTextResource("swarmvault://tasks", JSON.stringify(await listMemoryTasks(rootDir), null, 2));
+      return asTextResource("beehive://tasks", JSON.stringify(await listMemoryTasks(rootDir), null, 2));
     })
   );
 
   server.registerResource(
-    "swarmvault-pages",
-    new ResourceTemplate("swarmvault://pages/{path}", {
+    "beehive-pages",
+    new ResourceTemplate("beehive://pages/{path}", {
       list: bindServerWorkspace(async () => {
         const pages = await listPages(rootDir);
         return {
           resources: pages.map((page) => ({
-            uri: `swarmvault://pages/${encodeURIComponent(page.path)}`,
+            uri: `beehive://pages/${encodeURIComponent(page.path)}`,
             name: page.title,
             title: page.title,
-            description: `SwarmVault ${page.kind} page`,
+            description: `Beehive ${page.kind} page`,
             mimeType: "text/markdown"
           }))
         };
       })
     }),
     {
-      title: "SwarmVault Pages",
+      title: "Beehive Pages",
       description: "Generated wiki pages exposed as MCP resources.",
       mimeType: "text/markdown"
     },
@@ -1043,18 +1043,18 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       const relativePath = decodeURIComponent(encodedPath);
       const page = await readPage(rootDir, relativePath);
       if (!page) {
-        return asTextResource(`swarmvault://pages/${encodedPath}`, `Page not found: ${relativePath}`);
+        return asTextResource(`beehive://pages/${encodedPath}`, `Page not found: ${relativePath}`);
       }
 
       const { paths } = await loadVaultConfig(rootDir);
       const absolutePath = path.resolve(paths.wikiDir, relativePath);
-      return asTextResource(`swarmvault://pages/${encodedPath}`, await fs.readFile(absolutePath, "utf8"));
+      return asTextResource(`beehive://pages/${encodedPath}`, await fs.readFile(absolutePath, "utf8"));
     })
   );
 
   server.registerResource(
-    "swarmvault-session-files",
-    new ResourceTemplate("swarmvault://sessions/{path}", {
+    "beehive-session-files",
+    new ResourceTemplate("beehive://sessions/{path}", {
       list: bindServerWorkspace(async () => {
         const { paths } = await loadVaultConfig(rootDir);
         const files = (await listFilesRecursive(paths.sessionsDir))
@@ -1063,17 +1063,17 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
           .sort();
         return {
           resources: files.map((relativePath) => ({
-            uri: `swarmvault://sessions/${encodeURIComponent(relativePath)}`,
+            uri: `beehive://sessions/${encodeURIComponent(relativePath)}`,
             name: path.basename(relativePath, ".md"),
             title: relativePath,
-            description: "SwarmVault session artifact",
+            description: "Beehive session artifact",
             mimeType: "text/markdown"
           }))
         };
       })
     }),
     {
-      title: "SwarmVault Session Files",
+      title: "Beehive Session Files",
       description: "Session artifacts exposed as MCP resources.",
       mimeType: "text/markdown"
     },
@@ -1083,10 +1083,10 @@ export async function createMcpServer(rootDir: string): Promise<McpServer> {
       const relativePath = decodeURIComponent(encodedPath);
       const absolutePath = path.resolve(paths.sessionsDir, relativePath);
       if (!isPathWithin(paths.sessionsDir, absolutePath) || !(await fileExists(absolutePath))) {
-        return asTextResource(`swarmvault://sessions/${encodedPath}`, `Session not found: ${relativePath}`);
+        return asTextResource(`beehive://sessions/${encodedPath}`, `Session not found: ${relativePath}`);
       }
 
-      return asTextResource(`swarmvault://sessions/${encodedPath}`, await fs.readFile(absolutePath, "utf8"));
+      return asTextResource(`beehive://sessions/${encodedPath}`, await fs.readFile(absolutePath, "utf8"));
     })
   );
 
@@ -1140,7 +1140,7 @@ function safeHandler<Args, Result>(
       return await handler(args);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`[swarmvault-mcp] tool handler failed: ${message}`);
+      console.error(`[beehive-mcp] tool handler failed: ${message}`);
       return asToolError(message);
     }
   };

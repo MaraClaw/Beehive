@@ -5,8 +5,8 @@ import { CliRunner } from "./cli/run";
 import { compareSemver, probeCliVersion } from "./cli/version-check";
 import { registerCommands } from "./commands/register";
 import { VIEW_TYPE_RUN_LOG } from "./constants";
-import { DEFAULT_SETTINGS, mergeSettings, type SwarmVaultSettings } from "./settings/defaults";
-import { SwarmVaultSettingsTab } from "./settings/SettingsTab";
+import { type BeehiveSettings, DEFAULT_SETTINGS, mergeSettings } from "./settings/defaults";
+import { BeehiveSettingsTab } from "./settings/SettingsTab";
 import { CliNotFoundError, type FreshnessLevel } from "./types";
 import { StatusBar } from "./ui/StatusBar";
 import { RunLogView } from "./views/RunLogView";
@@ -16,8 +16,8 @@ import { resolveWorkspaceRoot } from "./workspace/resolve-root";
 
 const MIN_CLI_VERSION: string = cliCompat.minCliVersion;
 
-export default class SwarmVaultPlugin extends Plugin {
-  settings: SwarmVaultSettings = { ...DEFAULT_SETTINGS };
+export default class BeehivePlugin extends Plugin {
+  settings: BeehiveSettings = { ...DEFAULT_SETTINGS };
   cliRunner: CliRunner = new CliRunner();
   managedProcesses: ManagedProcesses = new ManagedProcesses();
   workspaceRoot: string | null = null;
@@ -38,18 +38,18 @@ export default class SwarmVaultPlugin extends Plugin {
       onRunLogClick: () => void this.ensureRunLog()
     });
 
-    this.addSettingTab(new SwarmVaultSettingsTab(this.app, this));
+    this.addSettingTab(new BeehiveSettingsTab(this.app, this));
 
     registerCommands(this);
     this.addCommand({
-      id: "swarmvault-verify-cli",
+      id: "beehive-verify-cli",
       name: "Verify CLI",
       callback: async () => {
         await this.verifyCli();
       }
     });
     this.addCommand({
-      id: "swarmvault-open-run-log",
+      id: "beehive-open-run-log",
       name: "Open run log",
       callback: () => void this.ensureRunLog()
     });
@@ -65,7 +65,7 @@ export default class SwarmVaultPlugin extends Plugin {
   }
 
   async loadSettings(): Promise<void> {
-    const loaded = (await this.loadData()) as Partial<SwarmVaultSettings> | null;
+    const loaded = (await this.loadData()) as Partial<BeehiveSettings> | null;
     this.settings = mergeSettings(loaded);
   }
 
@@ -98,7 +98,7 @@ export default class SwarmVaultPlugin extends Plugin {
       this.freshness = reading.level;
     } catch (err) {
       this.freshness = "unknown";
-      if (!(err instanceof Error && err.message.startsWith("Invalid SwarmVault workspace ID"))) {
+      if (!(err instanceof Error && err.message.startsWith("Invalid Beehive workspace ID"))) {
         throw err;
       }
     }
@@ -113,7 +113,7 @@ export default class SwarmVaultPlugin extends Plugin {
     }
     const leaf = this.app.workspace.getRightLeaf(false);
     if (!leaf) {
-      throw new Error("Unable to open SwarmVault run log view.");
+      throw new Error("Unable to open Beehive run log view.");
     }
     await leaf.setViewState({ type: VIEW_TYPE_RUN_LOG, active: true });
     if (leaf.view instanceof RunLogView) {
@@ -146,7 +146,7 @@ export default class SwarmVaultPlugin extends Plugin {
 
   private revealWorkspaceRoot(): void {
     if (!this.workspaceRoot) {
-      new Notice("No SwarmVault workspace detected.");
+      new Notice("No Beehive workspace detected.");
       return;
     }
     new Notice(`Workspace: ${this.workspaceRoot}`);
@@ -166,7 +166,7 @@ export default class SwarmVaultPlugin extends Plugin {
       this.updateStatusBar({ cliVersion: info.version, cliMissing: false });
       if (compareSemver(info.version, MIN_CLI_VERSION) < 0 && !opts.silent) {
         new Notice(
-          `SwarmVault CLI ${info.version} is older than the required ${MIN_CLI_VERSION}. Run \`npm i -g @swarmvaultai/cli@latest\`.`,
+          `Beehive CLI ${info.version} is older than the required ${MIN_CLI_VERSION}. Run \`npm i -g @beehive/cli@latest\`.`,
           10_000
         );
       }
@@ -175,7 +175,7 @@ export default class SwarmVaultPlugin extends Plugin {
       this.updateStatusBar({ cliVersion: null, cliMissing: missing });
       if (opts.silent) return;
       const message = missing
-        ? "SwarmVault CLI not found. Install with `npm i -g @swarmvaultai/cli`."
+        ? "Beehive CLI not found. Install with `npm i -g @beehive/cli`."
         : err instanceof Error
           ? err.message
           : String(err);

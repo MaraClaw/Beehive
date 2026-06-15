@@ -146,13 +146,13 @@ export function evaluateGraphShrinkGuard(
           nodes.dropRatio * 100
         )}% drop) and edge count changed ${edges.before} -> ${edges.after} (${Math.round(
           edges.dropRatio * 100
-        )}% drop). Re-run with --force or SWARMVAULT_FORCE_UPDATE=1 if this shrink is expected.`
+        )}% drop). Re-run with --force or BEEHIVE_FORCE_UPDATE=1 if this shrink is expected.`
       : undefined
   };
 }
 
 function forceGraphUpdateEnabled(options: WatchOptions): boolean {
-  return options.force === true || process.env.SWARMVAULT_FORCE_UPDATE === "1" || process.env.SWARMVAULT_FORCE_UPDATE === "true";
+  return options.force === true || process.env.BEEHIVE_FORCE_UPDATE === "1" || process.env.BEEHIVE_FORCE_UPDATE === "true";
 }
 
 export function projectGraphAfterRemovals(graph: GraphArtifact, removedSourceIds: readonly string[]): GraphArtifact {
@@ -315,7 +315,7 @@ function resolveRootRelative(rootDir: string, candidate: string): string {
 }
 
 /**
- * Compute the effective list of repository roots that `swarmvault watch --repo` should track.
+ * Compute the effective list of repository roots that `beehive watch --repo` should track.
  * Resolution order (highest wins):
  *   1. `options.overrideRoots` (CLI `--root <path>`) — used verbatim, config and discovery skipped.
  *   2. Explicit `config.watch.repoRoots` — skips auto-discovery but still honors `excludeRepoRoots`.
@@ -354,11 +354,11 @@ function dedupeSorted(values: string[]): string[] {
 }
 
 async function readConfigJson(rootDir: string): Promise<{ path: string; content: Record<string, unknown> }> {
-  const configPath = path.join(rootDir, "swarmvault.config.json");
+  const configPath = path.join(rootDir, "beehive.config.json");
   const raw = await fs.readFile(configPath, "utf8");
   const parsed = JSON.parse(raw);
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error("swarmvault.config.json must contain a JSON object.");
+    throw new Error("beehive.config.json must contain a JSON object.");
   }
   return { path: configPath, content: parsed as Record<string, unknown> };
 }
@@ -376,7 +376,7 @@ function getWatchBlock(config: Record<string, unknown>): Record<string, unknown>
 }
 
 /**
- * Add a repo root to the persisted `watch.repoRoots` list in `swarmvault.config.json`.
+ * Add a repo root to the persisted `watch.repoRoots` list in `beehive.config.json`.
  * Returns the resolved absolute path that was added (or already present). Dedupes on resolved path.
  */
 export async function addWatchedRoot(rootDir: string, candidate: string): Promise<string> {
@@ -796,10 +796,10 @@ export async function watchVault(rootDir: string, options: WatchOptions = {}): P
     if (hasDeferredNonCode) {
       const nonCodePaths = collectNonCodePaths(new Set(runReasons));
       process.stderr.write(
-        `[swarmvault watch] Non-code changes detected (${nonCodePaths.length} file(s)) — run \`swarmvault compile\` to include LLM re-analysis.\n`
+        `[beehive watch] Non-code changes detected (${nonCodePaths.length} file(s)) — run \`beehive compile\` to include LLM re-analysis.\n`
       );
     } else if (codeOnlyChange) {
-      process.stderr.write("[swarmvault watch] Code-only changes detected — skipping LLM re-analysis.\n");
+      process.stderr.write("[beehive watch] Code-only changes detected — skipping LLM re-analysis.\n");
     }
 
     let importedCount = 0;
@@ -843,7 +843,7 @@ export async function watchVault(rootDir: string, options: WatchOptions = {}): P
 
       if (consecutiveFailures >= CRITICAL_THRESHOLD) {
         process.stderr.write(
-          `[swarmvault watch] ${consecutiveFailures} consecutive failures. Check vault state. Continuing at max backoff.\n`
+          `[beehive watch] ${consecutiveFailures} consecutive failures. Check vault state. Continuing at max backoff.\n`
         );
       }
 
@@ -877,7 +877,7 @@ export async function watchVault(rootDir: string, options: WatchOptions = {}): P
           ]
         });
       } catch {
-        process.stderr.write("[swarmvault watch] Failed to record session log.\n");
+        process.stderr.write("[beehive watch] Failed to record session log.\n");
       }
       try {
         await appendWatchRun(rootDir, {
@@ -901,7 +901,7 @@ export async function watchVault(rootDir: string, options: WatchOptions = {}): P
           error
         });
       } catch {
-        process.stderr.write("[swarmvault watch] Failed to append watch run.\n");
+        process.stderr.write("[beehive watch] Failed to append watch run.\n");
       }
       try {
         await writeWatchStatusArtifact(rootDir, {
@@ -930,7 +930,7 @@ export async function watchVault(rootDir: string, options: WatchOptions = {}): P
           pendingSemanticRefresh: await readPendingSemanticRefresh(rootDir)
         });
       } catch {
-        process.stderr.write("[swarmvault watch] Failed to write watch status artifact.\n");
+        process.stderr.write("[beehive watch] Failed to write watch status artifact.\n");
       }
 
       running = false;

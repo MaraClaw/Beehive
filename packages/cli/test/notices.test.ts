@@ -70,7 +70,7 @@ describe("collectCliNotices", () => {
       stdoutIsTTY: true
     });
 
-    expect(notices).toEqual(["If SwarmVault is useful, star the repo: https://github.com/swarmclawai/swarmvault"]);
+    expect(notices).toEqual(["If Beehive is useful, star the repo: https://github.com/beehive/beehive"]);
     expect(fetchLatestVersion).toHaveBeenCalledTimes(1);
 
     const persisted = JSON.parse(await readFile(statePath, "utf8")) as {
@@ -99,8 +99,8 @@ describe("collectCliNotices", () => {
       now: new Date("2026-04-08T12:00:00.000Z")
     });
     expect(first).toEqual([
-      "Update available: 0.1.26 (current 0.1.25). Upgrade with: npm install -g @swarmvaultai/cli@latest",
-      "If SwarmVault is useful, star the repo: https://github.com/swarmclawai/swarmvault"
+      "Update available: 0.1.26 (current 0.1.25). Upgrade with: npm install -g @beehive/cli@latest",
+      "If Beehive is useful, star the repo: https://github.com/beehive/beehive"
     ]);
 
     const second = await collectCliNotices({
@@ -118,7 +118,7 @@ describe("collectCliNotices", () => {
     const notices = await collectCliNotices({
       commandPath: ["compile"],
       currentVersion: "0.1.25",
-      env: { SWARMVAULT_NO_NOTICES: "1" },
+      env: { BEEHIVE_NO_NOTICES: "1" },
       fetchLatestVersion,
       statePath,
       stderrIsTTY: true,
@@ -189,10 +189,10 @@ describe("collectHeuristicProviderNotice", () => {
     expect(nonTtyResult).toBeNull();
   });
 
-  it("honors SWARMVAULT_NO_NOTICES", async () => {
+  it("honors BEEHIVE_NO_NOTICES", async () => {
     const { statePath } = await createStatePath();
     const result = await collectHeuristicProviderNotice({
-      env: { SWARMVAULT_NO_NOTICES: "1" },
+      env: { BEEHIVE_NO_NOTICES: "1" },
       statePath,
       stderrIsTTY: true,
       stdoutIsTTY: true
@@ -202,7 +202,7 @@ describe("collectHeuristicProviderNotice", () => {
 });
 
 async function createStatePath(): Promise<{ statePath: string }> {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "swarmvault-cli-notices-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "beehive-cli-notices-"));
   tempDirs.push(dir);
   return { statePath: path.join(dir, "cli-state.json") };
 }

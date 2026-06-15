@@ -47,7 +47,7 @@ describe("useTheme", () => {
       capture?.setTheme("dark");
     });
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-    expect(window.localStorage.getItem("swarmvault.viewer.theme")).toBe("dark");
+    expect(window.localStorage.getItem("beehive.viewer.theme")).toBe("dark");
     act(() => root.unmount());
   });
 

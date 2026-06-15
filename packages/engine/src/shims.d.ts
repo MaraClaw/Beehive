@@ -42,3 +42,19 @@ declare module "rtf-parser" {
   export default parse;
   export { parse };
 }
+
+declare module "@retorquere/bibtex-parser" {
+  export interface BibTeXEntry {
+    key?: string;
+    type?: string;
+    fields?: Record<string, unknown>;
+  }
+
+  export interface BibTeXLibrary {
+    errors?: Array<{ error?: string; input?: string }>;
+    entries?: BibTeXEntry[];
+  }
+
+  export function parse(input: string, options?: Record<string, unknown>): BibTeXLibrary;
+  export function parseAsync(input: string, options?: Record<string, unknown>): Promise<BibTeXLibrary>;
+}

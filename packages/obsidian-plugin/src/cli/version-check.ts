@@ -4,7 +4,7 @@ import { CliRunner } from "./run";
 
 interface CliVersionJson {
   version?: string;
-  swarmvault?: string;
+  beehive?: string;
 }
 
 export async function probeCliVersion(binary: string, runner: CliRunner = new CliRunner()): Promise<CliVersionInfo> {
@@ -12,7 +12,7 @@ export async function probeCliVersion(binary: string, runner: CliRunner = new Cl
     args: ["--version", "--json"],
     timeoutMs: CLI_PROBE_TIMEOUT_MS
   });
-  const fromJson = result.json?.version ?? result.json?.swarmvault;
+  const fromJson = result.json?.version ?? result.json?.beehive;
   const version = (fromJson ?? result.rawStdout.trim()).replace(/^v/, "");
   return { version, raw: result.rawStdout };
 }

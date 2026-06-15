@@ -111,7 +111,7 @@ export class CliRunner {
         if (code !== 0) {
           reject(
             new CliInvocationError({
-              message: `swarmvault exited with code ${code}`,
+              message: `beehive exited with code ${code}`,
               exitCode: code,
               rawStdout,
               rawStderr

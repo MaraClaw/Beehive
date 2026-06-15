@@ -20,12 +20,12 @@ This directory is the engine's contract-heavy core: vault orchestration, ingest/
 
 - Prefer adding narrow modules or helpers over expanding `vault.ts`; use `vault.ts` for cross-cutting orchestration only.
 - Preserve generated artifact paths, page IDs, source IDs, frontmatter, graph IDs, relation names, and confidence semantics.
-- Config and path logic must respect `SWARMVAULT_OUT`; never construct `raw/`, `wiki/`, `state/`, `agent/`, or `inbox/` paths by string guesswork.
-- URL ingest keeps SSRF/private-network protections; tests opt in with `SWARMVAULT_ALLOW_PRIVATE_URLS=1`.
-- Directory ingest respects `.swarmvaultignore`, `.swarmvaultinclude`, VCS/hard ignores, nested matchers, and repo-relative paths.
+- Config and path logic must respect `BEEHIVE_OUT`; never construct `raw/`, `wiki/`, `state/`, `agent/`, or `inbox/` paths by string guesswork.
+- URL ingest keeps SSRF/private-network protections; tests opt in with `BEEHIVE_ALLOW_PRIVATE_URLS=1`.
+- Directory ingest respects `.beehiveignore`, `.beehiveinclude`, VCS/hard ignores, nested matchers, and repo-relative paths.
 - Optional media/code tools must degrade with warnings or diagnostics: vision providers, whisper, ffmpeg, yt-dlp, tree-sitter grammars.
-- Swift tree-sitter is gated by `SWARMVAULT_ENABLE_SWIFT_TREE_SITTER`.
-- `watch.ts` shrink guard aborts graph drops over 25% unless `force` or `SWARMVAULT_FORCE_UPDATE=1/true` is set.
+- Swift tree-sitter is gated by `BEEHIVE_ENABLE_SWIFT_TREE_SITTER`.
+- `watch.ts` shrink guard aborts graph drops over 25% unless `force` or `BEEHIVE_FORCE_UPDATE=1/true` is set.
 
 ## ANTI-PATTERNS
 
@@ -38,8 +38,8 @@ This directory is the engine's contract-heavy core: vault orchestration, ingest/
 ## LOCAL TESTS
 
 ```bash
-pnpm --filter @swarmvaultai/engine test
-pnpm --filter @swarmvaultai/engine typecheck
+pnpm --filter @beehive/engine test
+pnpm --filter @beehive/engine typecheck
 pnpm live:cli-surface
 ```
 

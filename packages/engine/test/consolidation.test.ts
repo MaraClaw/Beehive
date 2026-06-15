@@ -11,7 +11,7 @@ import type { GraphPage } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-consolidation-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-consolidation-"));
   tempDirs.push(dir);
   return dir;
 }

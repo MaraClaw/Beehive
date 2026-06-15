@@ -18,11 +18,11 @@ Engine tests are integration-heavy Vitest files that generate temp vaults, fake 
 
 ## CONVENTIONS
 
-- Temp workspaces are file-local: `fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-<feature>-"))`, tracked, and removed in `afterEach`.
-- Config helpers write `swarmvault.config.json` with `JSON.stringify(config, null, 2) + "\n"`.
+- Temp workspaces are file-local: `fs.mkdtemp(path.join(os.tmpdir(), "beehive-<feature>-"))`, tracked, and removed in `afterEach`.
+- Config helpers write `beehive.config.json` with `JSON.stringify(config, null, 2) + "\n"`.
 - Fixtures are inline or generated in test files; there is no shared fixture directory here.
 - Use fake executable scripts with `chmod(0o755)`, temp provider `.mjs` modules, synthetic WAV buffers, and local servers.
-- Restore or isolate env vars: private URL allowance, binary overrides, `SWARMVAULT_OUT`, graph flags, cloud keys, `HOME`, `PATH`.
+- Restore or isolate env vars: private URL allowance, binary overrides, `BEEHIVE_OUT`, graph flags, cloud keys, `HOME`, `PATH`.
 - Use `vi.restoreAllMocks()` after spies/stubs/mocks.
 
 ## ANTI-PATTERNS
@@ -35,8 +35,8 @@ Engine tests are integration-heavy Vitest files that generate temp vaults, fake 
 ## COMMANDS
 
 ```bash
-pnpm --filter @swarmvaultai/engine test
-SWARMVAULT_ALLOW_PRIVATE_URLS=1 pnpm --filter @swarmvaultai/engine test
+pnpm --filter @beehive/engine test
+BEEHIVE_ALLOW_PRIVATE_URLS=1 pnpm --filter @beehive/engine test
 ```
 
 ## NOTES

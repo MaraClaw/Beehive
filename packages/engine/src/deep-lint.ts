@@ -195,7 +195,7 @@ export async function runDeepLint(
         system:
           "You are an auditor for a local-first LLM knowledge vault. Return advisory findings only. Do not propose direct file edits.",
         prompt: [
-          "Review this SwarmVault state and return high-signal advisory findings.",
+          "Review this Beehive state and return high-signal advisory findings.",
           "Look for claims that contradict each other across different sources. When you find a genuine contradiction, use code 'contradiction' and include both source IDs in relatedSourceIds.",
           "",
           "Schema:",

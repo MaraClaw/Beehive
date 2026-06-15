@@ -1,16 +1,16 @@
-# SwarmVault
+# Beehive
 
 <!-- readme-language-nav:start -->
 **语言:** [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 <!-- readme-language-nav:end -->
 
-[![npm](https://img.shields.io/npm/v/@swarmvaultai/cli)](https://www.npmjs.com/package/@swarmvaultai/cli)
-[![npm downloads](https://img.shields.io/npm/dw/@swarmvaultai/cli)](https://www.npmjs.com/package/@swarmvaultai/cli)
-[![GitHub stars](https://img.shields.io/github/stars/swarmclawai/swarmvault)](https://github.com/swarmclawai/swarmvault)
+[![npm](https://img.shields.io/npm/v/@beehive/cli)](https://www.npmjs.com/package/@beehive/cli)
+[![npm downloads](https://img.shields.io/npm/dw/@beehive/cli)](https://www.npmjs.com/package/@beehive/cli)
+[![GitHub stars](https://img.shields.io/github/stars/beehive/beehive)](https://github.com/MaraClaw/Beehive)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)]()
 
-**面向 AI 代理的本地优先 LLM Wiki、知识图谱构建器和 RAG 知识库。** SwarmVault 会把文档、代码、转录稿、笔记和 URL 变成持久 Markdown wiki 与本地图谱。先用一条命令开始；当你需要时，再逐步学习更强的 graph、review、context pack 和自动化工作流。
+**面向 AI 代理的本地优先 LLM Wiki、知识图谱构建器和 RAG 知识库。** Beehive 会把文档、代码、转录稿、笔记和 URL 变成持久 Markdown wiki 与本地图谱。先用一条命令开始；当你需要时，再逐步学习更强的 graph、review、context pack 和自动化工作流。
 
 网站文档目前仍以英文为主。如果不同语言版本之间的表述出现偏差，请以 [README.md](README.md) 为准。
 
@@ -18,31 +18,31 @@
 ## 30 秒体验
 
 ```bash
-npm install -g @swarmvaultai/cli
-swarmvault quickstart ./your-repo
+npm install -g @beehive/cli
+beehive quickstart ./your-repo
 ```
 
-`quickstart` 会在当前目录初始化 vault、导入本地文件、目录或公开 GitHub 仓库、编译 wiki 和 graph、写入 share artifacts，并打开本地图谱查看器。它是 `swarmvault scan` 的新手友好别名。
+`quickstart` 会在当前目录初始化 vault、导入本地文件、目录或公开 GitHub 仓库、编译 wiki 和 graph、写入 share artifacts，并打开本地图谱查看器。它是 `beehive scan` 的新手友好别名。
 
 没有现成的仓库？
 
 ```bash
-swarmvault demo
+beehive demo
 ```
 
 第一次 compile 之后，最常用的下一步是：
 
 ```bash
-swarmvault next
-swarmvault query "What are the key concepts?"
-swarmvault graph serve
-swarmvault doctor
-swarmvault candidate list
+beehive next
+beehive query "What are the key concepts?"
+beehive graph serve
+beehive doctor
+beehive candidate list
 ```
 
-如果不确定当前 vault 处于什么状态，运行只读的 `swarmvault next`；它会告诉你应该 init、ingest、compile、query、review 还是 refresh。
+如果不确定当前 vault 处于什么状态，运行只读的 `beehive next`；它会告诉你应该 init、ingest、compile、query、review 还是 refresh。
 
-![SwarmVault graph workspace](https://www.swarmvault.ai/images/screenshots/graph-workspace.png)
+![Beehive graph workspace](https://www.beehive.ai/images/screenshots/graph-workspace.png)
 
 第一次运行不需要 API key。内置 heuristic provider 在本地离线运行。
 
@@ -56,22 +56,22 @@ swarmvault candidate list
 
 ### 三层架构
 
-SwarmVault 采用三层架构，遵循 Andrej Karpathy 描述的模式：
+Beehive 采用三层架构，遵循 Andrej Karpathy 描述的模式：
 
-1. **原始来源** (`raw/`) —— 你精心收集的源文档。书籍、文章、论文、转录稿、代码、图片、数据集。它们是不可变的：SwarmVault 只读取，从不修改。
+1. **原始来源** (`raw/`) —— 你精心收集的源文档。书籍、文章、论文、转录稿、代码、图片、数据集。它们是不可变的：Beehive 只读取，从不修改。
 2. **Wiki** (`wiki/`) —— LLM 生成和人工编写的 Markdown 文件。源摘要、实体页、概念页、交叉引用、仪表盘和输出。Wiki 是持续积累的持久化工件。
-3. **Schema** (`swarmvault.schema.md`) —— 定义 wiki 的组织方式、遵循的约定，以及你的领域中哪些内容最重要。你和 LLM 会共同演进这个文件。
+3. **Schema** (`beehive.schema.md`) —— 定义 wiki 的组织方式、遵循的约定，以及你的领域中哪些内容最重要。你和 LLM 会共同演进这个文件。
 
-> 继承 Vannevar Bush 的 Memex（1945）理念 —— 一个带有文档间关联路径的个人化知识库 —— SwarmVault 把来源之间的联系视为与来源本身同等重要。Bush 无法解决的是谁来做维护工作。LLM 解决了这个问题。
+> 继承 Vannevar Bush 的 Memex（1945）理念 —— 一个带有文档间关联路径的个人化知识库 —— Beehive 把来源之间的联系视为与来源本身同等重要。Bush 无法解决的是谁来做维护工作。LLM 解决了这个问题。
 
 把书籍、文章、笔记、转录稿、邮件导出、日历、数据集、幻灯片、截图、URL 和代码编译成持久化知识库，包含知识图谱、本地搜索、仪表盘和可审查的工件。可用于**个人知识管理**、**研究深潜**、**读书伴侣**、**代码文档**、**商业智能**，或任何需要长期积累知识并加以组织的领域。
 
-SwarmVault 把 LLM Wiki 模式做成了带有图谱导航、搜索、审查、自动化和可选模型增强的本地工具链。你也可以从[独立 schema 模板](templates/llm-wiki-schema.md)开始 —— 零安装，任何 LLM 代理 —— 当你需要更多功能时再升级到完整 CLI。
+Beehive 把 LLM Wiki 模式做成了带有图谱导航、搜索、审查、自动化和可选模型增强的本地工具链。你也可以从[独立 schema 模板](templates/llm-wiki-schema.md)开始 —— 零安装，任何 LLM 代理 —— 当你需要更多功能时再升级到完整 CLI。
 
 <!-- readme-section:why -->
-## 为什么选择 SwarmVault
+## 为什么选择 Beehive
 
-如果你喜欢 Karpathy 的 [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)，SwarmVault 就是它的生产级版本。以下是它如何解决社区最关注的问题：
+如果你喜欢 Karpathy 的 [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)，Beehive 就是它的生产级版本。以下是它如何解决社区最关注的问题：
 
 **"幻觉不会越积越多吗？"** —— 每条边都标记为 `extracted`、`inferred` 或 `ambiguous`。矛盾检测会标记冲突声明。`compile --approve` 把所有变更放入可审查的 approval bundle。新概念先进入 `wiki/candidates/`。`lint --conflicts` 可按需审计矛盾。
 
@@ -84,11 +84,11 @@ SwarmVault 把 LLM Wiki 模式做成了带有图谱导航、搜索、审查、�
 <!-- readme-section:comparison -->
 ## 从 Gist 到生产
 
-| | Karpathy Gist | **SwarmVault** |
+| | Karpathy Gist | **Beehive** |
 |---|:---:|:---:|
 | 三层架构 | 描述 | **已实现** |
 | Ingest / query / lint | 手动 | **CLI 命令** |
-| 一条命令启动 | — | **`swarmvault quickstart`** |
+| 一条命令启动 | — | **`beehive quickstart`** |
 | 类型化知识图谱 | — | **是** |
 | 交互式图谱查看器 | — | **是** |
 | 可视化 + 可直接发布的 share kit | — | **是** |
@@ -113,29 +113,29 @@ SwarmVault 把 LLM Wiki 模式做成了带有图谱导航、搜索、审查、�
 
 下载适用于 macOS、Windows 或 Linux 的桌面应用——自带运行时：
 
-**[下载桌面应用](https://www.swarmvault.ai/download)** | [GitHub Releases](https://github.com/swarmclawai/swarmvault-desktop/releases)
+**[下载桌面应用](https://www.beehive.ai/download)** | [GitHub Releases](https://github.com/MaraClaw/Beehive-desktop/releases)
 
 ### CLI
 
-SwarmVault 需要 Node `>=24`。
+Beehive 需要 Node `>=24`。
 
 ```bash
-npm install -g @swarmvaultai/cli
+npm install -g @beehive/cli
 ```
 
 验证安装：
 
 ```bash
-swarmvault --version
+beehive --version
 ```
 
 升级到最新已发布版本：
 
 ```bash
-npm install -g @swarmvaultai/cli@latest
+npm install -g @beehive/cli@latest
 ```
 
-全局 CLI 已经包含图谱查看器工作流和 MCP 服务流。普通用户不需要单独安装 `@swarmvaultai/viewer`。
+全局 CLI 已经包含图谱查看器工作流和 MCP 服务流。普通用户不需要单独安装 `@beehive/viewer`。
 
 <!-- readme-section:quickstart -->
 ## 快速开始
@@ -147,15 +147,15 @@ npm install -g @swarmvaultai/cli@latest
 ```bash
 mkdir my-vault
 cd my-vault
-swarmvault quickstart ../your-repo
-swarmvault next
+beehive quickstart ../your-repo
+beehive next
 ```
 
-这是新用户最简单的路径。它和 `swarmvault scan` 使用同一套执行逻辑：初始化 vault、导入本地文件、目录或公开 GitHub 仓库、编译 wiki 和 graph、写出 share artifacts，并在没有传入 `--no-serve` 或 `--no-viz` 时打开 graph viewer。交互式运行会在 stderr 输出有边界的 ingest 进度和当前文件，因此大型 PDF 或文档目录在抽取时不会像卡住一样安静。
+这是新用户最简单的路径。它和 `beehive scan` 使用同一套执行逻辑：初始化 vault、导入本地文件、目录或公开 GitHub 仓库、编译 wiki 和 graph、写出 share artifacts，并在没有传入 `--no-serve` 或 `--no-viz` 时打开 graph viewer。交互式运行会在 stderr 输出有边界的 ingest 进度和当前文件，因此大型 PDF 或文档目录在抽取时不会像卡住一样安静。
 
 ```text
 my-vault/
-├── swarmvault.schema.md       用户可编辑的知识库说明
+├── beehive.schema.md       用户可编辑的知识库说明
 ├── raw/                       不可变原始源文件与本地化资产
 ├── wiki/                      编译后的 wiki：sources、concepts、entities、code、outputs、graph
 ├── state/                     graph.json、retrieval/、embeddings、sessions、approvals
@@ -163,54 +163,54 @@ my-vault/
 └── agent/                     面向代理生成的辅助文件
 ```
 
-如果想把生成 artifacts 放到源代码树之外，使用 `SWARMVAULT_OUT=.swarmvault-out`。`swarmvault.config.json` 与 `swarmvault.schema.md` 仍保留在项目根目录；`raw/`、`wiki/`、`state/`、`agent/` 和 `inbox/` 会解析到输出目录下。
+如果想把生成 artifacts 放到源代码树之外，使用 `BEEHIVE_OUT=.beehive-out`。`beehive.config.json` 与 `beehive.schema.md` 仍保留在项目根目录；`raw/`、`wiki/`、`state/`、`agent/` 和 `inbox/` 会解析到输出目录下。
 
 ### 学会主循环
 
 理解最快路径后，可以把同一流程拆开执行：
 
 ```bash
-swarmvault init --obsidian --profile personal-research
-swarmvault ingest ./src --repo-root .
-swarmvault ingest ./meeting.srt --guide
-swarmvault add https://arxiv.org/abs/2401.12345
-swarmvault compile
-swarmvault next
-swarmvault query "What is the auth flow?"
-swarmvault graph serve
+beehive init --obsidian --profile personal-research
+beehive ingest ./src --repo-root .
+beehive ingest ./meeting.srt --guide
+beehive add https://arxiv.org/abs/2401.12345
+beehive compile
+beehive next
+beehive query "What is the auth flow?"
+beehive graph serve
 ```
 
-当同一个仓库、目录或文档站点需要长期注册和刷新时，使用 `swarmvault source add https://github.com/karpathy/micrograd`、`swarmvault source add https://example.com/docs/getting-started`、`swarmvault source list`、`swarmvault source reload --all` 和 `swarmvault source session transcript-or-session-id`。公开 GitHub 仓库可用 `swarmvault clone https://github.com/owner/repo --no-viz`，也可用 `swarmvault source add https://github.com/owner/repo --branch main --checkout-dir .swarmvault-checkouts/repo` 复用 checkout。
+当同一个仓库、目录或文档站点需要长期注册和刷新时，使用 `beehive source add https://github.com/karpathy/micrograd`、`beehive source add https://example.com/docs/getting-started`、`beehive source list`、`beehive source reload --all` 和 `beehive source session transcript-or-session-id`。公开 GitHub 仓库可用 `beehive clone https://github.com/owner/repo --no-viz`，也可用 `beehive source add https://github.com/owner/repo --branch main --checkout-dir .beehive-checkouts/repo` 复用 checkout。
 
 ### 常用下一步命令
 
 | 目标 | 命令 |
 | --- | --- |
-| 查看当前目录最适合的下一条命令 | `swarmvault next` |
-| 不打开 viewer 运行新手路径 | `swarmvault quickstart ./path --no-serve` |
-| 使用旧的简洁别名 | `swarmvault scan ./path --no-viz` |
-| 检查图谱新鲜度 | `swarmvault graph status ./src` 或 `swarmvault check-update ./src` |
-| 刷新代码派生图谱 artifacts | `swarmvault update ./src` |
-| 重新计算图谱社区 | `swarmvault graph cluster` 或 `swarmvault cluster-only` |
-| 打印图谱计数并校验导出 | `swarmvault graph stats` 和 `swarmvault graph validate --strict` |
-| 分享首轮摘要 | `swarmvault graph share --post`、`swarmvault graph share --svg ./share-card.svg` 或 `swarmvault graph share --bundle ./share-kit` |
-| 导出给 agent 或其他工具 | `swarmvault export ai --out ./exports/ai` |
-| 构建有边界的 agent context | `swarmvault context build "Implement the auth refactor" --target ./src --budget 8000` |
-| 记录任务历史 | `swarmvault task start "Implement the auth refactor" --target ./src --agent codex` |
-| 保留基于 vault 的多轮对话 | `swarmvault chat "How should the next agent use this vault?"` |
-| 打开健康检查和修复建议 | `swarmvault doctor --repair` |
-| 构建图谱导出 | `swarmvault graph export --report ./exports/report.html`、`swarmvault graph export --callflow ./exports/callflow.html`、`swarmvault graph export --obsidian ./exports/graph-vault` 或 `swarmvault graph export --neo4j ./exports/graph.cypher` |
-| 合并或查看 source/module tree | `swarmvault tree --output ./exports/tree.html` 和 `swarmvault merge-graphs ./exports/graph.json ./other-graph.json --out ./exports/merged-graph.json` |
-| 推送图谱数据到 Neo4j | `swarmvault graph push neo4j --dry-run` |
+| 查看当前目录最适合的下一条命令 | `beehive next` |
+| 不打开 viewer 运行新手路径 | `beehive quickstart ./path --no-serve` |
+| 使用旧的简洁别名 | `beehive scan ./path --no-viz` |
+| 检查图谱新鲜度 | `beehive graph status ./src` 或 `beehive check-update ./src` |
+| 刷新代码派生图谱 artifacts | `beehive update ./src` |
+| 重新计算图谱社区 | `beehive graph cluster` 或 `beehive cluster-only` |
+| 打印图谱计数并校验导出 | `beehive graph stats` 和 `beehive graph validate --strict` |
+| 分享首轮摘要 | `beehive graph share --post`、`beehive graph share --svg ./share-card.svg` 或 `beehive graph share --bundle ./share-kit` |
+| 导出给 agent 或其他工具 | `beehive export ai --out ./exports/ai` |
+| 构建有边界的 agent context | `beehive context build "Implement the auth refactor" --target ./src --budget 8000` |
+| 记录任务历史 | `beehive task start "Implement the auth refactor" --target ./src --agent codex` |
+| 保留基于 vault 的多轮对话 | `beehive chat "How should the next agent use this vault?"` |
+| 打开健康检查和修复建议 | `beehive doctor --repair` |
+| 构建图谱导出 | `beehive graph export --report ./exports/report.html`、`beehive graph export --callflow ./exports/callflow.html`、`beehive graph export --obsidian ./exports/graph-vault` 或 `beehive graph export --neo4j ./exports/graph.cypher` |
+| 合并或查看 source/module tree | `beehive tree --output ./exports/tree.html` 和 `beehive merge-graphs ./exports/graph.json ./other-graph.json --out ./exports/merged-graph.json` |
+| 推送图谱数据到 Neo4j | `beehive graph push neo4j --dry-run` |
 
-想要最小 LLM-Wiki starter？`swarmvault init --lite` 只创建 `raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md` 和 `swarmvault.schema.md`，不生成 config、state 或 agent installs。普通 `init`、`quickstart`、`scan` 和 `clone` 默认也不会写入 agent 规则文件；需要项目级 agent instructions 时再运行 `swarmvault install --agent <agent>`。
+想要最小 LLM-Wiki starter？`beehive init --lite` 只创建 `raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md` 和 `beehive.schema.md`，不生成 config、state 或 agent installs。普通 `init`、`quickstart`、`scan` 和 `clone` 默认也不会写入 agent 规则文件；需要项目级 agent instructions 时再运行 `beehive install --agent <agent>`。
 
-当 vault 位于 git 仓库中时，`ingest`、`compile` 和 `query` 支持 `--commit`。`compile --max-tokens <n>` 可为受限上下文窗口裁剪低优先级页面。`swarmvault ingest ./customer-call.mp3`、`swarmvault ingest https://www.youtube.com/watch?v=dQw4w9WgXcQ` 和 `swarmvault ingest --video https://example.com/product-demo.mp4` 分别覆盖音频、YouTube transcript 和视频流程，前提是所需 provider 或辅助二进制可用。
+当 vault 位于 git 仓库中时，`ingest`、`compile` 和 `query` 支持 `--commit`。`compile --max-tokens <n>` 可为受限上下文窗口裁剪低优先级页面。`beehive ingest ./customer-call.mp3`、`beehive ingest https://www.youtube.com/watch?v=dQw4w9WgXcQ` 和 `beehive ingest --video https://example.com/product-demo.mp4` 分别覆盖音频、YouTube transcript 和视频流程，前提是所需 provider 或辅助二进制可用。
 
 <!-- readme-section:provider-setup -->
 ## 可选：添加模型提供方
 
-开始使用 SwarmVault 并不需要 API key，也不需要外部模型提供方。内置的 `heuristic` 提供方可以支持本地/离线的知识库初始化、ingest、compile、graph/report/search，以及轻量级的 query 和 lint 默认流程。
+开始使用 Beehive 并不需要 API key，也不需要外部模型提供方。内置的 `heuristic` 提供方可以支持本地/离线的知识库初始化、ingest、compile、graph/report/search，以及轻量级的 query 和 lint 默认流程。
 
 ### 推荐：通过 Ollama + Gemma 在本地运行 LLM
 
@@ -220,7 +220,7 @@ swarmvault graph serve
 ollama pull gemma4
 ```
 
-SwarmVault 在 `init`、`quickstart`、`scan` 或 `clone` 时不会默认写这些项目本地规则文件，除非你显式选择安装已配置的 agent。单个目标用 `swarmvault install --agent <agent>`；如果要一次安装多个目标，可以先在 `swarmvault.config.json` 里列出 agents，再运行 `swarmvault init --install-agent-rules` 或 `swarmvault quickstart <input> --install-agent-rules`。
+Beehive 在 `init`、`quickstart`、`scan` 或 `clone` 时不会默认写这些项目本地规则文件，除非你显式选择安装已配置的 agent。单个目标用 `beehive install --agent <agent>`；如果要一次安装多个目标，可以先在 `beehive.config.json` 里列出 agents，再运行 `beehive init --install-agent-rules` 或 `beehive quickstart <input> --install-agent-rules`。
 
 ```json
 {
@@ -239,7 +239,7 @@ SwarmVault 在 `init`、`quickstart`、`scan` 或 `clone` 时不会默认写这�
 }
 ```
 
-当你只配置 heuristic provider 时，SwarmVault 在 compile/query 命令中会显示一次性提示指向此配置。设置 `SWARMVAULT_NO_NOTICES=1` 可以关闭该提示。任何其他已支持的 provider（OpenAI、Anthropic、Gemini、OpenRouter、Groq、Together、xAI、Cerebras、openai-compatible、custom）同样可用。
+当你只配置 heuristic provider 时，Beehive 在 compile/query 命令中会显示一次性提示指向此配置。设置 `BEEHIVE_NO_NOTICES=1` 可以关闭该提示。任何其他已支持的 provider（OpenAI、Anthropic、Gemini、OpenRouter、Groq、Together、xAI、Cerebras、openai-compatible、custom）同样可用。
 
 ### 本地语义 Embeddings
 
@@ -266,7 +266,7 @@ SwarmVault 在 `init`、`quickstart`、`scan` 或 `clone` 时不会默认写这�
 }
 ```
 
-当有可用的 embedding 能力提供方时，SwarmVault 还会默认把语义页面匹配并入本地搜索结果。`tasks.embeddingProvider` 是显式指定该后端的方式，但如果当前 `queryProvider` 也支持 embeddings，SwarmVault 也可以回退使用它。若再设置 `retrieval.rerank: true`，则会让当前 `queryProvider` 对合并后的顶部候选结果重新排序。
+当有可用的 embedding 能力提供方时，Beehive 还会默认把语义页面匹配并入本地搜索结果。`tasks.embeddingProvider` 是显式指定该后端的方式，但如果当前 `queryProvider` 也支持 embeddings，Beehive 也可以回退使用它。若再设置 `retrieval.rerank: true`，则会让当前 `queryProvider` 对合并后的顶部候选结果重新排序。
 
 ### 云端 API 提供方
 
@@ -289,20 +289,20 @@ SwarmVault 在 `init`、`quickstart`、`scan` 或 `clone` 时不会默认写这�
 }
 ```
 
-其他可选后端、任务路由方式与能力配置请参阅 [provider docs](https://www.swarmvault.ai/docs/providers)。也可以直接用 CLI 管理 provider 路由：
+其他可选后端、任务路由方式与能力配置请参阅 [provider docs](https://www.beehive.ai/docs/providers)。也可以直接用 CLI 管理 provider 路由：
 
 ```bash
-swarmvault provider add router --type openrouter --model openrouter/auto --api-key-env OPENROUTER_API_KEY --capability chat --capability structured --task queryProvider
-swarmvault provider list
-swarmvault provider show router
-swarmvault provider remove router --fallback local
+beehive provider add router --type openrouter --model openrouter/auto --api-key-env OPENROUTER_API_KEY --capability chat --capability structured --task queryProvider
+beehive provider list
+beehive provider show router
+beehive provider remove router --fallback local
 ```
 
-这些命令会保留 `swarmvault.config.json` 中未知字段，并通过 `apiKeyEnv` 引用密钥；不会接受明文 API key。
+这些命令会保留 `beehive.config.json` 中未知字段，并通过 `apiKeyEnv` 引用密钥；不会接受明文 API key。
 
 ### 语音优先采集（本地 Whisper）
 
-处理语音备忘、会议录音、访谈等音频时，可以安装 whisper.cpp 并让 SwarmVault 在本地驱动，无需 API Key、无需联网：
+处理语音备忘、会议录音、访谈等音频时，可以安装 whisper.cpp 并让 Beehive 在本地驱动，无需 API Key、无需联网：
 
 ```bash
 # macOS
@@ -310,27 +310,27 @@ brew install whisper-cpp
 # Debian / Ubuntu
 sudo apt install whisper.cpp
 
-swarmvault provider setup --local-whisper --apply
+beehive provider setup --local-whisper --apply
 ```
 
-该命令会检测二进制、把默认的 `base.en` ggml 模型（约 147 MB）下载到 `~/.swarmvault/models/`，并在 `swarmvault.config.json` 的 `providers.local-whisper` 注册该 provider，同时把 `tasks.audioProvider` 指向它。之后 `swarmvault add voice-memo.m4a`（或把音频放入 `raw/inbox/`）即可完全离线完成端到端转录；现有的摄取期密钥清洗器会在转录文本进入 `raw/` 或 `wiki/` 之前移除其中的敏感信息。用 `--model {tiny.en,small.en,medium.en,large-v3}` 切换精度档位，用 `localWhisper.threads` 调整线程数，并可通过 `localWhisper.binaryPath` / `localWhisper.modelPath` / `SWARMVAULT_WHISPER_BINARY` 覆盖二进制与模型路径。`local-whisper` provider 类型在 `STABILITY.md` 中标注为 1.1.0 **experimental**。
+该命令会检测二进制、把默认的 `base.en` ggml 模型（约 147 MB）下载到 `~/.beehive/models/`，并在 `beehive.config.json` 的 `providers.local-whisper` 注册该 provider，同时把 `tasks.audioProvider` 指向它。之后 `beehive add voice-memo.m4a`（或把音频放入 `raw/inbox/`）即可完全离线完成端到端转录；现有的摄取期密钥清洗器会在转录文本进入 `raw/` 或 `wiki/` 之前移除其中的敏感信息。用 `--model {tiny.en,small.en,medium.en,large-v3}` 切换精度档位，用 `localWhisper.threads` 调整线程数，并可通过 `localWhisper.binaryPath` / `localWhisper.modelPath` / `BEEHIVE_WHISPER_BINARY` 覆盖二进制与模型路径。`local-whisper` provider 类型在 `STABILITY.md` 中标注为 1.1.0 **experimental**。
 
 如果更希望使用托管转录 provider，把 `tasks.audioProvider` 指向任意具备 `audio` 能力的 provider（OpenAI、Groq 等）即可。YouTube transcript 取入不需要模型 provider。
 
 ## 直接指向可重复使用的来源
 
-最容易感受到 SwarmVault 价值的方式，是使用 managed-source 工作流：
+最容易感受到 Beehive 价值的方式，是使用 managed-source 工作流：
 
 ```bash
-swarmvault source add ./exports/customer-call.srt --guide
-swarmvault source add https://github.com/karpathy/micrograd
-swarmvault source add https://example.com/docs/getting-started
-swarmvault source list
-swarmvault source session file-customer-call-srt-12345678
-swarmvault source reload --all
+beehive source add ./exports/customer-call.srt --guide
+beehive source add https://github.com/karpathy/micrograd
+beehive source add https://example.com/docs/getting-started
+beehive source list
+beehive source session file-customer-call-srt-12345678
+beehive source reload --all
 ```
 
-`source add` 会注册来源、把内容同步进知识库、执行一次 compile，并在 `wiki/outputs/source-briefs/` 下写出该来源的简报。加入 `--guide` 后，会额外创建一个可恢复的引导式 session，写入 `wiki/outputs/source-sessions/`，并在 `profile.guidedSessionMode` 为 `canonical_review` 时通过 approval queue 阶段化对 canonical 页面（source/concept/entity）的更新；如果配置为 `insights_only`，则会把引导式整合内容保留在 `wiki/insights/` 中。你也可以在 `swarmvault.config.json` 中设置 `profile.guidedIngestDefault: true`，让 `ingest`、`source add` 和 `source reload` 默认进入引导式模式；当某次运行只想走轻量路径时，用 `--no-guide` 覆盖。它现在同样适用于可重复同步的本地文件，而不仅是目录、公开仓库或文档站点。`ingest` 仍适合单次文件或 URL，`add` 仍适合研究资料/文章的标准化采集。
+`source add` 会注册来源、把内容同步进知识库、执行一次 compile，并在 `wiki/outputs/source-briefs/` 下写出该来源的简报。加入 `--guide` 后，会额外创建一个可恢复的引导式 session，写入 `wiki/outputs/source-sessions/`，并在 `profile.guidedSessionMode` 为 `canonical_review` 时通过 approval queue 阶段化对 canonical 页面（source/concept/entity）的更新；如果配置为 `insights_only`，则会把引导式整合内容保留在 `wiki/insights/` 中。你也可以在 `beehive.config.json` 中设置 `profile.guidedIngestDefault: true`，让 `ingest`、`source add` 和 `source reload` 默认进入引导式模式；当某次运行只想走轻量路径时，用 `--no-guide` 覆盖。它现在同样适用于可重复同步的本地文件，而不仅是目录、公开仓库或文档站点。`ingest` 仍适合单次文件或 URL，`add` 仍适合研究资料/文章的标准化采集。
 
 <!-- readme-section:agent-setup -->
 ## Agent 与 MCP 设置
@@ -338,54 +338,54 @@ swarmvault source reload --all
 先把知识库规则安装到你的编码代理中：
 
 ```bash
-swarmvault install --agent claude --hook --mcp  # Claude Code + graph-first hook + MCP server
-swarmvault install --agent codex --hook     # Codex + graph-first hook
-swarmvault install --agent cursor           # Cursor
-swarmvault install --agent copilot --hook   # GitHub Copilot CLI + hook
-swarmvault install --agent gemini --hook    # Gemini CLI + hook
-swarmvault install --agent trae             # Trae
-swarmvault install --agent claw             # Claw / OpenClaw skill target
-swarmvault install --agent droid            # Droid / Factory rules target
-swarmvault install --agent kiro             # Kiro IDE + 常驻 steering
-swarmvault install --agent kilo --hook       # Kilo 项目规则 + plugin
-swarmvault install --agent hermes           # Hermes 用户级 skill
-swarmvault install --agent antigravity      # Google Antigravity 规则 + /swarmvault 工作流
-swarmvault install --agent vscode           # VS Code Copilot Chat chatmode
-swarmvault install status --agent kilo --hook
+beehive install --agent claude --hook --mcp  # Claude Code + graph-first hook + MCP server
+beehive install --agent codex --hook     # Codex + graph-first hook
+beehive install --agent cursor           # Cursor
+beehive install --agent copilot --hook   # GitHub Copilot CLI + hook
+beehive install --agent gemini --hook    # Gemini CLI + hook
+beehive install --agent trae             # Trae
+beehive install --agent claw             # Claw / OpenClaw skill target
+beehive install --agent droid            # Droid / Factory rules target
+beehive install --agent kiro             # Kiro IDE + 常驻 steering
+beehive install --agent kilo --hook       # Kilo 项目规则 + plugin
+beehive install --agent hermes           # Hermes 用户级 skill
+beehive install --agent antigravity      # Google Antigravity 规则 + /beehive 工作流
+beehive install --agent vscode           # VS Code Copilot Chat chatmode
+beehive install status --agent kilo --hook
 ```
 
-对支持 hook 的 agent，安装的 hook 会引导 graph-first 读取，强制执行则是可选项。对 Claude Code，`--hook` 会在会话开始时注入 graph-first 指令——代码理解类问题先用普通的 `swarmvault graph query|explain|path` 命令（避免 `--json`，其输出会大得多）、`swarmvault query`、`swarmvault context build` 或 `wiki/graph/report.md` 回答，只有在编辑源文件时才直接读取——并附带图谱新鲜度提示。`swarmvault graph query "<seed>"` 会打印带页面路径的最佳匹配列表，并内联给出最匹配 wiki 页面的摘录，因此通常一条命令就能回答“X 在哪 / 谁调用了 Y”这类问题，无需再读文件。对于“谁调用了 X / 改动 X 有什么影响”这类问题，hook 指引会推荐 `swarmvault graph callers <symbol>`：它基于图谱 call edges 列出某个符号的所有调用方，并附带精确的 file:line 调用点证据——只扫描图谱认定为调用方的文件——以替代全仓库 grep。默认情况下 hook 运行在建议模式（`context`）：每个会话中第一次大范围 Grep/Glob/Bash 搜索只会得到一条指向这些普通图谱命令的一次性引导提示，不会有任何拒绝。在安装时传入 `--graph-first` 即可选择启用强制执行：此时每个会话中第一次大范围搜索会被拒绝一次，并给出指向这些普通图谱命令及其内联摘录的引导式重定向（之后重复同一搜索即可放行，因此永远不会阻塞工作）。该标志接受可选取值——`deny`（传入该标志时的默认值）、`context` 或 `off`——并把所选模式持久化为 `swarmvault.config.json` 中的 `hooks.graphFirst`；`SWARMVAULT_GRAPH_FIRST=deny|context|off` 仍可按会话覆盖。Edit/Write 工具之后，hook 会在后台启动 `swarmvault graph update --file <path>` 刷新，让图谱跟随你的编辑。针对知识库工件目录（`wiki/`、`raw/`、`state/`）或单个文件的搜索永远不会被拦截，仅过滤管道输出的搜索工具（例如 `some-command | grep …`）也不算大范围搜索。Codex、Gemini、Copilot、OpenCode 和 Kilo 的 hook 带有同样的 graph-first 指引——会话提示加一次性搜索重定向，按各工具的 hook API 适配。
+对支持 hook 的 agent，安装的 hook 会引导 graph-first 读取，强制执行则是可选项。对 Claude Code，`--hook` 会在会话开始时注入 graph-first 指令——代码理解类问题先用普通的 `beehive graph query|explain|path` 命令（避免 `--json`，其输出会大得多）、`beehive query`、`beehive context build` 或 `wiki/graph/report.md` 回答，只有在编辑源文件时才直接读取——并附带图谱新鲜度提示。`beehive graph query "<seed>"` 会打印带页面路径的最佳匹配列表，并内联给出最匹配 wiki 页面的摘录，因此通常一条命令就能回答“X 在哪 / 谁调用了 Y”这类问题，无需再读文件。对于“谁调用了 X / 改动 X 有什么影响”这类问题，hook 指引会推荐 `beehive graph callers <symbol>`：它基于图谱 call edges 列出某个符号的所有调用方，并附带精确的 file:line 调用点证据——只扫描图谱认定为调用方的文件——以替代全仓库 grep。默认情况下 hook 运行在建议模式（`context`）：每个会话中第一次大范围 Grep/Glob/Bash 搜索只会得到一条指向这些普通图谱命令的一次性引导提示，不会有任何拒绝。在安装时传入 `--graph-first` 即可选择启用强制执行：此时每个会话中第一次大范围搜索会被拒绝一次，并给出指向这些普通图谱命令及其内联摘录的引导式重定向（之后重复同一搜索即可放行，因此永远不会阻塞工作）。该标志接受可选取值——`deny`（传入该标志时的默认值）、`context` 或 `off`——并把所选模式持久化为 `beehive.config.json` 中的 `hooks.graphFirst`；`BEEHIVE_GRAPH_FIRST=deny|context|off` 仍可按会话覆盖。Edit/Write 工具之后，hook 会在后台启动 `beehive graph update --file <path>` 刷新，让图谱跟随你的编辑。针对知识库工件目录（`wiki/`、`raw/`、`state/`）或单个文件的搜索永远不会被拦截，仅过滤管道输出的搜索工具（例如 `some-command | grep …`）也不算大范围搜索。Codex、Gemini、Copilot、OpenCode 和 Kilo 的 hook 带有同样的 graph-first 指引——会话提示加一次性搜索重定向，按各工具的 hook API 适配。
 
-`swarmvault install --agent claude --mcp` 还会把 SwarmVault MCP server 注册到项目的 `.mcp.json`（`{"mcpServers":{"swarmvault":{"command":"swarmvault","args":["mcp"]}}}`）。Claude 安装还会在 `.claude/skills/swarmvault/SKILL.md` 写入项目级 skill 包；`--scope user` 会在 `~/.claude` 下一次性安装 skill、hook 和 settings，对所有仓库生效——在没有编译图谱报告的仓库中 hook 会自动跳过。
+`beehive install --agent claude --mcp` 还会把 Beehive MCP server 注册到项目的 `.mcp.json`（`{"mcpServers":{"beehive":{"command":"beehive","args":["mcp"]}}}`）。Claude 安装还会在 `.claude/skills/beehive/SKILL.md` 写入项目级 skill 包；`--scope user` 会在 `~/.claude` 下一次性安装 skill、hook 和 settings，对所有仓库生效——在没有编译图谱报告的仓库中 hook 会自动跳过。
 
-`swarmvault install --agent <agent>` 还会保持宿主项目整洁：在 git 仓库中，知识库工件目录会被追加到 `.gitignore`，严格 JSON 格式的 `tsconfig.json` 会把这些工件目录加入 `"exclude"`，使 `raw/` 下存储的源码副本不会破坏宿主项目的类型检查（带注释的 JSONC tsconfig 不会被改写，只给出提示；仍覆盖工件目录的 linter 配置会得到建议性警告；当 `SWARMVAULT_OUT` 把工件放在仓库之外时，这一切都会跳过）。
+`beehive install --agent <agent>` 还会保持宿主项目整洁：在 git 仓库中，知识库工件目录会被追加到 `.gitignore`，严格 JSON 格式的 `tsconfig.json` 会把这些工件目录加入 `"exclude"`，使 `raw/` 下存储的源码副本不会破坏宿主项目的类型检查（带注释的 JSONC tsconfig 不会被改写，只给出提示；仍覆盖工件目录的 linter 配置会得到建议性警告；当 `BEEHIVE_OUT` 把工件放在仓库之外时，这一切都会跳过）。
 
 推荐的按仓库 onboarding 流程，用于节省 token 的 agent 工作流：
 
 ```bash
 cd <repo>
-swarmvault init && swarmvault ingest .
-swarmvault install --agent claude --hook --mcp --graph-first
-swarmvault hook install        # git hook 在 commit/checkout 时刷新；当被跟踪仓库位于知识库根目录之下时，可附加可选的仓库路径参数（例如 `swarmvault hook install packages/app`）
+beehive init && beehive ingest .
+beehive install --agent claude --hook --mcp --graph-first
+beehive hook install        # git hook 在 commit/checkout 时刷新；当被跟踪仓库位于知识库根目录之下时，可附加可选的仓库路径参数（例如 `beehive hook install packages/app`）
 ```
 
-`swarmvault install --agent <agent> [--scope project|user]` 可选择项目级或用户级安装；`swarmvault install status --agent <agent>` 会只读报告目标文件是否存在。
+`beehive install --agent <agent> [--scope project|user]` 可选择项目级或用户级安装；`beehive install status --agent <agent>` 会只读报告目标文件是否存在。
 
-想要最精简的 LLM-Wiki 起点？`swarmvault init --lite` 只会创建 `raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md` 和 `swarmvault.schema.md`——不生成配置、不生成 state 目录、不安装 agent。你的 agent 会直接维护 wiki。之后随时可用完整的 `swarmvault init` 来升级到图谱、搜索、approval 等工具链。
+想要最精简的 LLM-Wiki 起点？`beehive init --lite` 只会创建 `raw/`、`wiki/`、`wiki/index.md`、`wiki/log.md` 和 `beehive.schema.md`——不生成配置、不生成 state 目录、不安装 agent。你的 agent 会直接维护 wiki。之后随时可用完整的 `beehive init` 来升级到图谱、搜索、approval 等工具链。
 
 或者直接通过 MCP 暴露知识库：
 
 ```bash
-swarmvault mcp
+beehive mcp
 ```
 
 如果你在使用 OpenClaw 或 ClawHub，可以这样安装打包好的技能：
 
 ```bash
-clawhub install swarmvault
+clawhub install beehive
 ```
 
-这会安装已发布的 `SKILL.md`，以及 ClawHub README、示例、参考资料、故障排查说明和验证提示。CLI 仍然通过 `npm install -g @swarmvaultai/cli@latest` 更新。
+这会安装已发布的 `SKILL.md`，以及 ClawHub README、示例、参考资料、故障排查说明和验证提示。CLI 仍然通过 `npm install -g @beehive/cli@latest` 更新。
 
 <!-- readme-section:input-types -->
 ## 支持多种输入类型混合使用
@@ -408,18 +408,18 @@ clawhub install swarmvault
 | 聊天导出 | Slack 导出 `.zip`、解压后的 Slack 导出目录 | 本地提取按频道/日期分组的对话 |
 | 邮件 | `.eml .mbox` | 本地提取单封邮件并展开邮箱文件 |
 | 日历 | `.ics` | 本地展开 `VEVENT` 事件 |
-| 音频 | `.mp3 .wav .m4a .aac .ogg .webm` 及其他 `audio/*` 文件 | 本地 Whisper（`swarmvault provider setup --local-whisper`），或通过 `tasks.audioProvider` 使用 provider 驱动的转录 |
+| 音频 | `.mp3 .wav .m4a .aac .ogg .webm` 及其他 `audio/*` 文件 | 本地 Whisper（`beehive provider setup --local-whisper`），或通过 `tasks.audioProvider` 使用 provider 驱动的转录 |
 | 视频 | `.mp4 .mov .m4v .mkv .avi`，以及带 `--video` 的 URL 输入 | 通过 `ffmpeg` 或 `yt-dlp` 提取音频，再交给 `tasks.audioProvider` 转录 |
 | HTML | `.html`、URL | Readability + Turndown 转 Markdown（URL 抓取） |
 | YouTube URL | `youtube.com/watch`、`youtu.be`、`youtube.com/embed`、`youtube.com/shorts` | 直接抓取转录文本，并提取标题与视频元数据 |
 | Images | `.png .jpg .jpeg .gif .webp .bmp .tif .tiff .svg .ico .heic .heif .avif .jxl` | Vision provider（已配置时） |
-| Research | arXiv、DOI、文章、X/Twitter | 通过 `swarmvault add` 标准化为 Markdown |
+| Research | arXiv、DOI、文章、X/Twitter | 通过 `beehive add` 标准化为 Markdown |
 | Text docs | `.md .mdx .txt .rst .rest` | 直接 ingest，并对 `.rst` 做轻量标题归一化 |
 | 配置 / 数据 | `.json .jsonc .json5 .toml .yaml .yml .xml .ini .conf .cfg .properties .env` | 结构化预览，带 key/value schema 提示 |
 | 开发清单文件 | `package.json` `tsconfig.json` `Cargo.toml` `pyproject.toml` `go.mod` `go.sum` `Dockerfile` `Makefile` `LICENSE` `.gitignore` `.editorconfig` `.npmrc` 等 | 基于内容嗅探的文本 ingest —— 常见开发配置不会被静默丢弃 |
 | Code | `.js .mjs .cjs .jsx .ts .mts .cts .tsx .sh .bash .zsh .py .go .rs .java .kt .kts .scala .sc .dart .lua .zig .cs .c .cc .cpp .cxx .h .hh .hpp .hxx .php .rb .ps1 .psm1 .psd1 .ex .exs .ml .mli .m .mm .res .resi .sol .vue .svelte .jl .v .vh .sv .svh .r .R .css .html .htm .sql`，以及带有 `#!/usr/bin/env node\|python\|ruby\|bash\|zsh` shebang 的无扩展名脚本 | 有打包 parser 的语言使用 AST/parser-backed 分析与模块解析；Svelte 会通过 TypeScript 分析器解析 `<script>` 块；Julia 与 Verilog/SystemVerilog 现在使用打包 WASM grammar；JavaScript 与 TypeScript 会捕获静态 import 和动态 `import()` 边；R 会被识别，并在安全的打包 grammar 可用前给出明确 parser-asset 诊断；SQL 会生成 table/view 节点以及 read/write/join/reference 边 |
 | Browser clips | inbox bundles | 通过 `inbox import` 重写资产路径后的 Markdown |
-| Managed sources | 本地目录、公开 GitHub 仓库根 URL、文档中心 URL | 通过 `swarmvault source add` 的 registry 同步 |
+| Managed sources | 本地目录、公开 GitHub 仓库根 URL、文档中心 URL | 通过 `beehive source add` 的 registry 同步 |
 
 <!-- readme-section:what-you-get -->
 ## 你能得到什么
@@ -428,59 +428,59 @@ clawhub install swarmvault
 
 **God nodes 与社区分析** - 自动识别连接度最高的桥接节点。图谱报告页会用自然语言解释“为什么这个连接值得关注”。
 
-**由 schema 驱动的编译** - 每个知识库都带有 `swarmvault.schema.md`，编译器会遵循其中定义的命名规则、分类方式与 grounding 要求。
+**由 schema 驱动的编译** - 每个知识库都带有 `beehive.schema.md`，编译器会遵循其中定义的命名规则、分类方式与 grounding 要求。
 
 **save-first 查询** - 默认把答案写入 `wiki/outputs/`，让有价值的工作不断积累而不是消失。支持 `markdown`、`report`、`slides`、`chart` 和 `image` 输出格式。
 
-**Agent context packs** - `swarmvault context build "<goal>" --target <path|node|page>` 会为编码或研究 agent 写出带引用、受 token 预算约束的 handoff。Context pack 包含图谱定位、纳入的证据、预算不足时明确省略的内容，并在 `wiki/context/` 与 `state/context-packs/` 留下持久 artifact。
+**Agent context packs** - `beehive context build "<goal>" --target <path|node|page>` 会为编码或研究 agent 写出带引用、受 token 预算约束的 handoff。Context pack 包含图谱定位、纳入的证据、预算不足时明确省略的内容，并在 `wiki/context/` 与 `state/context-packs/` 留下持久 artifact。
 
-**Chat sessions 与 AI export packs** - `swarmvault chat` 会把多轮 transcript 保存到 `wiki/outputs/chat-sessions/`，并在 `state/chat-sessions/` 保存结构化状态；`swarmvault export ai` 会写出 `llms.txt`、full-text、JSON-LD、manifest 和每页 sibling，便于静态 agent handoff。
+**Chat sessions 与 AI export packs** - `beehive chat` 会把多轮 transcript 保存到 `wiki/outputs/chat-sessions/`，并在 `state/chat-sessions/` 保存结构化状态；`beehive export ai` 会写出 `llms.txt`、full-text、JSON-LD、manifest 和每页 sibling，便于静态 agent handoff。
 
-**Agent task ledger** - `swarmvault task start|update|finish|resume` 会把任务目标、关联 context pack、decision、图谱证据、触达路径、结果和 follow-up 记录为 git-friendly JSON 与 Markdown，写入 `state/memory/tasks/` 和 `wiki/memory/tasks/`。Compile 会把 task 与 decision 纳入图谱；既有 `memory` 命令仍是兼容别名。
+**Agent task ledger** - `beehive task start|update|finish|resume` 会把任务目标、关联 context pack、decision、图谱证据、触达路径、结果和 follow-up 记录为 git-friendly JSON 与 Markdown，写入 `state/memory/tasks/` 和 `wiki/memory/tasks/`。Compile 会把 task 与 decision 纳入图谱；既有 `memory` 命令仍是兼容别名。
 
-**Vault doctor 与工作台** - `swarmvault doctor [--repair]` 会检查 graph artifact、retrieval、review queue、watch state、migration、managed sources、source/page count 和 task 状态。图谱查看器工作台会显示优先级 next action、每一项检查及详情、可复制建议命令、安全 repair、明确 capture mode、title/tag 捕获字段、带预算的 context-pack 创建和 task-start 操作。
+**Vault doctor 与工作台** - `beehive doctor [--repair]` 会检查 graph artifact、retrieval、review queue、watch state、migration、managed sources、source/page count 和 task 状态。图谱查看器工作台会显示优先级 next action、每一项检查及详情、可复制建议命令、安全 repair、明确 capture mode、title/tag 捕获字段、带预算的 context-pack 创建和 task-start 操作。
 
 **可审查的变更流** - `compile --approve` 会把变更先写入 approval bundles。新概念和实体会先进入 `wiki/candidates/`，不会静默修改。
 
-**可配置 profile** - 通过 `swarmvault.config.json` 中的 `profile.presets`、`profile.dashboardPack`、`profile.guidedSessionMode`、`profile.guidedIngestDefault`、`profile.deepLintDefault` 和 `profile.dataviewBlocks` 组合出自己的知识库模式，而不是等待新的硬编码产品模式。`personal-research` 只是一个内置 preset 别名。
+**可配置 profile** - 通过 `beehive.config.json` 中的 `profile.presets`、`profile.dashboardPack`、`profile.guidedSessionMode`、`profile.guidedIngestDefault`、`profile.deepLintDefault` 和 `profile.dataviewBlocks` 组合出自己的知识库模式，而不是等待新的硬编码产品模式。`personal-research` 只是一个内置 preset 别名。
 
-**引导式 session** - `ingest --guide`、`source add --guide`、`source reload --guide`、`source guide <id>` 和 `source session <id>` 会创建可恢复的 source session，写入 `wiki/outputs/source-sessions/`，并在你接受之前阶段化 source review、source guide，以及基于 profile 配置流向 canonical 页面或 `wiki/insights/` 的更新提案。在 `swarmvault.config.json` 中设置 `profile.guidedIngestDefault: true` 可以让 ingest 和 source 命令默认使用引导式模式；用 `--no-guide` 覆盖。
+**引导式 session** - `ingest --guide`、`source add --guide`、`source reload --guide`、`source guide <id>` 和 `source session <id>` 会创建可恢复的 source session，写入 `wiki/outputs/source-sessions/`，并在你接受之前阶段化 source review、source guide，以及基于 profile 配置流向 canonical 页面或 `wiki/insights/` 的更新提案。在 `beehive.config.json` 中设置 `profile.guidedIngestDefault: true` 可以让 ingest 和 source 命令默认使用引导式模式；用 `--no-guide` 覆盖。
 
-**deep lint 默认值** - 在 `swarmvault.config.json` 中设置 `profile.deepLintDefault: true`，可以让 `swarmvault lint` 默认包含 LLM 驱动的 advisory deep lint；如果某一次只想运行结构性检查，用 `--no-deep` 覆盖即可。
+**deep lint 默认值** - 在 `beehive.config.json` 中设置 `profile.deepLintDefault: true`，可以让 `beehive lint` 默认包含 LLM 驱动的 advisory deep lint；如果某一次只想运行结构性检查，用 `--no-deep` 覆盖即可。
 
 **Web-search 增强 lint** — `lint --deep --web` 使用已配置的 web-search provider（`http-json` 或 `custom`）在 deep-lint 中引入外部证据片段。Web search 目前仅限于 deep lint；其他命令仅查询本地 vault 状态。
 
 **知识仪表盘** - `wiki/dashboards/` 会生成 recent sources、reading log、timeline、source sessions、source guides、research map、contradictions 和 open questions 页面。默认先保证普通 Markdown 可读；当 `profile.dataviewBlocks` 打开时，会额外附加适合 Obsidian Dataview 的查询块。
 
-**Retrieval、混合搜索与 rerank** - 本地 retrieval 会把 SQLite FTS shard 和 manifest 写入 `state/retrieval/`。当有可用的 embedding 能力提供方时，本地搜索会把 SQLite 全文命中与语义页面匹配合并起来。`tasks.embeddingProvider` 是显式指定该后端的方式，但如果当前 `queryProvider` 也支持 embeddings，SwarmVault 也可以回退使用它。若设置 `retrieval.rerank: true`，还会让当前 `queryProvider` 在 `query` 回答前对候选结果做一次重排。使用 `swarmvault retrieval status|rebuild|doctor` 可检查或修复索引。
+**Retrieval、混合搜索与 rerank** - 本地 retrieval 会把 SQLite FTS shard 和 manifest 写入 `state/retrieval/`。当有可用的 embedding 能力提供方时，本地搜索会把 SQLite 全文命中与语义页面匹配合并起来。`tasks.embeddingProvider` 是显式指定该后端的方式，但如果当前 `queryProvider` 也支持 embeddings，Beehive 也可以回退使用它。若设置 `retrieval.rerank: true`，还会让当前 `queryProvider` 在 `query` 回答前对候选结果做一次重排。使用 `beehive retrieval status|rebuild|doctor` 可检查或修复索引。
 
 **带 token 预算的 compile 与自动提交** - `compile --max-tokens <n>` 会裁剪低优先级页面，让生成的 wiki 输出控制在给定 token 预算内；`ingest|compile|query --commit` 则可以在 vault 位于 git 仓库中时立即提交 `wiki/` 与 `state/` 的变更。
 
 **图谱健康信号** - graph report 产物现在还会给出 community cohesion 摘要、孤立节点与高歧义边的告警，以及针对薄弱或模糊图区域的更明确 follow-up questions。
 
-**可视化 + 可直接发布的 share kit** - 每次 compile 都会写入 `wiki/graph/share-card.md`、`wiki/graph/share-card.svg` 和 `wiki/graph/share-kit/`；`swarmvault graph share --post` 会打印简短文本，`swarmvault graph share --svg [path]` 会写出 1200x630 的可视化卡片，`swarmvault graph share --bundle [dir]` 会写出 markdown、发布文本、SVG、HTML 预览和 JSON 元数据，便于发布、链接或截图。
+**可视化 + 可直接发布的 share kit** - 每次 compile 都会写入 `wiki/graph/share-card.md`、`wiki/graph/share-card.svg` 和 `wiki/graph/share-kit/`；`beehive graph share --post` 会打印简短文本，`beehive graph share --svg [path]` 会写出 1200x630 的可视化卡片，`beehive graph share --bundle [dir]` 会写出 markdown、发布文本、SVG、HTML 预览和 JSON 元数据，便于发布、链接或截图。
 
-**图谱 blast radius、cycles、status、stats、validation、refresh、查询过滤、tree、merge、聚类与报告导出** - `graph blast <target>` 会沿模块依赖的反向 import 链追踪改动影响范围，`graph cycles [--relation imports]` 会查找确定性的有向环，`graph status [path]` 会只读检查 graph/report artifacts 与已跟踪 repo 改动是否 stale，`check-update [path]` 是同一 cron-safe status check 的顶层兼容 alias。`graph stats` 会输出轻量级计数与 relation mix，`graph validate [graph] --strict` 会在 export/merge/push 工作流前检查重复 id、悬空引用、confidence 范围与 conflicted-edge evidence；`graph update [path]` / `graph refresh [path]` 会为 graph artifacts 运行 code-only repo refresh cycle，并默认阻止节点或边数下降超过 25% 的刷新，除非显式传入 `--force`，`update [path]` 是顶层兼容 alias。`watch [path] --once` 可针对单个 repo root 刷新而不写入 watch config。`graph query` 可按 relation、context group、evidence class、node type 或 language 过滤 traversal；`graph tree` 会写出带 expand/collapse 控件与节点 inspector 的交互式 source/module/symbol HTML 树，`tree` 是顶层 alias；`graph merge` 会把 SwarmVault 或 node-link JSON 图谱合并为带命名空间的单一 artifact，`merge-graphs` 是顶层 alias；`graph cluster [--resolution <n>]` 可以在不重新 ingest 的情况下基于现有 graph 重新计算 communities、degree、god-node 标记与 graph report 页面，`cluster-only [vault]` 是顶层兼容 alias。`graph export --report` 会生成一个自包含的 HTML 图谱报告，展示统计、关键节点、社区和告警；`graph export --callflow <path>` 会写出紧凑的有向关系 HTML 视图；`graph export --neo4j <path>` 是导入 Neo4j 前使用的 Cypher export alias。
+**图谱 blast radius、cycles、status、stats、validation、refresh、查询过滤、tree、merge、聚类与报告导出** - `graph blast <target>` 会沿模块依赖的反向 import 链追踪改动影响范围，`graph cycles [--relation imports]` 会查找确定性的有向环，`graph status [path]` 会只读检查 graph/report artifacts 与已跟踪 repo 改动是否 stale，`check-update [path]` 是同一 cron-safe status check 的顶层兼容 alias。`graph stats` 会输出轻量级计数与 relation mix，`graph validate [graph] --strict` 会在 export/merge/push 工作流前检查重复 id、悬空引用、confidence 范围与 conflicted-edge evidence；`graph update [path]` / `graph refresh [path]` 会为 graph artifacts 运行 code-only repo refresh cycle，并默认阻止节点或边数下降超过 25% 的刷新，除非显式传入 `--force`，`update [path]` 是顶层兼容 alias。`watch [path] --once` 可针对单个 repo root 刷新而不写入 watch config。`graph query` 可按 relation、context group、evidence class、node type 或 language 过滤 traversal；`graph tree` 会写出带 expand/collapse 控件与节点 inspector 的交互式 source/module/symbol HTML 树，`tree` 是顶层 alias；`graph merge` 会把 Beehive 或 node-link JSON 图谱合并为带命名空间的单一 artifact，`merge-graphs` 是顶层 alias；`graph cluster [--resolution <n>]` 可以在不重新 ingest 的情况下基于现有 graph 重新计算 communities、degree、god-node 标记与 graph report 页面，`cluster-only [vault]` 是顶层兼容 alias。`graph export --report` 会生成一个自包含的 HTML 图谱报告，展示统计、关键节点、社区和告警；`graph export --callflow <path>` 会写出紧凑的有向关系 HTML 视图；`graph export --neo4j <path>` 是导入 Neo4j 前使用的 Cypher export alias。
 
-**图谱 diff** - `swarmvault diff` 将当前知识图谱与上次提交的版本进行对比，显示新增/移除的节点、边和页面，让你清楚看到每次 compile 改变了什么。
+**图谱 diff** - `beehive diff` 将当前知识图谱与上次提交的版本进行对比，显示新增/移除的节点、边和页面，让你清楚看到每次 compile 改变了什么。
 
-**Worktree artifact roots** - `SWARMVAULT_OUT=<dir>` 会迁移生成的 `raw/`、`wiki/`、`state/`、`agent/` 与 `inbox/` artifacts，同时让 `swarmvault.config.json` 和 `swarmvault.schema.md` 留在项目根目录。它适合隔离 smoke tests、共享 source tree，以及不想把生成 vault state 放在源码旁边的 repo worktree。
+**Worktree artifact roots** - `BEEHIVE_OUT=<dir>` 会迁移生成的 `raw/`、`wiki/`、`state/`、`agent/` 与 `inbox/` artifacts，同时让 `beehive.config.json` 和 `beehive.schema.md` 留在项目根目录。它适合隔离 smoke tests、共享 source tree，以及不想把生成 vault state 放在源码旁边的 repo worktree。
 
 **Obsidian 图谱导出** - `graph export --obsidian` 会写出一个适合 Obsidian 打开的笔记包，保留原有 wiki 目录结构，附加图谱连接和适配 Breadcrumbs/Juggl 的类型化链接 frontmatter、社区页面、孤立节点 stub、Dataview 仪表盘页面、复制后的资产文件，以及包含 `types.json`、节点类型颜色分组和 `cssclasses` 的完整 `.obsidian` 配置。
 
-**自适应图谱社区划分** - SwarmVault 会根据小图或稀疏图自动调整 Louvain community resolution，并会继续拆分过大或 cohesion 偏低的社区，让大型 repo 的 graph report 仍然容易浏览。如果你想固定聚类结果，可以在 `swarmvault.config.json` 中设置 `graph.communityResolution`，或用 `swarmvault graph cluster --resolution <n>` 覆盖单次重算。
+**自适应图谱社区划分** - Beehive 会根据小图或稀疏图自动调整 Louvain community resolution，并会继续拆分过大或 cohesion 偏低的社区，让大型 repo 的 graph report 仍然容易浏览。如果你想固定聚类结果，可以在 `beehive.config.json` 中设置 `graph.communityResolution`，或用 `beehive graph cluster --resolution <n>` 覆盖单次重算。
 
 **可选模型提供方** - OpenAI、Anthropic、Gemini、Ollama、OpenRouter、Groq、Together、xAI、Cerebras、通用 OpenAI-compatible、自定义适配器，以及适合离线/本地默认流程的 heuristic。
 
-**Agent 集成** - 显式安装 Codex、Claude Code、Cursor、Goose、Pi、Gemini CLI、OpenCode、Aider、GitHub Copilot CLI、Trae、Claw/OpenClaw、Droid、Kiro、Kilo、Hermes、Google Antigravity、VS Code Copilot Chat、Devin，以及扩展 skill-bundle roster 的规则。`init`、`quickstart`、`scan` 和 `clone` 默认不会写项目本地规则文件，除非你选择配置安装。可选 graph-first hooks 会引导支持的 agent 进行 graph-first 读取——会话开始时注入图谱指引和新鲜度提示、第一次大范围搜索的一次性建议提示（或通过 `--graph-first` 选择启用强制执行后的拒绝一次重定向，重复同一搜索始终放行），以及 Claude Code 在编辑后自动触发的后台按文件图谱刷新，可通过 `SWARMVAULT_GRAPH_FIRST` 或 `hooks.graphFirst` 配置。Antigravity 会安装到 `.agents/rules/` 与 `.agents/workflows/`；重新安装时会清理旧的全托管 `.agent/` 文件。
+**Agent 集成** - 显式安装 Codex、Claude Code、Cursor、Goose、Pi、Gemini CLI、OpenCode、Aider、GitHub Copilot CLI、Trae、Claw/OpenClaw、Droid、Kiro、Kilo、Hermes、Google Antigravity、VS Code Copilot Chat、Devin，以及扩展 skill-bundle roster 的规则。`init`、`quickstart`、`scan` 和 `clone` 默认不会写项目本地规则文件，除非你选择配置安装。可选 graph-first hooks 会引导支持的 agent 进行 graph-first 读取——会话开始时注入图谱指引和新鲜度提示、第一次大范围搜索的一次性建议提示（或通过 `--graph-first` 选择启用强制执行后的拒绝一次重定向，重复同一搜索始终放行），以及 Claude Code 在编辑后自动触发的后台按文件图谱刷新，可通过 `BEEHIVE_GRAPH_FIRST` 或 `hooks.graphFirst` 配置。Antigravity 会安装到 `.agents/rules/` 与 `.agents/workflows/`；重新安装时会清理旧的全托管 `.agent/` 文件。
 
-**MCP server** - `swarmvault mcp` 通过 stdio 把知识库暴露给任意兼容的代理客户端，包括 graph stats、只读图谱新鲜度检查（`graph_status`）、仅代码图谱刷新（`update_graph`，可按文件指定）、graph clustering refresh、community lookup、hyperedges、context-pack、task ledger、兼容 memory-task、vault doctor 与 retrieval health 工具。仓库也包含 Docker/registry metadata，供会验证 stdio container entrypoint 的 MCP server registry 使用。
+**MCP server** - `beehive mcp` 通过 stdio 把知识库暴露给任意兼容的代理客户端，包括 graph stats、只读图谱新鲜度检查（`graph_status`）、仅代码图谱刷新（`update_graph`，可按文件指定）、graph clustering refresh、community lookup、hyperedges、context-pack、task ledger、兼容 memory-task、vault doctor 与 retrieval health 工具。仓库也包含 Docker/registry metadata，供会验证 stdio container entrypoint 的 MCP server registry 使用。
 
 **内置浏览器剪藏器** - `graph serve` 会暴露本地 `/api/bookmarklet` 页面和 `/api/clip` 接口，让正在运行的 vault 可以从工作台或 bookmarklet 收录当前浏览器 URL、页面标题、选中文本、Markdown、HTML 片段和标签。URL-only bookmarklet 剪藏会使用 normalized `add`，选中文本会走 inbox 导入路径。
 
 **自动化** - watch 模式、git hooks、定时任务和 inbox import 让知识库持续保持最新状态。
 
-**托管来源** - `swarmvault source add|list|reload|review|guide|session|delete` 可以把重复使用的本地文件、目录、公开 GitHub 仓库和文档站点变成有名字的同步来源，注册表保存在 `state/sources.json`，来源简报写入 `wiki/outputs/source-briefs/`，可恢复的 session 锚点写入 `wiki/outputs/source-sessions/`，引导式整合产物写入 `wiki/outputs/source-guides/`。公开 GitHub 仓库来源支持 `--branch`、`--ref` 和 `--checkout-dir`，用于固定分支、tag、commit 或复用 checkout。
+**托管来源** - `beehive source add|list|reload|review|guide|session|delete` 可以把重复使用的本地文件、目录、公开 GitHub 仓库和文档站点变成有名字的同步来源，注册表保存在 `state/sources.json`，来源简报写入 `wiki/outputs/source-briefs/`，可恢复的 session 锚点写入 `wiki/outputs/source-sessions/`，引导式整合产物写入 `wiki/outputs/source-guides/`。公开 GitHub 仓库来源支持 `--branch`、`--ref` 和 `--checkout-dir`，用于固定分支、tag、commit 或复用 checkout。
 
 **Source artifact 类型：**
 
@@ -495,7 +495,7 @@ clawhub install swarmvault
 
 **交互式 ingest 反馈** - 文件和目录 ingest 会在 stderr 输出有边界的进度、当前文件和已处理内容大小；JSON、MCP、watch 和 CI 风格流程保持安静。
 
-**大型仓库加固** - 面对大批量仓库 ingest 和 compile 时保持有边界；provider-backed 非代码分析会在模型调用前对超长提取文本分块；嵌套 `.gitignore` 与 `.swarmvaultignore` 会被遵守，并可用 `.swarmvaultinclude` 为有意保留的路径设置 allowlist；parser 兼容性失败只会影响对应源文件并留下明确诊断；仅代码改动的 repo watch cycle 会跳过非代码重分析；图谱报告会把过于碎片化的小社区折叠展示，保持可读性。
+**大型仓库加固** - 面对大批量仓库 ingest 和 compile 时保持有边界；provider-backed 非代码分析会在模型调用前对超长提取文本分块；嵌套 `.gitignore` 与 `.beehiveignore` 会被遵守，并可用 `.beehiveinclude` 为有意保留的路径设置 allowlist；parser 兼容性失败只会影响对应源文件并留下明确诊断；仅代码改动的 repo watch cycle 会跳过非代码重分析；图谱报告会把过于碎片化的小社区折叠展示，保持可读性。
 
 每条边都会标记为 `extracted`、`inferred` 或 `ambiguous`，因此你始终知道哪些是明确提取到的，哪些只是推断。
 
@@ -504,56 +504,56 @@ clawhub install swarmvault
 
 | Agent | 安装命令 |
 |-------|----------|
-| Codex | `swarmvault install --agent codex --hook` |
-| Claude Code | `swarmvault install --agent claude --hook --mcp` |
-| Cursor | `swarmvault install --agent cursor` |
-| Goose | `swarmvault install --agent goose` |
-| Pi | `swarmvault install --agent pi` |
-| Gemini CLI | `swarmvault install --agent gemini` |
-| OpenCode | `swarmvault install --agent opencode` |
-| Aider | `swarmvault install --agent aider` |
-| GitHub Copilot CLI | `swarmvault install --agent copilot` |
-| Trae | `swarmvault install --agent trae` |
-| Claw / OpenClaw | `swarmvault install --agent claw` |
-| Droid | `swarmvault install --agent droid` |
-| Kiro | `swarmvault install --agent kiro` |
-| Kilo | `swarmvault install --agent kilo --hook` |
-| Hermes | `swarmvault install --agent hermes` |
-| Google Antigravity | `swarmvault install --agent antigravity` |
-| VS Code Copilot Chat | `swarmvault install --agent vscode` |
-| Amp | `swarmvault install --agent amp` |
-| Augment | `swarmvault install --agent augment` |
-| AdaL | `swarmvault install --agent adal` |
-| IBM Bob | `swarmvault install --agent bob` |
-| Cline | `swarmvault install --agent cline` |
-| CodeBuddy | `swarmvault install --agent codebuddy` |
-| Command Code | `swarmvault install --agent command-code` |
-| Continue | `swarmvault install --agent continue` |
-| Cortex Code | `swarmvault install --agent cortex` |
-| Crush | `swarmvault install --agent crush` |
-| Deep Agents | `swarmvault install --agent deepagents` |
-| Devin | `swarmvault install --agent devin` |
-| Firebender | `swarmvault install --agent firebender` |
-| iFlow CLI | `swarmvault install --agent iflow` |
-| Junie | `swarmvault install --agent junie` |
-| Kilo Code | `swarmvault install --agent kilo-code` |
-| Kimi Code CLI | `swarmvault install --agent kimi` |
-| Kode | `swarmvault install --agent kode` |
-| MCPJam | `swarmvault install --agent mcpjam` |
-| Mistral Vibe | `swarmvault install --agent mistral-vibe` |
-| Mux | `swarmvault install --agent mux` |
-| Neovate | `swarmvault install --agent neovate` |
-| OpenClaw | `swarmvault install --agent openclaw` |
-| OpenHands | `swarmvault install --agent openhands` |
-| Pochi | `swarmvault install --agent pochi` |
-| Qoder | `swarmvault install --agent qoder` |
-| Qwen Code | `swarmvault install --agent qwen-code` |
-| Replit | `swarmvault install --agent replit` |
-| Roo Code | `swarmvault install --agent roo-code` |
-| TRAE CN | `swarmvault install --agent trae-cn` |
-| Warp | `swarmvault install --agent warp` |
-| Windsurf | `swarmvault install --agent windsurf` |
-| Zencoder | `swarmvault install --agent zencoder` |
+| Codex | `beehive install --agent codex --hook` |
+| Claude Code | `beehive install --agent claude --hook --mcp` |
+| Cursor | `beehive install --agent cursor` |
+| Goose | `beehive install --agent goose` |
+| Pi | `beehive install --agent pi` |
+| Gemini CLI | `beehive install --agent gemini` |
+| OpenCode | `beehive install --agent opencode` |
+| Aider | `beehive install --agent aider` |
+| GitHub Copilot CLI | `beehive install --agent copilot` |
+| Trae | `beehive install --agent trae` |
+| Claw / OpenClaw | `beehive install --agent claw` |
+| Droid | `beehive install --agent droid` |
+| Kiro | `beehive install --agent kiro` |
+| Kilo | `beehive install --agent kilo --hook` |
+| Hermes | `beehive install --agent hermes` |
+| Google Antigravity | `beehive install --agent antigravity` |
+| VS Code Copilot Chat | `beehive install --agent vscode` |
+| Amp | `beehive install --agent amp` |
+| Augment | `beehive install --agent augment` |
+| AdaL | `beehive install --agent adal` |
+| IBM Bob | `beehive install --agent bob` |
+| Cline | `beehive install --agent cline` |
+| CodeBuddy | `beehive install --agent codebuddy` |
+| Command Code | `beehive install --agent command-code` |
+| Continue | `beehive install --agent continue` |
+| Cortex Code | `beehive install --agent cortex` |
+| Crush | `beehive install --agent crush` |
+| Deep Agents | `beehive install --agent deepagents` |
+| Devin | `beehive install --agent devin` |
+| Firebender | `beehive install --agent firebender` |
+| iFlow CLI | `beehive install --agent iflow` |
+| Junie | `beehive install --agent junie` |
+| Kilo Code | `beehive install --agent kilo-code` |
+| Kimi Code CLI | `beehive install --agent kimi` |
+| Kode | `beehive install --agent kode` |
+| MCPJam | `beehive install --agent mcpjam` |
+| Mistral Vibe | `beehive install --agent mistral-vibe` |
+| Mux | `beehive install --agent mux` |
+| Neovate | `beehive install --agent neovate` |
+| OpenClaw | `beehive install --agent openclaw` |
+| OpenHands | `beehive install --agent openhands` |
+| Pochi | `beehive install --agent pochi` |
+| Qoder | `beehive install --agent qoder` |
+| Qwen Code | `beehive install --agent qwen-code` |
+| Replit | `beehive install --agent replit` |
+| Roo Code | `beehive install --agent roo-code` |
+| TRAE CN | `beehive install --agent trae-cn` |
+| Warp | `beehive install --agent warp` |
+| Windsurf | `beehive install --agent windsurf` |
+| Zencoder | `beehive install --agent zencoder` |
 
 Codex、Claude Code、OpenCode、Gemini CLI、Copilot 和 Kilo 还支持 `--hook`，用于引导 graph-first 读取（默认建议模式；加 `--graph-first` 选择启用强制执行）。Claude Code 还支持 `--mcp`，可在项目 `.mcp.json` 中注册 MCP server，并支持 `--scope user` 在 `~/.claude` 下一次性安装 skill/hook/settings。项目级安装也可以为有 skills 目录的 agent 写入 skill 包；`--scope user` 会在支持时写入用户级 skill 文件。
 
@@ -571,21 +571,21 @@ Codex、Claude Code、OpenCode、Gemini CLI、Copilot 和 Kilo 还支持 `--hook
 | **[capture](worked/capture/)** | 面向研究资料的 `add` 捕获，支持 arXiv、DOI、URL 标准化元数据 | `worked/capture/` |
 | **[mixed-corpus](worked/mixed-corpus/)** | compile、review、save-first 输出循环，跨混合输入类型 | `worked/mixed-corpus/` |
 
-分步演示见 [examples guide](https://www.swarmvault.ai/docs/getting-started/examples)。
+分步演示见 [examples guide](https://www.beehive.ai/docs/getting-started/examples)。
 
 <!-- readme-section:providers -->
 ## Providers
 
-模型提供方是可选的。SwarmVault 按能力而不是按品牌路由。内置 provider 类型：
+模型提供方是可选的。Beehive 按能力而不是按品牌路由。内置 provider 类型：
 
 `heuristic` `openai` `anthropic` `gemini` `ollama` `openrouter` `groq` `together` `xai` `cerebras` `openai-compatible` `custom`
 
-配置示例见 [provider docs](https://www.swarmvault.ai/docs/providers)。
+配置示例见 [provider docs](https://www.beehive.ai/docs/providers)。
 
 <!-- readme-section:privacy -->
 ## 隐私与数据流
 
-SwarmVault 默认在本地处理数据：
+Beehive 默认在本地处理数据：
 
 - **代码文件** 通过 TypeScript compiler API、tree-sitter 或 SQL parser 在本地解析。源代码内容不会发送到外部 API。
 - **文档和文本** 发送到已配置的 provider 进行语义提取。使用内置 `heuristic` provider 时，所有数据保留在本地。
@@ -599,18 +599,18 @@ SwarmVault 默认在本地处理数据：
 
 | Package | 用途 |
 |---------|------|
-| `@swarmvaultai/cli` | 全局 CLI（`swarmvault` 与 `vault` 命令） |
-| `@swarmvaultai/engine` | ingest、compile、query、lint、watch、MCP 的运行时库 |
-| `@swarmvaultai/viewer` | 图谱查看器（已包含在 CLI 中，无需单独安装） |
+| `@beehive/cli` | 全局 CLI（`beehive` 与 `vault` 命令） |
+| `@beehive/engine` | ingest、compile、query、lint、watch、MCP 的运行时库 |
+| `@beehive/viewer` | 图谱查看器（已包含在 CLI 中，无需单独安装） |
 
 <!-- readme-section:help -->
 ## 遇到问题？
 
-- Docs: https://www.swarmvault.ai/docs
-- Providers: https://www.swarmvault.ai/docs/providers
-- Troubleshooting: https://www.swarmvault.ai/docs/getting-started/troubleshooting
-- npm package: https://www.npmjs.com/package/@swarmvaultai/cli
-- GitHub issues: https://github.com/swarmclawai/swarmvault/issues
+- Docs: <https://www.beehive.ai/docs>
+- Providers: <https://www.beehive.ai/docs/providers>
+- Troubleshooting: <https://www.beehive.ai/docs/getting-started/troubleshooting>
+- npm package: <https://www.npmjs.com/package/@beehive/cli>
+- GitHub issues: <https://github.com/MaraClaw/Beehive/issues>
 
 <!-- readme-section:development -->
 ## 开发
@@ -631,10 +631,10 @@ PR 指南见 [CONTRIBUTING.md](CONTRIBUTING.md)，已发布包验证流程见 [d
 <!-- readme-section:links -->
 ## 链接
 
-- Website: https://www.swarmvault.ai
-- Docs: https://www.swarmvault.ai/docs
-- npm: https://www.npmjs.com/package/@swarmvaultai/cli
-- GitHub: https://github.com/swarmclawai/swarmvault
+- Website: <https://www.beehive.ai>
+- Docs: <https://www.beehive.ai/docs>
+- npm: <https://www.npmjs.com/package/@beehive/cli>
+- GitHub: <https://github.com/MaraClaw/Beehive>
 
 <!-- readme-section:license -->
 ## 许可证

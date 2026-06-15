@@ -245,13 +245,13 @@ export async function startGraphServer(
         if (url.pathname === "/api/graph") {
           if (!(await fileExists(paths.graphPath))) {
             response.writeHead(404, { "content-type": "application/json" });
-            response.end(JSON.stringify({ error: "Graph artifact not found. Run `swarmvault compile` first." }));
+            response.end(JSON.stringify({ error: "Graph artifact not found. Run `beehive compile` first." }));
             return;
           }
           const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
           if (!graph) {
             response.writeHead(404, { "content-type": "application/json" });
-            response.end(JSON.stringify({ error: "Graph artifact not found. Run `swarmvault compile` first." }));
+            response.end(JSON.stringify({ error: "Graph artifact not found. Run `beehive compile` first." }));
             return;
           }
           const reportPath = path.join(paths.wikiDir, "graph", "report.json");
@@ -299,7 +299,7 @@ export async function startGraphServer(
         if (url.pathname === "/api/search") {
           if (!(await fileExists(paths.searchDbPath))) {
             response.writeHead(404, { "content-type": "application/json" });
-            response.end(JSON.stringify({ error: "Search index not found. Run `swarmvault compile` first." }));
+            response.end(JSON.stringify({ error: "Search index not found. Run `beehive compile` first." }));
             return;
           }
           const query = url.searchParams.get("q") ?? "";
@@ -326,7 +326,7 @@ export async function startGraphServer(
           const reportPath = path.join(paths.wikiDir, "graph", "report.json");
           if (!(await fileExists(reportPath))) {
             response.writeHead(404, { "content-type": "application/json" });
-            response.end(JSON.stringify({ error: "Graph report artifact not found. Run `swarmvault compile` first." }));
+            response.end(JSON.stringify({ error: "Graph report artifact not found. Run `beehive compile` first." }));
             return;
           }
           const body = await fs.readFile(reportPath, "utf8");
@@ -703,11 +703,11 @@ export async function startGraphServer(
           response.writeHead(200, { "content-type": "text/html" });
           response.end(
             [
-              "<!doctype html><html><head><title>SwarmVault Clipper</title></head><body>",
-              "<h1>SwarmVault Clipper</h1>",
+              "<!doctype html><html><head><title>Beehive Clipper</title></head><body>",
+              "<h1>Beehive Clipper</h1>",
               `<p>Drag this link to your bookmarks bar:</p>`,
-              `<p style="font-size:1.5em"><a href="${script.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}">Clip to SwarmVault</a></p>`,
-              `<p>When clicked on any page, it sends the URL to your running SwarmVault instance for ingestion.</p>`,
+              `<p style="font-size:1.5em"><a href="${script.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}">Clip to Beehive</a></p>`,
+              `<p>When clicked on any page, it sends the URL to your running Beehive instance for ingestion.</p>`,
               `<p>Server: <code>http://localhost:${effectivePort}</code></p>`,
               "</body></html>"
             ].join("\n")
@@ -766,7 +766,7 @@ export async function exportGraphHtml(rootDir: string, outputPath: string, optio
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` first.");
+    throw new Error("Graph artifact not found. Run `beehive compile` first.");
   }
 
   await ensureViewerDist(paths.viewerDistDir);
@@ -824,12 +824,12 @@ export async function exportGraphHtml(rootDir: string, outputPath: string, optio
     "  <head>",
     '    <meta charset="UTF-8" />',
     '    <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
-    "    <title>SwarmVault Graph Export</title>",
+    "    <title>Beehive Graph Export</title>",
     style ? `    <style>${style}</style>` : "",
     "  </head>",
     "  <body>",
     '    <div id="root"></div>',
-    `    <script>window.__SWARMVAULT_EMBEDDED_DATA__ = ${embeddedData};</script>`,
+    `    <script>window.__BEEHIVE_EMBEDDED_DATA__ = ${embeddedData};</script>`,
     `    <script type="module">${script}</script>`,
     "  </body>",
     "</html>",

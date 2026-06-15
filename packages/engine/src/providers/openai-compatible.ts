@@ -135,7 +135,7 @@ function stripNullObjectProperties(value: unknown): unknown {
 function buildStructuredFormat(schema: z.ZodTypeAny) {
   return {
     type: "json_schema" as const,
-    name: "swarmvault_response",
+    name: "beehive_response",
     schema: toOpenAiStrictJsonSchema(z.toJSONSchema(schema)),
     strict: true
   };

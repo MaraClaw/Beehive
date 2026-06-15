@@ -19,14 +19,14 @@ raw/
 └── goals-q2-2026.md             quarterly goals
 ```
 
-The sources are intentionally varied. SwarmVault's value shows when the compiler finds connections you did not plan: the journal mentions poor sleep, the podcast explains why, the health log confirms the pattern, and the goals depend on fixing it.
+The sources are intentionally varied. Beehive's value shows when the compiler finds connections you did not plan: the journal mentions poor sleep, the podcast explains why, the health log confirms the pattern, and the goals depend on fixing it.
 
 ## Workflow
 
 ### 1. Initialize
 
 ```bash
-swarmvault init --obsidian --profile personal-research
+beehive init --obsidian --profile personal-research
 ```
 
 This creates the vault scaffolding with the personal-research profile, which enables timeline dashboards, guided sessions, and Dataview blocks suited to personal knowledge work.
@@ -36,13 +36,13 @@ This creates the vault scaffolding with the personal-research profile, which ena
 Copy the `raw/` files into your vault's `raw/` directory, then ingest:
 
 ```bash
-swarmvault ingest ./raw
+beehive ingest ./raw
 ```
 
 ### 3. Compile
 
 ```bash
-swarmvault compile
+beehive compile
 ```
 
 The compiler reads every ingested source and produces:
@@ -56,9 +56,9 @@ The compiler reads every ingested source and produces:
 ### 4. Query
 
 ```bash
-swarmvault query "How does my sleep relate to my productivity?"
-swarmvault query "What are Alex's main concerns about Project Meridian?"
-swarmvault query "What habits should I prioritize for Q2 goals?"
+beehive query "How does my sleep relate to my productivity?"
+beehive query "What are Alex's main concerns about Project Meridian?"
+beehive query "What habits should I prioritize for Q2 goals?"
 ```
 
 Queries search the compiled wiki and graph, not just raw text. Answers draw from multiple sources and cite where each claim originates.
@@ -66,7 +66,7 @@ Queries search the compiled wiki and graph, not just raw text. Answers draw from
 ### 5. Explore the graph
 
 ```bash
-swarmvault graph serve
+beehive graph serve
 ```
 
 Open the local viewer to see how journal entries, podcast notes, health data, and goals connect through shared entities and themes.
@@ -74,8 +74,8 @@ Open the local viewer to see how journal entries, podcast notes, health data, an
 Useful graph commands for this vault:
 
 ```bash
-swarmvault graph path "sleep" "Project Meridian"
-swarmvault graph explain "Alex"
+beehive graph path "sleep" "Project Meridian"
+beehive graph explain "Alex"
 ```
 
 ## What to expect after compile
@@ -105,4 +105,4 @@ SORT freshness DESC
 
 - Add more journal entries over time and recompile. The entity and concept pages accumulate context. An entity page for Alex after ten journal entries is far more useful than after two.
 - Add new source types: book highlights, email threads, meeting notes, recipe collections. The compiler handles any markdown input.
-- Edit `swarmvault.schema.md` to tune what matters. If mood tracking is important, add a schema note telling the compiler to extract and tag mood observations.
+- Edit `beehive.schema.md` to tune what matters. If mood tracking is important, add a schema note telling the compiler to extract and tag mood observations.

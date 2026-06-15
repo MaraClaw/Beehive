@@ -36,12 +36,12 @@ export async function getWebSearchAdapterForTask(rootDir: string, task: WebSearc
   const { config } = await loadVaultConfig(rootDir);
   const webSearchConfig = config.webSearch;
   if (!webSearchConfig) {
-    throw new Error("No web search providers are configured. Add a webSearch block to swarmvault.config.json.");
+    throw new Error("No web search providers are configured. Add a webSearch block to beehive.config.json.");
   }
 
   const providerId = webSearchConfig.tasks[task];
   if (!providerId) {
-    throw new Error(`No web search provider is configured for task "${task}". Add webSearch.tasks.${task} to swarmvault.config.json.`);
+    throw new Error(`No web search provider is configured for task "${task}". Add webSearch.tasks.${task} to beehive.config.json.`);
   }
   const providerConfig = webSearchConfig.providers[providerId];
   if (!providerConfig) {

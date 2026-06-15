@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Published @swarmvaultai/cli version to test
+        description: Published @beehive/cli version to test
         required: false
         type: string
       lane:
@@ -30,13 +30,13 @@ jobs:
     if: github.event_name != 'workflow_dispatch' || github.event.inputs.lane == 'all' || github.event.inputs.lane == 'heuristic'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
 
       - run: pnpm install --frozen-lockfile
 
@@ -44,19 +44,19 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run heuristic live smoke
-        run: pnpm live:smoke:heuristic -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+        run: pnpm live:smoke:heuristic -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload heuristic smoke artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: live-smoke-heuristic
           path: .live-smoke-artifacts/
@@ -68,13 +68,13 @@ jobs:
       (github.event_name == 'workflow_dispatch' && (github.event.inputs.lane == 'all' || github.event.inputs.lane == 'heuristic'))
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install chromium
@@ -83,19 +83,19 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run heuristic live smoke with browser check
-        run: pnpm live:smoke:heuristic:browser -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+        run: pnpm live:smoke:heuristic:browser -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload heuristic browser smoke artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: live-smoke-heuristic-browser
           path: .live-smoke-artifacts/
@@ -107,13 +107,13 @@ jobs:
       (github.event_name == 'workflow_dispatch' && github.event.inputs.lane == 'all')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
 
       - run: pnpm install --frozen-lockfile
 
@@ -121,19 +121,19 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run OSS corpus against the published package
-        run: pnpm live:oss:corpus -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+        run: pnpm live:oss:corpus -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload OSS corpus artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: live-oss-corpus
           path: .oss-corpus-artifacts/
@@ -151,15 +151,15 @@ jobs:
         if: env.OPENAI_API_KEY == ''
         run: echo "OPENAI_API_KEY is not configured; skipping OpenAI live smoke."
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         if: env.OPENAI_API_KEY != ''
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         if: env.OPENAI_API_KEY != ''
         with:
           node-version: 24
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
         if: env.OPENAI_API_KEY != ''
 
       - run: pnpm install --frozen-lockfile
@@ -170,22 +170,22 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run OpenAI live smoke
         if: env.OPENAI_API_KEY != ''
         env:
-          SWARMVAULT_OPENAI_MODEL: gpt-4.1-mini
-        run: pnpm live:smoke:openai -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+          BEEHIVE_OPENAI_MODEL: gpt-4.1-mini
+        run: pnpm live:smoke:openai -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload OpenAI smoke artifacts
         if: failure() && env.OPENAI_API_KEY != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: live-smoke-openai
           path: .live-smoke-artifacts/
@@ -203,15 +203,15 @@ jobs:
         if: env.OLLAMA_API_KEY == ''
         run: echo "OLLAMA_API_KEY is not configured; skipping Ollama live smoke."
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         if: env.OLLAMA_API_KEY != ''
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         if: env.OLLAMA_API_KEY != ''
         with:
           node-version: 24
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
         if: env.OLLAMA_API_KEY != ''
 
       - run: pnpm install --frozen-lockfile
@@ -222,24 +222,24 @@ jobs:
         shell: bash
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
           elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=${{ github.event.inputs.version }}" >> "$GITHUB_ENV"
           else
-            echo "SWARMVAULT_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
+            echo "BEEHIVE_LIVE_SMOKE_VERSION=$(node -p "JSON.parse(require('node:fs').readFileSync('packages/cli/package.json','utf8')).version")" >> "$GITHUB_ENV"
           fi
 
       - name: Run Ollama live smoke
         if: env.OLLAMA_API_KEY != ''
         env:
-          SWARMVAULT_OLLAMA_MODEL: gpt-oss:20b-cloud
-          SWARMVAULT_OLLAMA_BASE_URL: https://ollama.com/v1
-          SWARMVAULT_OLLAMA_API_STYLE: chat
-        run: pnpm live:smoke:ollama -- --version "$SWARMVAULT_LIVE_SMOKE_VERSION"
+          BEEHIVE_OLLAMA_MODEL: gpt-oss:20b-cloud
+          BEEHIVE_OLLAMA_BASE_URL: https://ollama.com/v1
+          BEEHIVE_OLLAMA_API_STYLE: chat
+        run: pnpm live:smoke:ollama -- --version "$BEEHIVE_LIVE_SMOKE_VERSION"
 
       - name: Upload Ollama smoke artifacts
         if: failure() && env.OLLAMA_API_KEY != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: live-smoke-ollama
           path: .live-smoke-artifacts/

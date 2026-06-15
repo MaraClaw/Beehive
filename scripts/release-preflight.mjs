@@ -104,15 +104,15 @@ async function main() {
       args.skipSkill ? "--skip-skill" : undefined
     );
 
-    packDir = await fs.mkdtemp(path.join(os.tmpdir(), `swarmvault-preflight-${version}-`));
+    packDir = await fs.mkdtemp(path.join(os.tmpdir(), `beehive-preflight-${version}-`));
     packageSmoke.packDir = packDir;
-    const engineTarball = path.join(packDir, `swarmvaultai-engine-${version}.tgz`);
-    const cliTarball = path.join(packDir, `swarmvaultai-cli-${version}.tgz`);
+    const engineTarball = path.join(packDir, `beehive-engine-${version}.tgz`);
+    const cliTarball = path.join(packDir, `beehive-cli-${version}.tgz`);
     packageSmoke.installSpecs = [engineTarball, cliTarball];
-    await runGate("pack-engine", "pack @swarmvaultai/engine", () =>
+    await runGate("pack-engine", "pack @beehive/engine", () =>
       run("pnpm", ["pack", "--pack-destination", packDir], { cwd: path.join(repoRoot, "packages", "engine") })
     );
-    await runGate("pack-cli", "pack @swarmvaultai/cli", () =>
+    await runGate("pack-cli", "pack @beehive/cli", () =>
       run("pnpm", ["pack", "--pack-destination", packDir], { cwd: path.join(repoRoot, "packages", "cli") })
     );
 

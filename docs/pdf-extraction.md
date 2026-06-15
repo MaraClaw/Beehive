@@ -1,6 +1,6 @@
 # PDF Extraction Strategy
 
-SwarmVault's PDF extraction is a **best-effort** pipeline. PDFs are a lossy medium — layout, tables, and embedded images do not always survive extraction — and the 1.0 default extractor is a deliberate choice that prioritizes fidelity of plain prose over reproduction of complex layout. This document records that choice so users know what to expect.
+Beehive's PDF extraction is a **best-effort** pipeline. PDFs are a lossy medium — layout, tables, and embedded images do not always survive extraction — and the 1.0 default extractor is a deliberate choice that prioritizes fidelity of plain prose over reproduction of complex layout. This document records that choice so users know what to expect.
 
 ## Default extractor
 
@@ -8,8 +8,8 @@ SwarmVault's PDF extraction is a **best-effort** pipeline. PDFs are a lossy medi
 
 We picked this default because:
 
-- It works on every platform SwarmVault runs on (macOS, Linux, Windows) without native binaries.
-- It does not require a provider API key — the heuristic `swarmvault init` path produces usable PDF extractions with no network.
+- It works on every platform Beehive runs on (macOS, Linux, Windows) without native binaries.
+- It does not require a provider API key — the heuristic `beehive init` path produces usable PDF extractions with no network.
 - It is deterministic — the same PDF always produces the same extraction, which keeps `source_hashes` stable.
 
 ## Known limitations
@@ -35,7 +35,7 @@ Set `providers.<id>.type = "custom"` and point `module` at a Node ESM file that 
 ## Recommendations by use case
 
 - **Academic papers with prose body**: the default is fine; you will get clean text with paragraph breaks. Figures and tables will be missing but captions usually survive.
-- **Financial reports and spreadsheet-derived PDFs**: consider converting to `.xlsx` or `.csv` at the source. SwarmVault's structured extractors handle those natively.
+- **Financial reports and spreadsheet-derived PDFs**: consider converting to `.xlsx` or `.csv` at the source. Beehive's structured extractors handle those natively.
 - **Scanned archives / image-heavy PDFs**: run an external OCR pass and ingest the resulting `.txt` or `.md` files.
 - **Slide decks**: convert to `.pptx` where possible. The PPTX extractor produces one entry per slide, which aligns better with the compile graph than a flattened PDF.
 

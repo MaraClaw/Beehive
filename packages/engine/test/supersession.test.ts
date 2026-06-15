@@ -9,7 +9,7 @@ import type { GraphArtifact } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-supersede-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-supersede-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -33,7 +33,7 @@ describe("graph supersession", () => {
       [
         "# First Claim",
         "",
-        "SwarmVault initially considered manifests to be the single source of truth.",
+        "Beehive initially considered manifests to be the single source of truth.",
         "That assumption does not match the current compile flow."
       ].join("\n"),
       "utf8"
@@ -43,7 +43,7 @@ describe("graph supersession", () => {
       [
         "# Second Claim",
         "",
-        "SwarmVault compiles manifests into graph-backed pages.",
+        "Beehive compiles manifests into graph-backed pages.",
         "Multiple manifests can feed a single compiled page."
       ].join("\n"),
       "utf8"
@@ -78,7 +78,7 @@ describe("graph supersession", () => {
 
     await fs.writeFile(
       path.join(rootDir, "only.md"),
-      ["# Only Claim", "", "SwarmVault tracks raw/ as the immutable source input."].join("\n"),
+      ["# Only Claim", "", "Beehive tracks raw/ as the immutable source input."].join("\n"),
       "utf8"
     );
     const only = await ingestInput(rootDir, "only.md");
@@ -103,7 +103,7 @@ describe("graph supersession", () => {
     await initVault(rootDir);
 
     // Write a very short half-life into config so our pages decay past the threshold immediately.
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const configPath = path.join(rootDir, "beehive.config.json");
     const config = JSON.parse(await fs.readFile(configPath, "utf8"));
     config.freshness = {
       defaultHalfLifeDays: 0.0001,
@@ -119,7 +119,7 @@ describe("graph supersession", () => {
 
     await fs.writeFile(
       path.join(rootDir, "note.md"),
-      ["# Note Claim", "", "SwarmVault keeps the wiki freshness metadata alongside decay scores."].join("\n"),
+      ["# Note Claim", "", "Beehive keeps the wiki freshness metadata alongside decay scores."].join("\n"),
       "utf8"
     );
     const note = await ingestInput(rootDir, "note.md");

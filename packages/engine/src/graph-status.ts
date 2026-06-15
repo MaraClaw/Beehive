@@ -12,13 +12,13 @@ function recommendedCommand(input: {
   pendingSemanticRefreshCount: number;
 }): string | null {
   if (!input.graphExists || !input.reportExists) {
-    return "swarmvault compile";
+    return "beehive compile";
   }
   if (input.semanticChangeCount > 0 || input.pendingSemanticRefreshCount > 0) {
-    return "swarmvault compile";
+    return "beehive compile";
   }
   if (input.codeChangeCount > 0) {
-    return "swarmvault graph update";
+    return "beehive graph update";
   }
   return null;
 }

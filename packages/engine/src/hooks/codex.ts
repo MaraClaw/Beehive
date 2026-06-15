@@ -1,6 +1,6 @@
 // Standalone Codex hook script. Bundled by tsup into
 // dist/hooks/codex.js and installed into user projects as
-// `.codex/hooks/swarmvault-graph-first.js`.
+// `.codex/hooks/beehive-graph-first.js`.
 
 import {
   buildDenyReason,

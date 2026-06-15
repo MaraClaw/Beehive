@@ -1,7 +1,7 @@
 Tiny reStructuredText Source
 ===========================
 
-SwarmVault should treat `.rst` files as first-class text sources.
+Beehive should treat `.rst` files as first-class text sources.
 
 .. note:: The extracted text should normalize headings and directives.
 

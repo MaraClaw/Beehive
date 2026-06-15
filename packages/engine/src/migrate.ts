@@ -170,7 +170,7 @@ const MIGRATION_NOTE_WATCH_BLOCK: MigrationStep = {
   id: "0.10-to-0.11-normalize-config-watch-absence",
   fromVersion: "0.10.0",
   toVersion: "0.11.0",
-  description: "Record that swarmvault.config.json watch block is optional in 0.11 (no file changes).",
+  description: "Record that beehive.config.json watch block is optional in 0.11 (no file changes).",
   async apply() {
     return { changed: [] };
   }
@@ -223,7 +223,7 @@ const MIGRATION_3_0_RETRIEVAL_AND_TASKS: MigrationStep = {
     "Move search config into retrieval, create state/retrieval, remove the legacy search index, and add task aliases to memory frontmatter.",
   async apply(ctx, options) {
     const changed: string[] = [];
-    const configPath = path.join(ctx.rootDir, "swarmvault.config.json");
+    const configPath = path.join(ctx.rootDir, "beehive.config.json");
     try {
       const raw = await fs.readFile(configPath, "utf8");
       const config = JSON.parse(raw) as {

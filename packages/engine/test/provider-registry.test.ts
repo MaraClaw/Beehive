@@ -38,7 +38,7 @@ describe("provider registry", () => {
     process.env.XAI_API_KEY = "xai-test";
     process.env.CEREBRAS_API_KEY = "cerebras-test";
 
-    const rootDir = path.join(os.tmpdir(), "swarmvault-provider-registry");
+    const rootDir = path.join(os.tmpdir(), "beehive-provider-registry");
     const cases: Array<{
       type: ProviderConfig["type"];
       expectedBaseUrl: string;
@@ -71,7 +71,7 @@ describe("provider registry", () => {
   });
 
   it("creates a LocalWhisperProviderAdapter for type local-whisper with audio-only capabilities", async () => {
-    const rootDir = path.join(os.tmpdir(), "swarmvault-provider-registry-whisper");
+    const rootDir = path.join(os.tmpdir(), "beehive-provider-registry-whisper");
     const provider = await createProvider(
       "local-whisper",
       {
@@ -95,8 +95,8 @@ describe("provider registry", () => {
   });
 
   it("adds, lists, shows, and removes provider config without dropping unknown config fields", async () => {
-    const rootDir = path.join(os.tmpdir(), `swarmvault-provider-config-${process.pid}-${Date.now()}`);
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const rootDir = path.join(os.tmpdir(), `beehive-provider-config-${process.pid}-${Date.now()}`);
+    const configPath = path.join(rootDir, "beehive.config.json");
     await fs.mkdir(rootDir, { recursive: true });
     await fs.writeFile(
       configPath,
@@ -182,7 +182,7 @@ describe("provider registry", () => {
   });
 
   it("rejects explicit fallback providers that are not configured", async () => {
-    const rootDir = path.join(os.tmpdir(), `swarmvault-provider-fallback-${process.pid}-${Date.now()}`);
+    const rootDir = path.join(os.tmpdir(), `beehive-provider-fallback-${process.pid}-${Date.now()}`);
     await fs.mkdir(rootDir, { recursive: true });
     await addProviderConfig({
       rootDir,
@@ -200,7 +200,7 @@ describe("provider registry", () => {
   });
 
   it("refuses to orphan required tasks when removing the last provider", async () => {
-    const rootDir = path.join(os.tmpdir(), `swarmvault-provider-orphan-${process.pid}-${Date.now()}`);
+    const rootDir = path.join(os.tmpdir(), `beehive-provider-orphan-${process.pid}-${Date.now()}`);
     await fs.mkdir(rootDir, { recursive: true });
     await addProviderConfig({
       rootDir,
@@ -220,8 +220,8 @@ describe("provider registry", () => {
   });
 
   it("clears optional task assignments when no fallback provider remains and skips rewrites for no-op removals", async () => {
-    const rootDir = path.join(os.tmpdir(), `swarmvault-provider-clear-${process.pid}-${Date.now()}`);
-    const configPath = path.join(rootDir, "swarmvault.config.json");
+    const rootDir = path.join(os.tmpdir(), `beehive-provider-clear-${process.pid}-${Date.now()}`);
+    const configPath = path.join(rootDir, "beehive.config.json");
     await fs.mkdir(rootDir, { recursive: true });
     await fs.writeFile(
       configPath,

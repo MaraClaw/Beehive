@@ -32,8 +32,8 @@ This directory contains standalone graph-first agent hooks bundled separately fr
 ## TESTS
 
 ```bash
-pnpm --filter @swarmvaultai/engine test -- claude-hook
-pnpm --filter @swarmvaultai/engine build
+pnpm --filter @beehive/engine test -- claude-hook
+pnpm --filter @beehive/engine build
 ```
 
 ## NOTES

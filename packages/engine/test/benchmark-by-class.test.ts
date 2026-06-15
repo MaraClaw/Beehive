@@ -20,7 +20,7 @@ import type { BenchmarkArtifact } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-benchmark-by-class-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-benchmark-by-class-"));
   tempDirs.push(dir);
   return dir;
 }

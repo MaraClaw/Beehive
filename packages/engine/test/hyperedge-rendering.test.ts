@@ -8,7 +8,7 @@ import type { GraphArtifact, GraphHyperedge, GraphNode } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-hyperedge-rendering-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-hyperedge-rendering-"));
   tempDirs.push(dir);
   return dir;
 }

@@ -15,7 +15,7 @@ import {
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-context-pack-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-context-pack-"));
   tempDirs.push(dir);
   return dir;
 }

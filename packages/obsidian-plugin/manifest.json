@@ -1,10 +1,10 @@
 {
-  "id": "swarmvault",
-  "name": "SwarmVault",
-  "version": "3.20.0",
+  "id": "beehive",
+  "name": "Beehive",
+  "version": "3.21.0",
   "minAppVersion": "1.5.0",
-  "description": "Runs SwarmVault ingest, compile, query, and review commands from the command palette and surfaces compile freshness in your status bar.",
-  "author": "SwarmVault",
-  "authorUrl": "https://www.swarmvault.ai",
+  "description": "Runs Beehive ingest, compile, query, and review commands from the command palette and surfaces compile freshness in your status bar.",
+  "author": "Beehive",
+  "authorUrl": "https://www.beehive.ai",
   "isDesktopOnly": true
 }

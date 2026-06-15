@@ -41,10 +41,10 @@ export interface LocalWhisperBinaryDiscovery {
 
 export async function discoverLocalWhisperBinary(options: LocalWhisperDiscoveryOptions = {}): Promise<LocalWhisperBinaryDiscovery> {
   const env = options.env ?? process.env;
-  if (env.SWARMVAULT_WHISPER_BINARY) {
+  if (env.BEEHIVE_WHISPER_BINARY) {
     return {
-      binaryPath: env.SWARMVAULT_WHISPER_BINARY,
-      candidates: [env.SWARMVAULT_WHISPER_BINARY],
+      binaryPath: env.BEEHIVE_WHISPER_BINARY,
+      candidates: [env.BEEHIVE_WHISPER_BINARY],
       source: "env"
     };
   }
@@ -65,7 +65,7 @@ export async function discoverLocalWhisperBinary(options: LocalWhisperDiscoveryO
 
 export function expectedModelPath(modelName: string, homeDir?: string): string {
   const home = homeDir ?? os.homedir();
-  return path.join(home, ".swarmvault", "models", `ggml-${modelName}.bin`);
+  return path.join(home, ".beehive", "models", `ggml-${modelName}.bin`);
 }
 
 export function modelDownloadUrl(modelName: string): string {

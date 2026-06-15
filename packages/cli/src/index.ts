@@ -17,7 +17,7 @@ import type {
   ProviderType,
   ResolvedPaths,
   SourceClass
-} from "@swarmvaultai/engine";
+} from "@beehive/engine";
 import {
   acceptApproval,
   addInput,
@@ -27,6 +27,7 @@ import {
   archiveCandidate,
   askChatSession,
   autoCommitWikiChanges,
+  BEEHIVE_WORKSPACE_ID_ENV,
   benchmarkVault,
   blastRadiusVault,
   buildContextPack,
@@ -115,7 +116,6 @@ import {
   runMigration,
   runSchedule,
   runWatchCycle,
-  SWARMVAULT_WORKSPACE_ID_ENV,
   serveSchedules,
   startGraphServer,
   startMcpServer,
@@ -126,7 +126,7 @@ import {
   validateGraphVault,
   validateWorkspaceId,
   watchVault
-} from "@swarmvaultai/engine";
+} from "@beehive/engine";
 import { Command, Option } from "commander";
 import { collectCliNotices, collectHeuristicProviderNotice } from "./notices.js";
 
@@ -137,8 +137,8 @@ let previousWorkspaceId: string | undefined;
 let workspaceIdWasSetForCommand = false;
 
 program
-  .name("swarmvault")
-  .description("SwarmVault is a local-first knowledge compiler with graph outputs and optional provider-backed workflows.")
+  .name("beehive")
+  .description("Beehive is a local-first knowledge compiler with graph outputs and optional provider-backed workflows.")
   .version(CLI_VERSION)
   .enablePositionalOptions()
   .option("--workspace-id <id>", "Workspace id for generated artifacts and behavior commands")
@@ -148,9 +148,9 @@ program.addHelpText("after", (context) =>
   context.command === program
     ? [
         "",
-        "Need help choosing? Run `swarmvault next`.",
-        "Advanced and compatibility commands are still available with `swarmvault <command> --help`.",
-        "CLI docs: https://www.swarmvault.ai/docs/cli"
+        "Need help choosing? Run `beehive next`.",
+        "Advanced and compatibility commands are still available with `beehive <command> --help`.",
+        "CLI docs: https://www.beehive.ai/docs/cli"
       ].join("\n")
     : ""
 );
@@ -158,9 +158,9 @@ program.addHelpText("after", (context) =>
 function readCliVersion(): string {
   try {
     const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as { version?: string };
-    return typeof packageJson.version === "string" && packageJson.version.trim() ? packageJson.version : "3.20.0";
+    return typeof packageJson.version === "string" && packageJson.version.trim() ? packageJson.version : "3.21.0";
   } catch {
-    return "3.20.0";
+    return "3.21.0";
   }
 }
 
@@ -394,11 +394,11 @@ async function pathExists(filePath: string): Promise<boolean> {
 }
 
 function workspaceCommand(command: string): string {
-  const workspaceId = process.env[SWARMVAULT_WORKSPACE_ID_ENV];
-  if (!workspaceId || !command.startsWith("swarmvault ") || command.startsWith("swarmvault --workspace-id ")) {
+  const workspaceId = process.env[BEEHIVE_WORKSPACE_ID_ENV];
+  if (!workspaceId || !command.startsWith("beehive ") || command.startsWith("beehive --workspace-id ")) {
     return command;
   }
-  return `swarmvault --workspace-id ${workspaceId}${command.slice("swarmvault".length)}`;
+  return `beehive --workspace-id ${workspaceId}${command.slice("beehive".length)}`;
 }
 
 function nextRecommendation(label: string, command: string, description: string, priority: NextCommandPriority): NextCommandRecommendation {
@@ -436,21 +436,21 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
           id: "workspace",
           label: "Workspace",
           status: "error",
-          summary: "No SwarmVault workspace files were found in this directory.",
-          command: "swarmvault quickstart ./your-repo"
+          summary: "No Beehive workspace files were found in this directory.",
+          command: "beehive quickstart ./your-repo"
         }
       ],
       recommendations: [
         nextRecommendation(
           "Fast start",
-          "swarmvault quickstart ./your-repo",
+          "beehive quickstart ./your-repo",
           "Initialize, ingest, compile, and open the graph viewer.",
           "high"
         ),
-        nextRecommendation("Try a sample", "swarmvault demo", "Build a small demo vault before using your own files.", "medium"),
+        nextRecommendation("Try a sample", "beehive demo", "Build a small demo vault before using your own files.", "medium"),
         nextRecommendation(
           "Manual setup",
-          "swarmvault init",
+          "beehive init",
           "Create an empty vault when you want to ingest and compile step by step.",
           "medium"
         )
@@ -472,15 +472,15 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
           id: "config",
           label: "Config",
           status: "error",
-          summary: "SwarmVault workspace files exist, but the config could not be loaded.",
+          summary: "Beehive workspace files exist, but the config could not be loaded.",
           detail: error instanceof Error ? error.message : String(error),
-          command: "swarmvault doctor"
+          command: "beehive doctor"
         }
       ],
       recommendations: [
         nextRecommendation(
           "Inspect workspace health",
-          "swarmvault doctor",
+          "beehive doctor",
           "Review the config/schema issue before ingesting or compiling.",
           "high"
         )
@@ -510,13 +510,13 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
           label: "Graph",
           status: "error",
           summary: "No compiled graph artifact was found.",
-          command: "swarmvault compile"
+          command: "beehive compile"
         }
       ],
       recommendations: [
-        nextRecommendation("Add sources", "swarmvault ingest ./your-source", "Import a directory, file, or URL into raw/.", "high"),
-        nextRecommendation("Compile vault", "swarmvault compile", "Build wiki pages, graph JSON, and the graph report.", "high"),
-        nextRecommendation("Open the viewer", "swarmvault graph serve", "Open the local graph viewer after compiling.", "medium")
+        nextRecommendation("Add sources", "beehive ingest ./your-source", "Import a directory, file, or URL into raw/.", "high"),
+        nextRecommendation("Compile vault", "beehive compile", "Build wiki pages, graph JSON, and the graph report.", "high"),
+        nextRecommendation("Open the viewer", "beehive graph serve", "Open the local graph viewer after compiling.", "medium")
       ],
       graph: graphStatus
         ? {
@@ -558,12 +558,12 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
       : [
           nextRecommendation(
             "Ask a question",
-            'swarmvault query "What are the key concepts?"',
+            'beehive query "What are the key concepts?"',
             "Query the compiled wiki and graph.",
             "medium"
           ),
-          nextRecommendation("Open the graph", "swarmvault graph serve", "Explore the compiled graph locally.", "medium"),
-          nextRecommendation("Run health checks", "swarmvault doctor", "Re-check graph, retrieval, review queues, and migrations.", "low")
+          nextRecommendation("Open the graph", "beehive graph serve", "Explore the compiled graph locally.", "medium"),
+          nextRecommendation("Run health checks", "beehive doctor", "Re-check graph, retrieval, review queues, and migrations.", "low")
         ])
   ]);
 
@@ -597,11 +597,11 @@ async function buildNextCommandReport(rootDir: string): Promise<NextCommandRepor
 
 function printNextCommandReport(report: NextCommandReport): void {
   if (report.status === "uninitialized") {
-    log(`SwarmVault is not initialized in ${report.rootDir}.`);
+    log(`Beehive is not initialized in ${report.rootDir}.`);
     log("");
     log("Start here:");
   } else {
-    log(`SwarmVault workspace: ${report.rootDir}`);
+    log(`Beehive workspace: ${report.rootDir}`);
     log(`Config: ${report.paths.configPath}`);
     log(`Schema: ${report.paths.schemaPath}`);
     log(`Raw sources: ${report.paths.rawDir}`);
@@ -656,7 +656,7 @@ async function writeShareBundle(
 }
 
 function emitNotice(message: string): void {
-  process.stderr.write(`[swarmvault] ${message}\n`);
+  process.stderr.write(`[beehive] ${message}\n`);
 }
 
 async function maybeEmitHeuristicNotice(commandPath: string[]): Promise<void> {
@@ -749,7 +749,7 @@ function getCommandPath(command: Command): string[] {
   let current: Command | null = command;
   while (current) {
     const name = current.name();
-    if (name && name !== "swarmvault") {
+    if (name && name !== "beehive") {
       names.unshift(name);
     }
     current = current.parent ?? null;
@@ -759,17 +759,17 @@ function getCommandPath(command: Command): string[] {
 
 function commandWorkspaceId(command: Command): string | undefined {
   const optsWithGlobals = command.optsWithGlobals() as { workspaceId?: unknown };
-  return typeof optsWithGlobals.workspaceId === "string" ? optsWithGlobals.workspaceId : process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  return typeof optsWithGlobals.workspaceId === "string" ? optsWithGlobals.workspaceId : process.env[BEEHIVE_WORKSPACE_ID_ENV];
 }
 
 function beginWorkspaceCommand(command: Command): void {
   const workspaceId = commandWorkspaceId(command);
   if (workspaceId === undefined) {
-    throw new Error(`Behavior commands require --workspace-id <id> or ${SWARMVAULT_WORKSPACE_ID_ENV}.`);
+    throw new Error(`Behavior commands require --workspace-id <id> or ${BEEHIVE_WORKSPACE_ID_ENV}.`);
   }
-  previousWorkspaceId = process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  previousWorkspaceId = process.env[BEEHIVE_WORKSPACE_ID_ENV];
   workspaceIdWasSetForCommand = true;
-  process.env[SWARMVAULT_WORKSPACE_ID_ENV] = validateWorkspaceId(workspaceId);
+  process.env[BEEHIVE_WORKSPACE_ID_ENV] = validateWorkspaceId(workspaceId);
 }
 
 function finishWorkspaceCommand(): void {
@@ -777,9 +777,9 @@ function finishWorkspaceCommand(): void {
     return;
   }
   if (previousWorkspaceId === undefined) {
-    delete process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+    delete process.env[BEEHIVE_WORKSPACE_ID_ENV];
   } else {
-    process.env[SWARMVAULT_WORKSPACE_ID_ENV] = previousWorkspaceId;
+    process.env[BEEHIVE_WORKSPACE_ID_ENV] = previousWorkspaceId;
   }
   previousWorkspaceId = undefined;
   workspaceIdWasSetForCommand = false;
@@ -950,11 +950,11 @@ async function runScanCommand(
     log(`Share kit: ${shareKitPath}`);
     log("");
     log("Next steps:");
-    log(`  ${workspaceCommand('swarmvault query "What are the key concepts?"')}`);
-    log(`  ${workspaceCommand("swarmvault graph serve")}`);
-    log(`  ${workspaceCommand("swarmvault doctor")}`);
-    log(`  ${workspaceCommand("swarmvault candidate list")}`);
-    log(`  ${workspaceCommand("swarmvault next")}`);
+    log(`  ${workspaceCommand('beehive query "What are the key concepts?"')}`);
+    log(`  ${workspaceCommand("beehive graph serve")}`);
+    log(`  ${workspaceCommand("beehive doctor")}`);
+    log(`  ${workspaceCommand("beehive candidate list")}`);
+    log(`  ${workspaceCommand("beehive next")}`);
   }
 
   if (options.mcp) {
@@ -984,7 +984,7 @@ async function runScanCommand(
       });
     } else {
       log(`Graph viewer running at http://localhost:${server.port}`);
-      log(`Next orientation: ${workspaceCommand("swarmvault next")}`);
+      log(`Next orientation: ${workspaceCommand("beehive next")}`);
     }
     process.on("SIGINT", async () => {
       try {
@@ -1064,7 +1064,7 @@ async function runInteractiveChat(options: {
     throw new Error("Interactive chat is not available with --json. Pass a question for one-shot JSON output.");
   }
   if (!process.stdin.isTTY) {
-    throw new Error("Pass a chat question, or run `swarmvault chat` in an interactive terminal.");
+    throw new Error("Pass a chat question, or run `beehive chat` in an interactive terminal.");
   }
 
   let sessionId = await resolveChatResumeId(options.resume);
@@ -1074,7 +1074,7 @@ async function runInteractiveChat(options: {
   const reader = createInterface({ input: process.stdin, output: process.stdout });
   try {
     while (true) {
-      const input = (await reader.question("swarmvault> ")).trim();
+      const input = (await reader.question("beehive> ")).trim();
       if (!input) {
         continue;
       }
@@ -1173,7 +1173,7 @@ program
 
 program
   .command("init")
-  .description("Initialize a SwarmVault workspace in the current directory.")
+  .description("Initialize a Beehive workspace in the current directory.")
   .option("--obsidian", "Generate a minimal .obsidian workspace alongside the vault", false)
   .option(
     "--profile <profile>",
@@ -1181,7 +1181,7 @@ program
   )
   .option(
     "--lite",
-    "Minimal LLM-Wiki starter (raw/, wiki/, wiki/index.md, wiki/log.md, swarmvault.schema.md) without config, state, or agent installs",
+    "Minimal LLM-Wiki starter (raw/, wiki/, wiki/index.md, wiki/log.md, beehive.schema.md) without config, state, or agent installs",
     false
   )
   .option("--install-agent-rules", "Install configured agent rule files during initialization", false)
@@ -1202,14 +1202,14 @@ program
         installAgentRules: options.installAgentRules ?? false
       });
     } else {
-      log(options.lite ? "Initialized SwarmVault lite workspace." : "Initialized SwarmVault workspace.");
-      log("Next: swarmvault next");
+      log(options.lite ? "Initialized Beehive lite workspace." : "Initialized Beehive workspace.");
+      log("Next: beehive next");
     }
   });
 
 program
   .command("ingest")
-  .description("Ingest a local file path, directory path, or URL into the raw SwarmVault workspace.")
+  .description("Ingest a local file path, directory path, or URL into the raw Beehive workspace.")
   .argument("<input>", "Local file path, directory path, or URL")
   .option("--review", "Stage a source review artifact after ingest and compile", false)
   .option("--guide", "Stage a guided source integration bundle after ingest and compile (default: from config)")
@@ -1226,7 +1226,7 @@ program
   .option("--include-resources", "Also ingest repo files classified as resources", false)
   .option("--include-generated", "Also ingest repo files classified as generated output", false)
   .option("--no-gitignore", "Ignore .gitignore rules when ingesting a directory")
-  .option("--no-swarmvaultignore", "Ignore .swarmvaultignore rules when ingesting a directory")
+  .option("--no-beehiveignore", "Ignore .beehiveignore rules when ingesting a directory")
   .option("--video", "Treat a URL input as a public video and transcribe extracted audio", false)
   .option("--resume <run-id>", "Re-run only the failed files from a prior ingest run id")
   .option("--commit", "Auto-commit wiki and state changes after ingest")
@@ -1245,7 +1245,7 @@ program
         includeResources?: boolean;
         includeGenerated?: boolean;
         gitignore?: boolean;
-        swarmvaultignore?: boolean;
+        beehiveignore?: boolean;
         video?: boolean;
         resume?: string;
         review?: boolean;
@@ -1278,7 +1278,7 @@ program
         exclude: options.exclude,
         maxFiles,
         gitignore: options.gitignore,
-        swarmvaultignore: options.swarmvaultignore,
+        beehiveignore: options.beehiveignore,
         video: options.video,
         extractClasses,
         resume: options.resume,
@@ -1346,7 +1346,7 @@ program
           );
           if (failedCount && directoryResult.runId) {
             log(`Run id: ${directoryResult.runId}`);
-            log(`Retry with: swarmvault ingest ${input} --resume ${directoryResult.runId}`);
+            log(`Retry with: beehive ingest ${input} --resume ${directoryResult.runId}`);
             for (const failure of (directoryResult.failed ?? []).slice(0, 5)) {
               log(`  failed ${failure.stage}: ${failure.path}: ${failure.error}`);
             }
@@ -1357,7 +1357,7 @@ program
           }
           if (completedGuide?.awaitingInput) {
             log(
-              `Created guided session at ${completedGuide.sessionPath}. Resume with \`swarmvault source session ${completedGuide.sessionId}\`.`
+              `Created guided session at ${completedGuide.sessionPath}. Resume with \`beehive source session ${completedGuide.sessionId}\`.`
             );
           } else if (completedGuide?.guidePath) {
             log(`Staged guided session at ${completedGuide.guidePath}.`);
@@ -1406,7 +1406,7 @@ program
         }
         if (completedGuide?.awaitingInput) {
           log(
-            `Created guided session at ${completedGuide.sessionPath}. Resume with \`swarmvault source session ${completedGuide.sessionId}\`.`
+            `Created guided session at ${completedGuide.sessionPath}. Resume with \`beehive source session ${completedGuide.sessionId}\`.`
           );
         } else if (completedGuide?.guidePath) {
           log(`Staged guided session at ${completedGuide.guidePath}.`);
@@ -1506,7 +1506,7 @@ source
             `${result.review ? ` Review: ${result.review.reviewPath}` : ""}` +
             `${
               result.guide?.awaitingInput
-                ? ` Session: ${result.guide.sessionPath}. Resume with \`swarmvault source session ${result.guide.sessionId}\`.`
+                ? ` Session: ${result.guide.sessionPath}. Resume with \`beehive source session ${result.guide.sessionId}\`.`
                 : result.guide?.guidePath
                   ? ` Guide: ${result.guide.guidePath}`
                   : ""
@@ -1631,7 +1631,7 @@ source
       emitJson(result);
     } else {
       if (result.awaitingInput) {
-        log(`Created guided session at ${result.sessionPath}. Resume with \`swarmvault source session ${result.sessionId}\`.`);
+        log(`Created guided session at ${result.sessionPath}. Resume with \`beehive source session ${result.sessionId}\`.`);
       } else {
         log(`Staged guided session at ${result.guidePath}.`);
       }
@@ -1652,7 +1652,7 @@ source
     if (isJson()) {
       emitJson(result);
     } else if (result.awaitingInput) {
-      log(`Updated guided session at ${result.sessionPath}. Resume with \`swarmvault source session ${result.sessionId}\` when ready.`);
+      log(`Updated guided session at ${result.sessionPath}. Resume with \`beehive source session ${result.sessionId}\` when ready.`);
     } else {
       log(`Staged guided session at ${result.guidePath}.`);
     }
@@ -1726,8 +1726,8 @@ program
 
 program
   .command("query")
-  .description("Query the compiled SwarmVault wiki.")
-  .argument("<question>", "Question to ask SwarmVault")
+  .description("Query the compiled Beehive wiki.")
+  .argument("<question>", "Question to ask Beehive")
   .option("--no-save", "Do not persist the answer to wiki/outputs")
   .option("--commit", "Auto-commit wiki changes after query")
   .option("--gap-fill", "Pull external web-search evidence when the local wiki has gaps (requires webSearch.tasks.queryProvider).")
@@ -2277,7 +2277,7 @@ program
     }
   });
 
-const exportCommand = program.command("export").description("Export portable SwarmVault artifacts.");
+const exportCommand = program.command("export").description("Export portable Beehive artifacts.");
 
 exportCommand
   .command("ai")
@@ -2358,7 +2358,7 @@ graph
 
 graph
   .command("merge")
-  .description("Merge SwarmVault or node-link JSON graph files into one namespaced graph artifact.")
+  .description("Merge Beehive or node-link JSON graph files into one namespaced graph artifact.")
   .argument("<graphs...>", "Graph JSON files to merge")
   .requiredOption("--out <path>", "Output graph JSON path")
   .option("--label <name>", "Label/prefix to use when merging one graph")
@@ -3029,7 +3029,7 @@ provider
         onProgress: (progress) => {
           if (progress.totalBytes) {
             const percent = Math.floor((progress.downloadedBytes / progress.totalBytes) * 100);
-            process.stderr.write(`\r[swarmvault] downloading ggml-${modelName}.bin: ${percent}%`);
+            process.stderr.write(`\r[beehive] downloading ggml-${modelName}.bin: ${percent}%`);
           }
         }
       });
@@ -3058,7 +3058,7 @@ provider
 
 provider
   .command("add")
-  .description("Add or update a named provider in swarmvault.config.json.")
+  .description("Add or update a named provider in beehive.config.json.")
   .argument("<id>", "Provider id")
   .requiredOption("--type <type>", `Provider type: ${providerTypes.join(", ")}`)
   .requiredOption("--model <model>", "Provider model name")
@@ -3287,7 +3287,7 @@ watch
 
 watch
   .command("add-root <path>")
-  .description("Persist a repo root into swarmvault.config.json watch.repoRoots.")
+  .description("Persist a repo root into beehive.config.json watch.repoRoots.")
   .action(async (pathValue: string) => {
     const resolved = await addWatchedRoot(process.cwd(), pathValue);
     if (isJson()) {
@@ -3299,7 +3299,7 @@ watch
 
 watch
   .command("remove-root <path>")
-  .description("Remove a repo root from swarmvault.config.json watch.repoRoots.")
+  .description("Remove a repo root from beehive.config.json watch.repoRoots.")
   .action(async (pathValue: string) => {
     const removed = await removeWatchedRoot(process.cwd(), pathValue);
     if (isJson()) {
@@ -3383,7 +3383,7 @@ hook
 
 hook
   .command("uninstall")
-  .description("Remove the SwarmVault-managed git hook blocks from the nearest git repository or an explicit repo path.")
+  .description("Remove the Beehive-managed git hook blocks from the nearest git repository or an explicit repo path.")
   .argument("[repo]", "Optional git repo path when the tracked repo lives below the vault root")
   .action(async (repo: string | undefined) => {
     const status = await uninstallGitHooks(process.cwd(), { repoPath: repo });
@@ -3391,12 +3391,12 @@ hook
       emitJson(status);
       return;
     }
-    log(`Removed SwarmVault hook blocks from ${status.repoRoot ?? "the current workspace"}`);
+    log(`Removed Beehive hook blocks from ${status.repoRoot ?? "the current workspace"}`);
   });
 
 hook
   .command("status")
-  .description("Show whether SwarmVault-managed git hooks are installed.")
+  .description("Show whether Beehive-managed git hooks are installed.")
   .argument("[repo]", "Optional git repo path when the tracked repo lives below the vault root")
   .action(async (repo: string | undefined) => {
     const status = await getGitHookStatus(process.cwd(), { repoPath: repo });
@@ -3497,7 +3497,7 @@ program
 
 program
   .command("mcp")
-  .description("Run SwarmVault as a local MCP server over stdio.")
+  .description("Run Beehive as a local MCP server over stdio.")
   .action(async () => {
     if (isJson()) {
       process.stderr.write(`${JSON.stringify({ status: "running", transport: "stdio" })}\n`);
@@ -3511,11 +3511,11 @@ program
     });
   });
 
-const install = program.command("install").description("Install SwarmVault instructions for an agent in the current project.");
+const install = program.command("install").description("Install Beehive instructions for an agent in the current project.");
 
 install
   .command("status")
-  .description("Show whether SwarmVault instructions are installed for an agent.")
+  .description("Show whether Beehive instructions are installed for an agent.")
   .requiredOption("--agent <agent>", "Agent name")
   .option("--hook", "Include hook/plugin targets in the status check", false)
   .option("--mcp", "Include MCP config targets in the status check", false)
@@ -3543,7 +3543,7 @@ install
     "claude, codex, cursor, gemini, goose, opencode, copilot, aider, droid, pi, trae, claw, kiro, kilo, hermes, antigravity, vscode, amp, augment, adal, bob, cline, codebuddy, command-code, continue, cortex, crush, deepagents, devin, firebender, iflow, junie, kilo-code, kimi, kode, mcpjam, mistral-vibe, mux, neovate, openclaw, openhands, pochi, qoder, qwen-code, replit, roo-code, trae-cn, warp, windsurf, or zencoder"
   )
   .option("--hook", "Also install hook/plugin guidance when the target agent supports it", false)
-  .option("--mcp", "Also register the SwarmVault MCP server in the agent's project MCP config", false)
+  .option("--mcp", "Also register the Beehive MCP server in the agent's project MCP config", false)
   .option(
     "--graph-first [mode]",
     "Opt in to graph-first search enforcement for installed hooks: deny (default when the flag is passed), context, or off; persisted as hooks.graphFirst"
@@ -3580,7 +3580,7 @@ install
     } else {
       log(`Installed rules into ${result.target}`);
       if (graphFirst) {
-        log(`Graph-first hook mode set to "${graphFirst}" in swarmvault.config.json.`);
+        log(`Graph-first hook mode set to "${graphFirst}" in beehive.config.json.`);
       } else if (options.hook) {
         log('Hooks run in advisory mode by default; add --graph-first to opt in to search enforcement (hooks.graphFirst: "deny").');
       }
@@ -3598,7 +3598,7 @@ install
 
 program
   .command("demo")
-  .description("Try SwarmVault with a bundled sample vault — zero config, zero API keys.")
+  .description("Try Beehive with a bundled sample vault — zero config, zero API keys.")
   .option("--port <port>", "Port for the graph viewer")
   .option("--no-serve", "Skip launching the graph viewer after compile")
   .action(async (options: { port?: string; serve?: boolean }) => {
@@ -3606,7 +3606,7 @@ program
     const { tmpdir } = await import("node:os");
     const path = await import("node:path");
 
-    const demoDir = await mkdtemp(path.join(tmpdir(), "swarmvault-demo-"));
+    const demoDir = await mkdtemp(path.join(tmpdir(), "beehive-demo-"));
     if (!isJson()) {
       log(`Creating demo vault in ${demoDir}`);
     }
@@ -3755,9 +3755,9 @@ program
         log("");
         log("Try next:");
         log(`  cd ${demoDir}`);
-        log(`  ${workspaceCommand("swarmvault graph share --post")}`);
-        log(`  ${workspaceCommand('swarmvault query "How does contradiction detection work?"')}`);
-        log(`  ${workspaceCommand("swarmvault lint")}`);
+        log(`  ${workspaceCommand("beehive graph share --post")}`);
+        log(`  ${workspaceCommand('beehive query "How does contradiction detection work?"')}`);
+        log(`  ${workspaceCommand("beehive lint")}`);
       }
       process.on("SIGINT", async () => {
         try {
@@ -3771,9 +3771,9 @@ program
       log("");
       log("Try next:");
       log(`  cd ${demoDir}`);
-      log(`  ${workspaceCommand("swarmvault graph share --post")}`);
-      log(`  ${workspaceCommand("swarmvault graph serve")}`);
-      log(`  ${workspaceCommand('swarmvault query "How does contradiction detection work?"')}`);
+      log(`  ${workspaceCommand("beehive graph share --post")}`);
+      log(`  ${workspaceCommand("beehive graph serve")}`);
+      log(`  ${workspaceCommand('beehive query "How does contradiction detection work?"')}`);
     }
   });
 
@@ -3790,9 +3790,9 @@ program
       currentGraph = JSON.parse(raw);
     } catch {
       if (isJson()) {
-        emitJson({ error: "No compiled graph found. Run swarmvault compile first." });
+        emitJson({ error: "No compiled graph found. Run beehive compile first." });
       } else {
-        log("No compiled graph found. Run swarmvault compile first.");
+        log("No compiled graph found. Run beehive compile first.");
       }
       return;
     }

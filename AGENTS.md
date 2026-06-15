@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-SwarmVault is a pnpm TypeScript monorepo for local-first vault ingestion, wiki/graph generation, CLI workflows, viewer UI, agent installs, and a published ClawHub skill.
+Beehive is a pnpm TypeScript monorepo for local-first vault ingestion, wiki/graph generation, CLI workflows, viewer UI, agent installs, and a published ClawHub skill.
 Runtime assumptions are Node >=24, ESM packages, Biome formatting, Vitest tests, and a build order of viewer -> engine -> CLI.
 
 ## STRUCTURE
@@ -18,7 +18,7 @@ packages/viewer/          # React/Vite graph workspace viewer and exported viewe
 packages/obsidian-plugin/ # private desktop-only Obsidian plugin, CJS bundle from ESM source
 scripts/                  # release gates, smoke lanes, manifest checks, skill publish
 smoke/                    # release/live fixture inputs, not product source
-skills/swarmvault/        # published ClawHub/OpenClaw skill artifact
+skills/beehive/        # published ClawHub/OpenClaw skill artifact
 worked/                   # demo vault setups; large-repo is a source-class fixture
 docs/                     # live-testing and release/user-facing docs
 ```
@@ -34,7 +34,7 @@ docs/                     # live-testing and release/user-facing docs
 | Viewer runtime | `packages/viewer/src/App.tsx`, `lib.ts`, `hooks/`, `components/` | UI state, API boundary, Cytoscape graph rendering. |
 | Obsidian runtime | `packages/obsidian-plugin/src/main.ts`, `src/commands/`, `src/cli/` | Desktop plugin shells out to the CLI. |
 | Release/publish safety | `scripts/release-preflight.mjs`, `release-publish.mjs`, `check-release-sync.mjs` | Dry-run still validates tags/worktrees/version sync. |
-| ClawHub skill package | `skills/swarmvault/SKILL.md`, `README.md`, `examples/`, `references/` | Text-only published skill; frontmatter is checked. |
+| ClawHub skill package | `skills/beehive/SKILL.md`, `README.md`, `examples/`, `references/` | Text-only published skill; frontmatter is checked. |
 
 ## CONVENTIONS
 
@@ -43,7 +43,7 @@ docs/                     # live-testing and release/user-facing docs
 - Root package version drives engine, CLI, viewer, Obsidian plugin, MCP fallback string, and skill frontmatter version checks.
 - Published package manifests must not contain `workspace:` runtime dependency specs.
 - CLI is a thin orchestration layer; runtime behavior belongs in engine modules unless it is parsing or presentation.
-- Generated vault roots are resolved through engine path helpers because `SWARMVAULT_OUT` can move `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` outside the project.
+- Generated vault roots are resolved through engine path helpers because `BEEHIVE_OUT` can move `raw/`, `wiki/`, `state/`, `agent/`, and `inbox/` outside the project.
 - Tests avoid live cloud APIs and real YouTube/Neo4j; use fakes, temp providers, local HTTP fixtures, and restored env vars.
 - Markdown/wiki/graph outputs are compatibility surfaces: preserve page IDs, frontmatter, graph IDs, relation labels, and artifact paths unless migration is intentional.
 
@@ -66,10 +66,10 @@ pnpm lint
 pnpm typecheck
 pnpm check
 pnpm live:cli-surface
-pnpm --filter @swarmvaultai/engine test
-pnpm --filter @swarmvaultai/cli test
-pnpm --filter @swarmvaultai/viewer test
-pnpm --filter @swarmvaultai/obsidian-plugin test
+pnpm --filter @beehive/engine test
+pnpm --filter @beehive/cli test
+pnpm --filter @beehive/viewer test
+pnpm --filter @beehive/obsidian-plugin test
 ```
 
 ## NOTES

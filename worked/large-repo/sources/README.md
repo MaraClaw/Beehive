@@ -1,6 +1,6 @@
 # Large Repo Fixture
 
-This is a tiny first-party markdown source so SwarmVault's markdown
+This is a tiny first-party markdown source so Beehive's markdown
 extraction path has something to touch while the rest of the source tree
 covers the remaining source classes.
 

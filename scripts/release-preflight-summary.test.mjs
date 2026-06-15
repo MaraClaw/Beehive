@@ -6,7 +6,7 @@ import test from "node:test";
 import { createPreflightSummary, formatPreflightSummaryMarkdown, writePreflightSummary } from "./release-preflight-summary.mjs";
 
 test("formats and writes release preflight summaries", async () => {
-  const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-preflight-summary-"));
+  const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-preflight-summary-"));
   try {
     const summary = createPreflightSummary({
       version: "3.5.0",
@@ -32,7 +32,7 @@ test("formats and writes release preflight summaries", async () => {
 
     assert.equal(summary.status, "passed");
     const markdown = formatPreflightSummaryMarkdown(summary);
-    assert.match(markdown, /SwarmVault 3\.5\.0 Release Preflight/);
+    assert.match(markdown, /Beehive 3\.5\.0 Release Preflight/);
     assert.match(markdown, /pnpm check/);
     assert.match(markdown, /browser smoke/);
     assert.match(markdown, /\/tmp\/engine\.tgz/);

@@ -43,7 +43,7 @@ export class CliNotFoundError extends Error {
   readonly attemptedPath: string;
 
   constructor(attemptedPath: string, cause?: unknown) {
-    super(`SwarmVault CLI not found: ${attemptedPath}`);
+    super(`Beehive CLI not found: ${attemptedPath}`);
     this.name = "CliNotFoundError";
     this.attemptedPath = attemptedPath;
     if (cause !== undefined) {

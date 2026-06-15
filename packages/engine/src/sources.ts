@@ -254,9 +254,7 @@ async function crawlDocsSource(url: string, maxPages: number, maxDepth: number):
     })
   );
   if (!isLikelyDocsStartUrl(startUrl) && sameDomainDocsLinks.length < 3) {
-    throw new Error(
-      "This URL does not look like a docs hub. Use `swarmvault add` for single articles or `swarmvault ingest` for direct files."
-    );
+    throw new Error("This URL does not look like a docs hub. Use `beehive add` for single articles or `beehive ingest` for direct files.");
   }
 
   const visited = new Set<string>();
@@ -365,7 +363,7 @@ async function resolveManagedSourceInput(
       };
     }
     if (!stat.isDirectory()) {
-      throw new Error("`swarmvault source add` supports local files, directories, public GitHub repo root URLs, and docs hubs.");
+      throw new Error("`beehive source add` supports local files, directories, public GitHub repo root URLs, and docs hubs.");
     }
     const detectedRepoRoot = await findNearestGitRoot(absoluteInput);
     const repoRoot =
@@ -397,9 +395,7 @@ async function resolveManagedSourceInput(
 
   const parsed = new URL(input);
   if (parsed.hostname.toLowerCase().includes("github.com")) {
-    throw new Error(
-      "`swarmvault source add` only supports public GitHub repo root URLs. Use a repo root like https://github.com/owner/repo."
-    );
+    throw new Error("`beehive source add` only supports public GitHub repo root URLs. Use a repo root like https://github.com/owner/repo.");
   }
   return {
     kind: "crawl_url",
@@ -764,7 +760,7 @@ function renderDeterministicSourceBrief(input: {
     "## Suggested Next Questions",
     "",
     ...((input.report?.suggestedQuestions ?? []).slice(0, 5).map((question) => `- ${question}`) || [
-      "- Ask `swarmvault query` about the main modules or sections in this source."
+      "- Ask `beehive query` about the main modules or sections in this source."
     ]),
     ""
   ].join("\n");
@@ -1288,8 +1284,8 @@ function insightTagsForTarget(page: GraphArtifact["pages"][number] | null): stri
 
 function guidedUpdateMarker(scopeId: string) {
   return {
-    start: `<!-- swarmvault-guided-source:${scopeId}:start -->`,
-    end: `<!-- swarmvault-guided-source:${scopeId}:end -->`
+    start: `<!-- beehive-guided-source:${scopeId}:start -->`,
+    end: `<!-- beehive-guided-source:${scopeId}:end -->`
   };
 }
 
@@ -1795,7 +1791,7 @@ async function buildGuidedUpdatePages(
             `# ${title}`,
             "",
             useCanonicalTargets
-              ? "Canonical page maintained by SwarmVault. Guided sessions stage replaceable update blocks here for approval."
+              ? "Canonical page maintained by Beehive. Guided sessions stage replaceable update blocks here for approval."
               : "Human-curated insight page. Guided sessions stage replaceable update blocks here.",
             ""
           ].join("\n");

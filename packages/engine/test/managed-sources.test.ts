@@ -18,7 +18,7 @@ import type { ManagedSourceRecord, SourceManifest } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-managed-sources-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-managed-sources-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -32,15 +32,15 @@ async function readManifests(rootDir: string): Promise<SourceManifest[]> {
 }
 
 async function withPrivateUrlAllowance<T>(run: () => Promise<T>): Promise<T> {
-  const previous = process.env.SWARMVAULT_ALLOW_PRIVATE_URLS;
-  process.env.SWARMVAULT_ALLOW_PRIVATE_URLS = "1";
+  const previous = process.env.BEEHIVE_ALLOW_PRIVATE_URLS;
+  process.env.BEEHIVE_ALLOW_PRIVATE_URLS = "1";
   try {
     return await run();
   } finally {
     if (previous === undefined) {
-      delete process.env.SWARMVAULT_ALLOW_PRIVATE_URLS;
+      delete process.env.BEEHIVE_ALLOW_PRIVATE_URLS;
     } else {
-      process.env.SWARMVAULT_ALLOW_PRIVATE_URLS = previous;
+      process.env.BEEHIVE_ALLOW_PRIVATE_URLS = previous;
     }
   }
 }
@@ -312,7 +312,7 @@ describe("managed sources", () => {
 
       await expect(
         withPrivateUrlAllowance(async () => await addManagedSource(rootDir, `${server.baseUrl}/blog/post.html`))
-      ).rejects.toThrow(/docs hub|swarmvault add/i);
+      ).rejects.toThrow(/docs hub|beehive add/i);
     } finally {
       await server.close();
     }

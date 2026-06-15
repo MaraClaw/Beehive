@@ -124,7 +124,7 @@ async function materializeAttachmentPath(input: { filePath?: string; bytes?: Buf
     throw new Error("Image extraction requires a file path or bytes.");
   }
 
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-image-extract-"));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-image-extract-"));
   const extension = input.mimeType.split("/")[1]?.split("+")[0] ?? "bin";
   const tempPath = path.join(tempDir, `source.${extension}`);
   await fs.writeFile(tempPath, input.bytes);
@@ -325,7 +325,7 @@ type ToolRunResult = {
   stderr: string;
 };
 
-function videoBinary(envName: "SWARMVAULT_FFMPEG_BINARY" | "SWARMVAULT_YTDLP_BINARY", fallback: string): string {
+function videoBinary(envName: "BEEHIVE_FFMPEG_BINARY" | "BEEHIVE_YTDLP_BINARY", fallback: string): string {
   const configured = process.env[envName]?.trim();
   return configured || fallback;
 }
@@ -361,11 +361,11 @@ async function extractAudioFromVideoBytes(input: { mimeType: string; bytes: Buff
   fileName: string;
   metadata: Record<string, string>;
 }> {
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-video-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-video-"));
   const inputExtension = path.extname(input.fileName ?? "") || ".video";
   const inputPath = path.join(tmpDir, `input${inputExtension}`);
   const outputPath = path.join(tmpDir, "audio.wav");
-  const ffmpeg = videoBinary("SWARMVAULT_FFMPEG_BINARY", "ffmpeg");
+  const ffmpeg = videoBinary("BEEHIVE_FFMPEG_BINARY", "ffmpeg");
 
   try {
     await fs.writeFile(inputPath, input.bytes);
@@ -389,9 +389,9 @@ async function extractAudioFromVideoBytes(input: { mimeType: string; bytes: Buff
 async function downloadPublicVideoAudio(input: {
   url: string;
 }): Promise<{ bytes: Buffer; fileName: string; metadata: Record<string, string> }> {
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-video-url-"));
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-video-url-"));
   const outputTemplate = path.join(tmpDir, "download.%(ext)s");
-  const ytdlp = videoBinary("SWARMVAULT_YTDLP_BINARY", "yt-dlp");
+  const ytdlp = videoBinary("BEEHIVE_YTDLP_BINARY", "yt-dlp");
   try {
     const result = await runTool(ytdlp, ["-x", "--audio-format", "wav", "--no-playlist", "-o", outputTemplate, input.url], {
       cwd: tmpDir
@@ -799,13 +799,15 @@ export async function extractPdfText(input: {
 }): Promise<{ extractedText?: string; artifact: SourceExtractionArtifact }> {
   try {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    const task = pdfjs.getDocument({
+    type PdfDocumentInitParameters = Parameters<typeof pdfjs.getDocument>[0] & { isEvalSupported: boolean };
+    const documentOptions: PdfDocumentInitParameters = {
       data: new Uint8Array(input.bytes),
       useWorkerFetch: false,
-      isEvalSupported: false,
       disableFontFace: true,
+      isEvalSupported: false,
       verbosity: 0
-    });
+    };
+    const task = pdfjs.getDocument(documentOptions);
     const document = await task.promise;
     const pageTexts: string[] = [];
 

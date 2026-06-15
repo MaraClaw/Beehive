@@ -33,7 +33,7 @@ if (args.list) {
 
 const lane = args.lane ?? "heuristic";
 const version = args.version ?? (await readPackageVersion());
-const installSpecs = args.installSpecs?.length ? args.installSpecs : [`@swarmvaultai/cli@${version}`];
+const installSpecs = args.installSpecs?.length ? args.installSpecs : [`@beehive/cli@${version}`];
 const keepArtifacts = args.keepArtifacts ?? process.env.KEEP_OSS_CORPUS_ARTIFACTS === "1";
 const artifactDir =
   args.artifactDir ??
@@ -66,7 +66,7 @@ let installedCli;
 
 if (usesPublishedRegistryInstall(installSpecs)) {
   console.log(
-    `[oss-corpus] auditing the published npm package path for @swarmvaultai/cli@${version}. Use --install-spec tarballs to validate unreleased local changes.`
+    `[oss-corpus] auditing the published npm package path for @beehive/cli@${version}. Use --install-spec tarballs to validate unreleased local changes.`
   );
 }
 
@@ -403,7 +403,7 @@ try {
     throw new Error(`OSS corpus validation failed for: ${gatedFailures.map((repo) => repo.id).join(", ")}`);
   }
 
-  console.log(`[oss-corpus] ${lane} corpus passed for @swarmvaultai/cli@${version}`);
+  console.log(`[oss-corpus] ${lane} corpus passed for @beehive/cli@${version}`);
   console.log(`[oss-corpus] kept artifacts at ${artifactDir}`);
 } catch (error) {
   const summary = {
@@ -484,7 +484,7 @@ function usesPublishedRegistryInstall(specs) {
     if (path.isAbsolute(spec)) {
       return false;
     }
-    return spec.startsWith("@swarmvaultai/cli@");
+    return spec.startsWith("@beehive/cli@");
   });
 }
 
@@ -567,29 +567,29 @@ function artifactDirFor(targetPath) {
 }
 
 async function configureProviderLane(vaultDir, lane) {
-  const configPath = path.join(vaultDir, "swarmvault.config.json");
+  const configPath = path.join(vaultDir, "beehive.config.json");
   const config = JSON.parse(await fs.readFile(configPath, "utf8"));
   if (lane === "openai") {
     assert.ok(process.env.OPENAI_API_KEY, "OPENAI_API_KEY is required for the openai corpus lane");
     config.providers.live = {
       type: "openai",
-      model: process.env.SWARMVAULT_OPENAI_MODEL ?? "gpt-4.1-mini",
+      model: process.env.BEEHIVE_OPENAI_MODEL ?? "gpt-4.1-mini",
       apiKeyEnv: "OPENAI_API_KEY"
     };
   } else if (lane === "ollama") {
     assert.ok(process.env.OLLAMA_API_KEY, "OLLAMA_API_KEY is required for the ollama corpus lane");
     config.providers.live = {
       type: "ollama",
-      model: process.env.SWARMVAULT_OLLAMA_MODEL ?? "gpt-oss:20b-cloud",
+      model: process.env.BEEHIVE_OLLAMA_MODEL ?? "gpt-oss:20b-cloud",
       apiKeyEnv: "OLLAMA_API_KEY",
-      baseUrl: process.env.SWARMVAULT_OLLAMA_BASE_URL ?? "https://ollama.com/v1",
-      apiStyle: process.env.SWARMVAULT_OLLAMA_API_STYLE ?? "chat"
+      baseUrl: process.env.BEEHIVE_OLLAMA_BASE_URL ?? "https://ollama.com/v1",
+      apiStyle: process.env.BEEHIVE_OLLAMA_API_STYLE ?? "chat"
     };
   } else if (lane === "anthropic") {
     assert.ok(process.env.ANTHROPIC_API_KEY, "ANTHROPIC_API_KEY is required for the anthropic corpus lane");
     config.providers.live = {
       type: "anthropic",
-      model: process.env.SWARMVAULT_ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514",
+      model: process.env.BEEHIVE_ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514",
       apiKeyEnv: "ANTHROPIC_API_KEY"
     };
   } else {
@@ -753,7 +753,7 @@ async function runCommand(logsDir, label, command, args, options = {}) {
 }
 
 async function resolveInstalledCli(prefix) {
-  const binPath = process.platform === "win32" ? path.join(prefix, "swarmvault.cmd") : path.join(prefix, "bin", "swarmvault");
+  const binPath = process.platform === "win32" ? path.join(prefix, "beehive.cmd") : path.join(prefix, "bin", "beehive");
   await fs.access(binPath);
   if (process.platform === "win32") {
     return { command: binPath, args: [] };

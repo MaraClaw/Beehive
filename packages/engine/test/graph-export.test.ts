@@ -9,7 +9,7 @@ import type { GraphArtifact, GraphNode, GraphPage } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-obsidian-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-obsidian-"));
   tempDirs.push(dir);
   return dir;
 }
@@ -413,7 +413,7 @@ describe("obsidian vault export", () => {
 
     expect(result.format).toBe("callflow");
     const html = await fs.readFile(outputPath, "utf8");
-    expect(html).toContain("SwarmVault Callflow");
+    expect(html).toContain("Beehive Callflow");
     expect(html).toContain("Alpha Source");
     expect(html).toContain("Authentication");
     expect(html).toContain("mentions");

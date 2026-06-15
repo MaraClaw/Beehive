@@ -20,7 +20,7 @@ const TREE_SITTER_RUNTIME_PACKAGE = "@vscode/tree-sitter-wasm";
 const TREE_SITTER_EXTRA_GRAMMARS_PACKAGE = "tree-sitter-wasms";
 const TREE_SITTER_JULIA_PACKAGE = "tree-sitter-julia";
 const TREE_SITTER_SYSTEMVERILOG_PACKAGE = "tree-sitter-systemverilog";
-const SWIFT_TREE_SITTER_OPT_IN_ENV = "SWARMVAULT_ENABLE_SWIFT_TREE_SITTER";
+const SWIFT_TREE_SITTER_OPT_IN_ENV = "BEEHIVE_ENABLE_SWIFT_TREE_SITTER";
 const packageRootCache = new Map<string, string>();
 const vendoredGrammarAssetByLanguage: Partial<Record<TreeSitterCodeLanguage, string>> = {
   julia: "tree-sitter-julia.wasm",
@@ -754,10 +754,10 @@ function treeSitterCompatibilityMessage(
 ): string {
   const message = error instanceof Error ? error.message : String(error);
   if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "MODULE_NOT_FOUND") {
-    return `Tree-sitter runtime support for ${language} is unavailable. Reinstall @swarmvaultai/engine so the packaged parser runtime is present.`;
+    return `Tree-sitter runtime support for ${language} is unavailable. Reinstall @beehive/engine so the packaged parser runtime is present.`;
   }
   if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "ENOENT") {
-    return `Missing tree-sitter grammar asset for ${language}. Reinstall @swarmvaultai/engine so the packaged grammar files are present.`;
+    return `Missing tree-sitter grammar asset for ${language}. Reinstall @beehive/engine so the packaged grammar files are present.`;
   }
   return `Tree-sitter support for ${language} could not load: ${truncate(normalizeWhitespace(message), 220)}.`;
 }
@@ -3136,7 +3136,7 @@ function swiftDeclarationKindFromKeyword(node: TreeNode): CodeSymbolKind {
 // Swift visibility is expressed as a `modifiers` child containing a
 // `visibility_modifier`, whose innermost child carries the concrete keyword
 // (public / private / fileprivate / internal / open). Missing visibility means
-// `internal`, which Swift treats as module-accessible. For the SwarmVault
+// `internal`, which Swift treats as module-accessible. For the Beehive
 // graph's "exported" flag we treat everything except `private` and
 // `fileprivate` as exported.
 function swiftVisibilityKeyword(node: TreeNode): string | undefined {
@@ -4203,7 +4203,7 @@ function solidityCodeAnalysis(manifest: SourceManifest, rootNode: TreeNode, diag
 }
 
 // tree-sitter-html's tree is structural (nested `element` nodes, `attribute`
-// children with `attribute_name` + `quoted_attribute_value`). For SwarmVault
+// children with `attribute_name` + `quoted_attribute_value`). For Beehive
 // purposes HTML files are mostly not "code" in the symbol-extraction sense, so
 // we focus on two graph-useful signals:
 //   1. Imports: `<link rel="stylesheet" href="./x.css">` and `<script src="./y.js">`

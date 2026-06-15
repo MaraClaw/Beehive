@@ -7,10 +7,10 @@ surfaces the per-source-class benchmark breakdown added in cycle B.8.
 The example is intentionally small. Its job is to make two things concrete:
 
 1. The large-repo defaults introduced in B.7 — the `graph.similarityIdfFloor`
-   and `graph.godNodeLimit` knobs are wired into `swarmvault.config.json` so
+   and `graph.godNodeLimit` knobs are wired into `beehive.config.json` so
    it is obvious how to tune them.
 2. The richer benchmark corpus reporting introduced in B.8 — once
-   `swarmvault benchmark` runs, `state/benchmark.json` carries a `byClass`
+   `beehive benchmark` runs, `state/benchmark.json` carries a `byClass`
    payload and `wiki/graph/report.md` renders the new
    "Benchmark By Source Class" table.
 
@@ -39,14 +39,14 @@ cd worked/large-repo
 
 The script performs:
 
-1. `swarmvault init` — seeds the vault layout in this directory.
-2. Copies the bundled `swarmvault.config.json` into place so the B.7 graph
+1. `beehive init` — seeds the vault layout in this directory.
+2. Copies the bundled `beehive.config.json` into place so the B.7 graph
    knobs are applied.
-3. `swarmvault ingest ./sources` — pulls every source class into the vault.
+3. `beehive ingest ./sources` — pulls every source class into the vault.
    The `extractClasses` array in the config makes sure third-party,
    resource, and generated material flows through, not just first-party.
-4. `swarmvault compile` — builds the graph, benchmark, and reports.
-5. `swarmvault benchmark` — re-runs the benchmark explicitly so the
+4. `beehive compile` — builds the graph, benchmark, and reports.
+5. `beehive benchmark` — re-runs the benchmark explicitly so the
    `byClass` block is fresh.
 6. Echoes the per-source-class rows from `state/benchmark.json` and the new
    "Benchmark By Source Class" table from `wiki/graph/report.md` to stdout

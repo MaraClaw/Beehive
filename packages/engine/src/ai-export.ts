@@ -49,11 +49,11 @@ async function writeTrackedJson(
 }
 
 function graphPathForNode(nodeId: string): string {
-  return `swarmvault:node:${encodeURIComponent(nodeId)}`;
+  return `beehive:node:${encodeURIComponent(nodeId)}`;
 }
 
 function graphPathForPage(pageId: string): string {
-  return `swarmvault:page:${encodeURIComponent(pageId)}`;
+  return `beehive:page:${encodeURIComponent(pageId)}`;
 }
 
 function renderPageLine(page: LoadedPage): string {
@@ -84,7 +84,7 @@ function renderLlmsIndex(input: { generatedAt: string; vaultName: string; graph:
     .join("\n");
 
   return [
-    "# SwarmVault AI Index",
+    "# Beehive AI Index",
     "",
     `Generated: ${input.generatedAt}`,
     `Vault: ${input.vaultName}`,
@@ -106,11 +106,11 @@ function renderLlmsIndex(input: { generatedAt: string; vaultName: string; graph:
     "",
     "## Commands",
     "",
-    '- `swarmvault query "question"` asks the compiled wiki.',
-    '- `swarmvault chat "question"` keeps a persisted multi-turn session.',
-    '- `swarmvault context build "goal" --target <path>` creates a token-bounded handoff.',
-    "- `swarmvault graph serve` opens the workbench and graph viewer.",
-    "- `swarmvault doctor` checks graph, retrieval, review, watch, and task state.",
+    '- `beehive query "question"` asks the compiled wiki.',
+    '- `beehive chat "question"` keeps a persisted multi-turn session.',
+    '- `beehive context build "goal" --target <path>` creates a token-bounded handoff.',
+    "- `beehive graph serve` opens the workbench and graph viewer.",
+    "- `beehive doctor` checks graph, retrieval, review, watch, and task state.",
     "",
     communities ? "## Communities" : undefined,
     communities || undefined,
@@ -132,7 +132,7 @@ function renderAiReadme(input: { generatedAt: string; vaultName: string; truncat
     `Generated: ${input.generatedAt}`,
     `Vault: ${input.vaultName}`,
     "",
-    "This folder is a portable, static export of the compiled SwarmVault wiki for agents, crawlers, and documentation systems.",
+    "This folder is a portable, static export of the compiled Beehive wiki for agents, crawlers, and documentation systems.",
     "",
     "## Files",
     "",
@@ -147,7 +147,7 @@ function renderAiReadme(input: { generatedAt: string; vaultName: string; truncat
     "1. Read `llms.txt` to understand the vault shape.",
     "2. Search `llms-full.txt` or `pages/` for the specific topic.",
     "3. Use `graph.jsonld` to follow page, node, and relation IDs when provenance matters.",
-    "4. Ask the live vault with `swarmvault query` or continue a session with `swarmvault chat` when shell access is available."
+    "4. Ask the live vault with `beehive query` or continue a session with `beehive chat` when shell access is available."
   ]
     .filter((line): line is string => line !== undefined)
     .join("\n")
@@ -160,7 +160,7 @@ function renderFullText(input: { generatedAt: string; vaultName: string; pages: 
   truncated: boolean;
 } {
   const chunks = [
-    "# SwarmVault Full Wiki Export",
+    "# Beehive Full Wiki Export",
     "",
     `Generated: ${input.generatedAt}`,
     `Vault: ${input.vaultName}`,
@@ -207,15 +207,15 @@ function renderFullText(input: { generatedAt: string; vaultName: string; pages: 
 function buildJsonLd(input: { generatedAt: string; vaultName: string; graph: GraphArtifact }) {
   const graphItems: Array<Record<string, unknown>> = [
     {
-      "@id": "swarmvault:vault",
+      "@id": "beehive:vault",
       "@type": "Dataset",
       name: input.vaultName,
       dateModified: input.graph.generatedAt,
       datePublished: input.generatedAt,
-      additionalType: "SwarmVaultKnowledgeGraph"
+      additionalType: "BeehiveKnowledgeGraph"
     },
     ...input.graph.sources.map((source) => ({
-      "@id": `swarmvault:source:${encodeURIComponent(source.sourceId)}`,
+      "@id": `beehive:source:${encodeURIComponent(source.sourceId)}`,
       "@type": "CreativeWork",
       name: source.title,
       encodingFormat: source.mimeType,
@@ -235,8 +235,8 @@ function buildJsonLd(input: { generatedAt: string; vaultName: string; graph: Gra
       dateCreated: page.createdAt,
       dateModified: page.updatedAt,
       about: page.nodeIds.map((nodeId) => ({ "@id": graphPathForNode(nodeId) })),
-      citation: page.sourceIds.map((sourceId) => ({ "@id": `swarmvault:source:${encodeURIComponent(sourceId)}` })),
-      isPartOf: { "@id": "swarmvault:vault" }
+      citation: page.sourceIds.map((sourceId) => ({ "@id": `beehive:source:${encodeURIComponent(sourceId)}` })),
+      isPartOf: { "@id": "beehive:vault" }
     })),
     ...input.graph.nodes.map((node) => ({
       "@id": graphPathForNode(node.id),
@@ -244,26 +244,26 @@ function buildJsonLd(input: { generatedAt: string; vaultName: string; graph: Gra
       name: node.label,
       identifier: node.id,
       additionalType: node.type,
-      isPartOf: node.pageId ? { "@id": graphPathForPage(node.pageId) } : { "@id": "swarmvault:vault" },
-      sameAs: node.sourceIds.map((sourceId) => `swarmvault:source:${encodeURIComponent(sourceId)}`)
+      isPartOf: node.pageId ? { "@id": graphPathForPage(node.pageId) } : { "@id": "beehive:vault" },
+      sameAs: node.sourceIds.map((sourceId) => `beehive:source:${encodeURIComponent(sourceId)}`)
     })),
     ...input.graph.edges.map((edge) => ({
-      "@id": `swarmvault:edge:${encodeURIComponent(edge.id)}`,
-      "@type": "swarmvault:Relation",
+      "@id": `beehive:edge:${encodeURIComponent(edge.id)}`,
+      "@type": "beehive:Relation",
       name: edge.relation,
       identifier: edge.id,
-      "swarmvault:source": { "@id": graphPathForNode(edge.source) },
-      "swarmvault:target": { "@id": graphPathForNode(edge.target) },
-      "swarmvault:evidenceClass": edge.evidenceClass,
-      "swarmvault:confidence": edge.confidence,
-      "swarmvault:provenance": edge.provenance
+      "beehive:source": { "@id": graphPathForNode(edge.source) },
+      "beehive:target": { "@id": graphPathForNode(edge.target) },
+      "beehive:evidenceClass": edge.evidenceClass,
+      "beehive:confidence": edge.confidence,
+      "beehive:provenance": edge.provenance
     }))
   ];
 
   return {
     "@context": {
       "@vocab": "https://schema.org/",
-      swarmvault: "https://www.swarmvault.ai/ns#"
+      beehive: "https://www.beehive.ai/ns#"
     },
     "@graph": graphItems
   };
@@ -294,7 +294,7 @@ export async function exportAiPack(rootDir: string, options: AiExportOptions = {
   const { paths } = await loadVaultConfig(rootDir);
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` first.");
+    throw new Error("Graph artifact not found. Run `beehive compile` first.");
   }
 
   const generatedAt = new Date().toISOString();

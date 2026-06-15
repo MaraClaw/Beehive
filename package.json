@@ -1,11 +1,11 @@
 {
-  "name": "swarmvault-opensource",
+  "name": "beehive",
   "private": true,
-  "version": "3.20.0",
+  "version": "3.21.0",
   "type": "module",
   "packageManager": "pnpm@10.32.1",
   "scripts": {
-    "build": "pnpm --filter @swarmvaultai/viewer build && pnpm --filter @swarmvaultai/engine build && pnpm --filter @swarmvaultai/cli build",
+    "build": "pnpm --filter @beehive/viewer build && pnpm --filter @beehive/engine build && pnpm --filter @beehive/cli build",
     "test": "node ./scripts/check-published-manifests.mjs && node --test ./scripts/release-preflight-summary.test.mjs && pnpm -r test",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -29,7 +29,7 @@
     "release:preflight": "node ./scripts/release-preflight.mjs",
     "release:publish": "node ./scripts/release-publish.mjs",
     "skill:publish": "node ./scripts/publish-clawhub-skill.mjs",
-    "skill:inspect": "clawhub inspect swarmvault --files",
+    "skill:inspect": "clawhub inspect beehive --files",
     "prepare": "lefthook install"
   },
   "devDependencies": {

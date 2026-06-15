@@ -1,15 +1,15 @@
-# SwarmVault MCP server
+# Beehive MCP server
 #
-# Builds the SwarmVault CLI from the workspace and exposes the MCP server over
+# Builds the Beehive CLI from the workspace and exposes the MCP server over
 # stdio (the same transport that Claude Code, Codex, OpenCode, and other MCP
 # clients use). Used by the Glama MCP registry to verify that the server starts
 # and responds to MCP introspection.
 #
 # Run locally:
-#   docker build -t swarmvault-mcp .
-#   docker run --rm -i swarmvault-mcp
+#   docker build -t beehive-mcp .
+#   docker run --rm -i beehive-mcp
 
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /app
 
@@ -26,12 +26,12 @@ RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the workspace and build the CLI (and its deps)
 COPY . .
-RUN pnpm --filter @swarmvaultai/viewer build \
- && pnpm --filter @swarmvaultai/engine build \
- && pnpm --filter @swarmvaultai/cli build \
+RUN pnpm --filter @beehive/viewer build \
+ && pnpm --filter @beehive/engine build \
+ && pnpm --filter @beehive/cli build \
  && pnpm prune --prod
 
-FROM node:24-alpine
+FROM node:26-alpine
 
 WORKDIR /app
 
@@ -40,7 +40,7 @@ COPY --from=build /app /app
 
 ENV NODE_ENV=production
 
-# `swarmvault mcp` starts the MCP server over stdio. Glama's introspection
+# `beehive mcp` starts the MCP server over stdio. Glama's introspection
 # checks send MCP requests over stdio and expect responses, which this entry
 # point satisfies.
 ENTRYPOINT ["node", "/app/packages/cli/dist/index.js", "mcp"]

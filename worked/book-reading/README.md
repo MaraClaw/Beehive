@@ -17,7 +17,7 @@ This example uses *The Cartographer's Lens*, an original sample novel about a yo
 
 ```bash
 mkdir book-wiki && cd book-wiki
-swarmvault init --obsidian
+beehive init --obsidian
 ```
 
 ### 2. Ingest the first chapter
@@ -26,8 +26,8 @@ Copy `raw/chapter-1.md` into your vault's `raw/` directory, then ingest:
 
 ```bash
 cp worked/book-reading/raw/chapter-1.md raw/
-swarmvault ingest raw/chapter-1.md
-swarmvault compile
+beehive ingest raw/chapter-1.md
+beehive compile
 ```
 
 After the first chapter you should see wiki pages for:
@@ -42,16 +42,16 @@ As you continue reading, add each chapter the same way:
 
 ```bash
 cp worked/book-reading/raw/chapter-2.md raw/
-swarmvault ingest raw/chapter-2.md
-swarmvault compile
+beehive ingest raw/chapter-2.md
+beehive compile
 ```
 
 With Chapter 2 ingested, existing character pages gain new detail — Lune's theory about proper motion, Ren's knowledge of Aldric Voss's reputation. The archive and Priya Kesh emerge as key elements. The theme shifts from a personal discrepancy to a systematic catalog error.
 
 ```bash
 cp worked/book-reading/raw/chapter-3.md raw/
-swarmvault ingest raw/chapter-3.md
-swarmvault compile
+beehive ingest raw/chapter-3.md
+beehive compile
 ```
 
 Chapter 3 introduces the antagonist Edric Soren, the discrepancy register, and raises the stakes from scientific disagreement to institutional cover-up. Character relationships deepen.
@@ -61,9 +61,9 @@ Chapter 3 introduces the antagonist Edric Soren, the discrepancy register, and r
 Ask questions that span the material ingested so far:
 
 ```bash
-swarmvault query "What is the Thornback discrepancy and what caused it?"
-swarmvault query "Who is Priya Kesh and why does her work matter?"
-swarmvault query "List every character and their relationship to the cartographic dispute"
+beehive query "What is the Thornback discrepancy and what caused it?"
+beehive query "Who is Priya Kesh and why does her work matter?"
+beehive query "List every character and their relationship to the cartographic dispute"
 ```
 
 ### 5. Lint
@@ -71,7 +71,7 @@ swarmvault query "List every character and their relationship to the cartographi
 Check the wiki for structural issues:
 
 ```bash
-swarmvault lint
+beehive lint
 ```
 
 ## The compounding effect

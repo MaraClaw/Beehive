@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-`@swarmvaultai/viewer` is both a React/Vite graph workspace app and an exported viewer library consumed by the engine package.
+`@beehive/viewer` is both a React/Vite graph workspace app and an exported viewer library consumed by the engine package.
 
 ## STRUCTURE
 
@@ -45,12 +45,12 @@ vitest.config.ts # jsdom test config
 ## COMMANDS
 
 ```bash
-pnpm --filter @swarmvaultai/viewer build
-pnpm --filter @swarmvaultai/viewer test
-pnpm --filter @swarmvaultai/viewer typecheck
+pnpm --filter @beehive/viewer build
+pnpm --filter @beehive/viewer test
+pnpm --filter @beehive/viewer typecheck
 ```
 
 ## NOTES
 
-- Engine build may bundle viewer dist; viewer changes can affect `@swarmvaultai/engine` package output.
+- Engine build may bundle viewer dist; viewer changes can affect `@beehive/engine` package output.
 - Use visual QA for layout, graph rendering, theme, or responsive changes.

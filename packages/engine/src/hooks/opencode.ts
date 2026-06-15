@@ -1,5 +1,5 @@
 // Standalone OpenCode plugin. Bundled by tsup into dist/hooks/opencode.js
-// and installed into user projects as `.opencode/plugins/swarmvault-graph-first.js`.
+// and installed into user projects as `.opencode/plugins/beehive-graph-first.js`.
 // Targets the Bun runtime OpenCode uses; TypeScript sees Bun via the
 // minimal ambient declaration below so the engine typecheck can build
 // this file without pulling in @types/bun.
@@ -29,12 +29,12 @@ interface OpencodeToolInput extends OpencodeSessionInput {
   tool?: string;
 }
 
-export const name = "swarmvault-graph-first";
+export const name = "beehive-graph-first";
 
 function artifactRootDir(cwd: string): string {
-  const override = process.env.SWARMVAULT_OUT?.trim();
+  const override = process.env.BEEHIVE_OUT?.trim();
   const baseDir = !override ? path.resolve(cwd) : path.isAbsolute(override) ? path.resolve(override) : path.resolve(cwd, override);
-  const workspaceId = process.env.SWARMVAULT_WORKSPACE_ID?.trim();
+  const workspaceId = process.env.BEEHIVE_WORKSPACE_ID?.trim();
   return workspaceId && workspaceIdPattern.test(workspaceId) ? path.join(baseDir, workspaceId) : baseDir;
 }
 
@@ -42,7 +42,7 @@ function reportPath(cwd: string): string {
   return path.join(artifactRootDir(cwd), "wiki", "graph", "report.md");
 }
 
-export default async function swarmvaultGraphFirst({ client }: OpencodePluginContext) {
+export default async function beehiveGraphFirst({ client }: OpencodePluginContext) {
   let reportSeen = false;
 
   async function hasReport(cwd: string): Promise<boolean> {
@@ -64,7 +64,7 @@ export default async function swarmvaultGraphFirst({ client }: OpencodePluginCon
   }
 
   const graphFirstNote =
-    "SwarmVault graph-first: this repo has a compiled code graph. Answer structure questions (where is X, what calls Y) with `swarmvault graph query|explain|path --json`, `swarmvault query`, or wiki/graph/report.md instead of broad grep/glob. Read source files only when editing them or when the graph lacks detail.";
+    "Beehive graph-first: this repo has a compiled code graph. Answer structure questions (where is X, what calls Y) with `beehive graph query|explain|path --json`, `beehive query`, or wiki/graph/report.md instead of broad grep/glob. Read source files only when editing them or when the graph lacks detail.";
 
   return {
     async "session.created"(input: OpencodeSessionInput) {

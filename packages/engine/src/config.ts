@@ -15,8 +15,8 @@ import {
 } from "./types.js";
 import { ensureDir, fileExists, readJsonFile, writeJsonFile } from "./utils.js";
 
-const PRIMARY_CONFIG_FILENAME = "swarmvault.config.json";
-export const PRIMARY_SCHEMA_FILENAME = "swarmvault.schema.md";
+const PRIMARY_CONFIG_FILENAME = "beehive.config.json";
+export const PRIMARY_SCHEMA_FILENAME = "beehive.schema.md";
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const viewerDistDir = path.basename(moduleDir) === "src" ? path.resolve(moduleDir, "../../viewer/dist") : path.resolve(moduleDir, "viewer");
 
@@ -140,8 +140,8 @@ const WORKSPACE_DIR_DEFAULTS = {
   inboxDir: "inbox"
 } as const;
 
-export const SWARMVAULT_OUT_ENV = "SWARMVAULT_OUT";
-export const SWARMVAULT_WORKSPACE_ID_ENV = "SWARMVAULT_WORKSPACE_ID";
+export const BEEHIVE_OUT_ENV = "BEEHIVE_OUT";
+export const BEEHIVE_WORKSPACE_ID_ENV = "BEEHIVE_WORKSPACE_ID";
 const workspaceIdContext = new AsyncLocalStorage<string>();
 
 const vaultConfigSchema = z.object({
@@ -493,9 +493,9 @@ export function defaultVaultSchema(profile: string | VaultProfileConfig = "defau
       presetLines.push("- Maintain explicit thesis, hub, or recurring-question pages that evolve as new evidence arrives.");
     }
     return [
-      "# SwarmVault Schema",
+      "# Beehive Schema",
       "",
-      "Edit this file to teach SwarmVault how this research vault should be organized and maintained.",
+      "Edit this file to teach Beehive how this research vault should be organized and maintained.",
       "",
       "## Vault Purpose",
       "",
@@ -551,9 +551,9 @@ export function defaultVaultSchema(profile: string | VaultProfileConfig = "defau
   }
 
   return [
-    "# SwarmVault Schema",
+    "# Beehive Schema",
     "",
-    "Edit this file to teach SwarmVault how this vault should be organized and maintained.",
+    "Edit this file to teach Beehive how this vault should be organized and maintained.",
     "",
     "## Vault Purpose",
     "",
@@ -608,7 +608,7 @@ async function findSchemaPath(rootDir: string): Promise<string> {
 export function validateWorkspaceId(workspaceId: string): string {
   const value = workspaceId.trim();
   if (!value) {
-    throw new Error(`${SWARMVAULT_WORKSPACE_ID_ENV} cannot be empty.`);
+    throw new Error(`${BEEHIVE_WORKSPACE_ID_ENV} cannot be empty.`);
   }
   if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(value)) {
     throw new Error(
@@ -623,7 +623,7 @@ export function getActiveWorkspaceId(): string | undefined {
   if (contextValue !== undefined) {
     return contextValue;
   }
-  const value = process.env[SWARMVAULT_WORKSPACE_ID_ENV];
+  const value = process.env[BEEHIVE_WORKSPACE_ID_ENV];
   return value === undefined ? undefined : validateWorkspaceId(value);
 }
 
@@ -632,7 +632,7 @@ export async function withWorkspaceId<T>(workspaceId: string, run: () => Promise
 }
 
 export function resolveArtifactBaseDir(rootDir: string): string {
-  const override = process.env[SWARMVAULT_OUT_ENV]?.trim();
+  const override = process.env[BEEHIVE_OUT_ENV]?.trim();
   if (!override) {
     return path.resolve(rootDir);
   }

@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "..");
-const skillDir = path.join(repoRoot, "skills", "swarmvault");
+const skillDir = path.join(repoRoot, "skills", "beehive");
 
 const requiredFiles = [
   "SKILL.md",
@@ -19,30 +19,30 @@ const requiredFiles = [
 ];
 
 const requiredReadmeSubstrings = [
-  "clawhub install swarmvault",
-  "npm install -g @swarmvaultai/cli",
-  "swarmvault --version",
-  "clawhub update swarmvault",
-  "npm install -g @swarmvaultai/cli@latest",
-  "swarmvault quickstart",
-  "swarmvault init",
-  "swarmvault ingest",
+  "clawhub install beehive",
+  "npm install -g @beehive/cli",
+  "beehive --version",
+  "clawhub update beehive",
+  "npm install -g @beehive/cli@latest",
+  "beehive quickstart",
+  "beehive init",
+  "beehive ingest",
   ".epub",
   ".csv",
   ".xlsx",
   ".pptx",
-  "swarmvault add",
-  "swarmvault compile",
-  "swarmvault query",
-  "swarmvault chat",
-  "swarmvault export ai",
-  "swarmvault graph serve",
-  "swarmvault mcp",
-  "https://www.swarmvault.ai/docs",
-  "https://www.swarmvault.ai/docs/providers",
-  "https://www.swarmvault.ai/docs/getting-started/troubleshooting",
-  "https://www.npmjs.com/package/@swarmvaultai/cli",
-  "https://github.com/swarmclawai/swarmvault"
+  "beehive add",
+  "beehive compile",
+  "beehive query",
+  "beehive chat",
+  "beehive export ai",
+  "beehive graph serve",
+  "beehive mcp",
+  "https://www.beehive.ai/docs",
+  "https://www.beehive.ai/docs/providers",
+  "https://www.beehive.ai/docs/getting-started/troubleshooting",
+  "https://www.npmjs.com/package/@beehive/cli",
+  "https://github.com/beehive/beehive"
 ];
 
 function assertCondition(condition, message) {
@@ -81,14 +81,14 @@ assertCondition(viewerPackageJson.version === rootPackageJson.version, "Viewer p
 
 const openclaw = metadata.openclaw ?? {};
 const installEntries = Array.isArray(openclaw.install) ? openclaw.install : [];
-const primaryInstall = installEntries.find((entry) => entry?.package === "@swarmvaultai/cli");
+const primaryInstall = installEntries.find((entry) => entry?.package === "@beehive/cli");
 
 assertCondition(Array.isArray(openclaw.requires?.anyBins), "Skill metadata is missing openclaw.requires.anyBins");
-assertCondition(openclaw.requires.anyBins.includes("swarmvault"), "Skill metadata is missing the swarmvault bin requirement");
+assertCondition(openclaw.requires.anyBins.includes("beehive"), "Skill metadata is missing the beehive bin requirement");
 assertCondition(openclaw.requires.anyBins.includes("vault"), "Skill metadata is missing the vault bin requirement");
-assertCondition(primaryInstall, "Skill metadata is missing the @swarmvaultai/cli install entry");
-assertCondition(Array.isArray(primaryInstall.bins) && primaryInstall.bins.includes("swarmvault"), "Skill install entry must expose the swarmvault bin");
-assertCondition(typeof openclaw.homepage === "string" && openclaw.homepage.includes("swarmvault.ai"), "Skill metadata homepage is missing or invalid");
+assertCondition(primaryInstall, "Skill metadata is missing the @beehive/cli install entry");
+assertCondition(Array.isArray(primaryInstall.bins) && primaryInstall.bins.includes("beehive"), "Skill install entry must expose the beehive bin");
+assertCondition(typeof openclaw.homepage === "string" && openclaw.homepage.includes("beehive.ai"), "Skill metadata homepage is missing or invalid");
 
 for (const required of requiredReadmeSubstrings) {
   assertCondition(readmeContent.includes(required), `Skill README is missing required content: ${required}`);

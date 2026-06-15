@@ -26,7 +26,7 @@ export function createPreflightSummary({
 
 export function formatPreflightSummaryMarkdown(summary) {
   const lines = [
-    `# SwarmVault ${summary.version} Release Preflight`,
+    `# Beehive ${summary.version} Release Preflight`,
     "",
     `Status: ${summary.status}`,
     `Started: ${summary.startedAt}`,

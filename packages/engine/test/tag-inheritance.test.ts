@@ -76,14 +76,14 @@ describe("tag inheritance — derived concept/entity pages", () => {
     const analyses = [makeAnalysis({ sourceId: "alpha", tags: ["research"] }), makeAnalysis({ sourceId: "beta", tags: ["agents"] })];
     const { content } = buildAggregatePage(
       "entity",
-      "SwarmVault",
-      ["An entity about SwarmVault."],
+      "Beehive",
+      ["An entity about Beehive."],
       analyses,
       { alpha: "alpha", beta: "beta" },
       { alpha: "alpha", beta: "beta" },
       "schema-hash",
       metadata(),
-      "entities/swarmvault.md"
+      "entities/beehive.md"
     );
 
     const tags = tagsOf(content);

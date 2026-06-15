@@ -76,7 +76,7 @@ async function ensureCompiledGraph(rootDir: string): Promise<GraphArtifact> {
   }
   const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
   if (!graph) {
-    throw new Error("Graph artifact not found. Run `swarmvault compile` first.");
+    throw new Error("Graph artifact not found. Run `beehive compile` first.");
   }
   return graph;
 }
@@ -427,7 +427,7 @@ export function renderContextPackMarkdown(pack: ContextPack): string {
     "",
     "## Agent Instructions",
     "",
-    "Use this pack as bounded SwarmVault context. Prefer cited source IDs and page IDs over unsupported inference. If the task needs omitted context, ask for a larger budget or a narrower target.",
+    "Use this pack as bounded Beehive context. Prefer cited source IDs and page IDs over unsupported inference. If the task needs omitted context, ask for a larger budget or a narrower target.",
     "",
     "## Graph Orientation",
     "",

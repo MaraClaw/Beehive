@@ -7,7 +7,7 @@ import { compileVault, ingestDirectory, initVault, listManifests, loadVaultConfi
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-single-file-refresh-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-single-file-refresh-"));
   tempDirs.push(dir);
   return dir;
 }

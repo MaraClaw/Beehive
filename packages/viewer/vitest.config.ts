@@ -4,6 +4,12 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom"
+    environment: "jsdom",
+    environmentOptions: {
+      jsdom: {
+        url: "http://localhost/"
+      }
+    },
+    setupFiles: ["./test/setup.ts"]
   }
 });

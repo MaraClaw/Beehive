@@ -6,6 +6,8 @@ export { autoCommitWikiChanges } from "./auto-commit.js";
 export { DEFAULT_PROMOTION_CONFIG, evaluateCandidateForPromotion } from "./candidate-promotion.js";
 export { askChatSession, deleteChatSession, listChatSessions, readChatSession } from "./chat.js";
 export {
+  BEEHIVE_OUT_ENV,
+  BEEHIVE_WORKSPACE_ID_ENV,
   defaultVaultConfig,
   defaultVaultSchema,
   getActiveWorkspaceId,
@@ -15,8 +17,6 @@ export {
   resolveArtifactRootDir,
   resolvePaths,
   resolveSchemaPath,
-  SWARMVAULT_OUT_ENV,
-  SWARMVAULT_WORKSPACE_ID_ENV,
   validateWorkspaceId,
   withWorkspaceId
 } from "./config.js";

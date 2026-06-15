@@ -20,7 +20,7 @@ citations/rewrite.test.ts      # page_id token to wikilink behavior
 | Test config | `../vitest.config.ts` | Node environment, alias `obsidian` to `test/fixtures/obsidian.ts`. |
 | Obsidian mock | `fixtures/obsidian.ts` | Minimal imported API surface only. |
 | CLI process tests | `cli/run.test.ts` | Fake child process, stream chunking, last-line JSON, ENOENT, abort. |
-| Workspace tests | `workspace/resolve-root.test.ts` | `swarmvault.schema.md` marker, override, maxDepth. |
+| Workspace tests | `workspace/resolve-root.test.ts` | `beehive.schema.md` marker, override, maxDepth. |
 | Citation tests | `citations/rewrite.test.ts` | Wikilink aliases and IDs with colons/slashes/dots. |
 
 ## CONVENTIONS
@@ -28,7 +28,7 @@ citations/rewrite.test.ts      # page_id token to wikilink behavior
 - Grow the Obsidian mock only when code-under-test imports more API surface.
 - CLI runner tests intentionally split stdout/stderr mid-line to verify raw stream preservation and JSON parsing.
 - Last-line JSON parsing is a contract; preserve raw streams for diagnostics.
-- Workspace root discovery is marker-based on `swarmvault.schema.md`.
+- Workspace root discovery is marker-based on `beehive.schema.md`.
 - Citation rewriting preserves aliases and supports page IDs that are not simple slugs.
 
 ## ANTI-PATTERNS
@@ -41,8 +41,8 @@ citations/rewrite.test.ts      # page_id token to wikilink behavior
 ## COMMANDS
 
 ```bash
-pnpm --filter @swarmvaultai/obsidian-plugin test
-pnpm --filter @swarmvaultai/obsidian-plugin typecheck
+pnpm --filter @beehive/obsidian-plugin test
+pnpm --filter @beehive/obsidian-plugin typecheck
 ```
 
 ## NOTES

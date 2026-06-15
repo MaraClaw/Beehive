@@ -9,7 +9,7 @@ import type { ProviderAdapter } from "../src/types.js";
 const tempDirs: string[] = [];
 
 async function createTempWorkspace(): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "swarmvault-audio-inbox-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "beehive-audio-inbox-"));
   tempDirs.push(dir);
   return dir;
 }
