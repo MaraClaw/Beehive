@@ -14,6 +14,7 @@ import {
   estimateCorpusWords,
   graphHash
 } from "./benchmark.js";
+import { readReusableConfiguredBenchmarkArtifact } from "./benchmark-cache.js";
 import {
   DEFAULT_PROMOTION_CONFIG,
   evaluateCandidateForPromotion,
@@ -5332,12 +5333,23 @@ export async function initVault(rootDir: string, options: InitOptions = {}): Pro
   }
 }
 
-async function runConfiguredBenchmark(rootDir: string, config: VaultConfig): Promise<{ ok: boolean; error?: string }> {
+async function runConfiguredBenchmark(
+  rootDir: string,
+  config: VaultConfig,
+  options: { graph?: GraphArtifact; reuseCleanArtifact?: boolean } = {}
+): Promise<{ ok: boolean; error?: string }> {
   if (config.benchmark?.enabled === false) {
     return { ok: true };
   }
 
   try {
+    if (options.reuseCleanArtifact && options.graph) {
+      const { paths } = await loadVaultConfig(rootDir);
+      const reusable = await readReusableConfiguredBenchmarkArtifact(paths.benchmarkPath, options.graph, config);
+      if (reusable) {
+        return { ok: true };
+      }
+    }
     await benchmarkVault(rootDir);
     return { ok: true };
   } catch (error) {
@@ -5425,7 +5437,9 @@ export async function compileVault(rootDir: string, options: CompileOptions = {}
     !options.approve
   ) {
     const graph = await readJsonFile<GraphArtifact>(paths.graphPath);
-    const benchmark = await runConfiguredBenchmark(rootDir, config);
+    const benchmark = graph
+      ? await runConfiguredBenchmark(rootDir, config, { graph, reuseCleanArtifact: true })
+      : await runConfiguredBenchmark(rootDir, config);
     if (graph && benchmark.ok) {
       await refreshIndexesAndSearch(rootDir, graph.pages);
     }
