@@ -1,0 +1,35 @@
+[constraints]
+max_cycles = 1
+max_coupling = "B"
+max_cc = 90
+no_god_files = false
+
+[[layers]]
+name = "viewer"
+paths = ["packages/viewer/src/**/*", "packages/viewer/index.html"]
+order = 2
+
+[[layers]]
+name = "engine"
+paths = ["packages/engine/**/*"]
+order = 1
+
+[[layers]]
+name = "cli"
+paths = ["packages/cli/**/*"]
+order = 0
+
+[[layers]]
+name = "obsidian-plugin"
+paths = ["packages/obsidian-plugin/**/*"]
+order = 0
+
+[[boundaries]]
+from = "packages/engine/**/*"
+to = "packages/cli/**/*"
+reason = "Engine runtime must not depend on the CLI facade."
+
+[[boundaries]]
+from = "packages/viewer/**/*"
+to = "packages/cli/**/*"
+reason = "Viewer must not depend on CLI runtime."

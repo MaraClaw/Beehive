@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-`@beehive/engine` is the public runtime library behind ingest, compile, graph/wiki output, search, watch, providers, MCP, and agent installation.
+`@beehive/engine` is the public runtime library behind ingest, compile, graph/wiki output, search, watch, providers, MCP, agent installation, consolidation, and vault migration.
 
 ## STRUCTURE
 
@@ -19,7 +19,7 @@ tsup.hooks.config.ts # standalone hook build
 
 | Task | Location | Notes |
 | --- | --- | --- |
-| Public exports | `src/index.ts` | Only package export target; treat additions as public API. |
+| Public exports | `src/index.ts` | Only package export target; treat additions as public API, including consolidate/migrate helpers. |
 | Public types | `src/types.ts` | Re-exported with `export type *`; broad compatibility surface. |
 | Build pipeline | `package.json`, `tsup.config.ts`, `tsup.hooks.config.ts` | Builds viewer if missing, engine ESM+dts, hooks bundle, grammar assets. |
 | Viewer bundle | `src/viewer.ts`, `dist/viewer` | Engine packages viewer assets for graph serving/export. |
@@ -30,6 +30,7 @@ tsup.hooks.config.ts # standalone hook build
 - Node >=24 is assumed; `node:sqlite` is used by search/storage code.
 - Package exports only `.` from `dist/index.js` and `dist/index.d.ts`; do not add deep exports casually.
 - New config fields need schema/default/type/docs/CLI awareness, not just an interface edit.
+- New user-facing engine functions need `src/index.ts`, types, docs, CLI/MCP exposure, and smoke coverage considered together.
 - Use engine path helpers such as `loadVaultConfig`, `resolvePaths`, and `resolveArtifactRootDir` for artifact roots.
 - Keep `packages/viewer` build compatibility in mind; engine build can bundle viewer `dist` output.
 
@@ -50,6 +51,7 @@ pnpm --filter @beehive/engine typecheck
 
 ## NOTES
 
-- Engine changes often require CLI surface, viewer payload, markdown artifact, and fixture-test checks.
+- Engine changes often require CLI surface, MCP, viewer payload, markdown artifact, and fixture-test checks.
+- Consolidation and migration flows write wiki/state artifacts; preserve dry-run behavior and doctor/surface-smoke expectations.
 - Hook code under `src/hooks/` has stricter standalone rules than normal engine modules.
 - Tests are in a sibling child knowledge base because they encode fixture and env-isolation contracts.

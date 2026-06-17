@@ -13,7 +13,8 @@ Provider adapters are capability-driven boundaries between Beehive tasks and mod
 | Resolution | `registry.ts` | `getProviderForTask`, `createProvider`, `assertProviderCapability`. |
 | OpenAI-compatible behavior | `openai-compatible.ts` | Structured output and schema quirks. |
 | Local audio | `local-whisper.ts` | Audio-only adapter; rejects text/embedding/image tasks. |
-| Custom providers | `custom.ts` | Module loader expects `createAdapter(id, config, rootDir)`. |
+| Local audio setup | `local-whisper-setup.ts` | Binary discovery, model download paths, and config registration for `provider setup`. |
+| Custom providers | `registry.ts` | Custom module loader expects `createAdapter(id, config, rootDir)`. |
 
 ## CONVENTIONS
 
@@ -22,6 +23,7 @@ Provider adapters are capability-driven boundaries between Beehive tasks and mod
 - Structured JSON support varies by provider; keep fallback parsing and schema validation explicit.
 - Custom modules are workspace-facing extension points, so error messages need provider id, module path, and missing export details.
 - Local/offline providers may be valid but lower quality; do not mark heuristic or local providers as invalid just because quality is lower.
+- Setup helpers should separate discovery, download, and config registration so dry-run/status output stays non-mutating unless `--apply` is explicit.
 
 ## ANTI-PATTERNS
 
@@ -36,6 +38,7 @@ Provider adapters are capability-driven boundaries between Beehive tasks and mod
 pnpm --filter @beehive/engine test -- provider
 pnpm --filter @beehive/engine test -- openai-provider
 pnpm --filter @beehive/engine test -- local-whisper
+pnpm --filter @beehive/engine test -- local-whisper-setup
 ```
 
 ## NOTES

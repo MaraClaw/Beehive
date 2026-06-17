@@ -10,7 +10,7 @@ Source code handles Obsidian plugin lifecycle, commands, CLI process integration
 main.ts          # plugin entry and lifecycle
 commands/        # addCommand registrations and command implementations
 cli/             # shell-out runner, managed processes, version check, Windows shim
-workspace/       # marker-based Beehive workspace root resolution
+workspace/       # marker/config workspace resolution plus artifact root helpers
 citations/       # page_id token to Obsidian wikilink rewriting
 modals/          # query/input modals
 settings/        # defaults and settings tab
@@ -25,7 +25,8 @@ ui/              # status bar UI
 | Startup/shutdown | `main.ts` | Loads settings, view, status, settings tab, commands, workspace freshness, CLI verification. |
 | Command registration | `commands/register.ts` | Most commands live here; verify/open run log also appear in `main.ts`. |
 | CLI execution | `cli/run.ts`, `cli/managed-processes.ts` | Raw stream preservation, JSON parsing, abort, process cleanup. |
-| Workspace root | `workspace/resolve-root.ts` | Requires `FileSystemAdapter`; walks up for `beehive.schema.md`. |
+| Workspace root | `workspace/resolve-root.ts` | Prefers `beehive.config.json`, falls back to `beehive.schema.md`, honors max depth. |
+| Artifact roots | `workspace/artifacts.ts` | Validates workspace ids, sets CLI env, respects `BEEHIVE_OUT` for generated files. |
 | Citation rewrite | `citations/rewrite.ts` | `[[page_id:...]]` to Obsidian wikilinks with aliases. |
 | Settings | `settings/defaults.ts`, `settings/SettingsTab.ts` | CLI binary, workspace override, default query output mode, auto-compile. |
 
@@ -38,11 +39,13 @@ ui/              # status bar UI
 - Vault/file integration uses `TFile`, `vault.create`, and `getAbstractFileByPath`.
 - DOM creation should use Obsidian helper methods such as `createEl`, `createSpan`, and `empty`.
 - CLI cwd should be detected workspace root when available.
+- Plugin CLI calls set `BEEHIVE_WORKSPACE_ID`; generated artifact reads resolve `<artifact-base>/<workspaceId>` and respect relative or absolute `BEEHIVE_OUT`.
 
 ## ANTI-PATTERNS
 
 - Do not leave watch/serve processes outside `managedProcesses.stopAll()` cleanup.
 - Do not assume workspace override save refreshes workspace automatically unless code is updated to do it.
+- Do not silently normalize unsafe workspace ids; reject values outside the safe ASCII slug pattern.
 - Do not rewrite citation token grammar without updating tests for aliases and IDs containing colons, slashes, and dots.
 - Do not call Node-only APIs from code that would run in a mobile/browser Obsidian context; package is desktop-only.
 
