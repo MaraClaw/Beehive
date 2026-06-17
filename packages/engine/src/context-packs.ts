@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { loadVaultConfig } from "./config.js";
 import { recordSession } from "./logs.js";
+import { attachContextPackToMemoryTask, listMemoryTasks, readMemoryTask } from "./memory-store.js";
 import { estimateTokens } from "./token-estimation.js";
 import type {
   AgentMemoryTask,
@@ -566,13 +567,12 @@ export async function buildContextPack(rootDir: string, options: BuildContextPac
     }
   }
 
-  const memorySummaries = await import("./memory.js").then(({ listMemoryTasks }) => listMemoryTasks(rootDir)).catch(() => []);
+  const memorySummaries = await listMemoryTasks(rootDir).catch(() => []);
   const memorySummaryIds = uniqueStrings([
     ...(options.memoryTaskId ? [options.memoryTaskId] : []),
     ...memorySummaries.slice(0, 20).map((summary) => summary.id)
   ]);
   if (memorySummaryIds.length) {
-    const { readMemoryTask } = await import("./memory.js");
     for (const taskId of memorySummaryIds) {
       const task = await readMemoryTask(rootDir, taskId).catch(() => null);
       if (!task) {
@@ -654,8 +654,12 @@ export async function buildContextPack(rootDir: string, options: BuildContextPac
     ]
   });
   if (options.memoryTaskId) {
-    const { updateMemoryTask } = await import("./memory.js");
-    await updateMemoryTask(rootDir, options.memoryTaskId, { contextPackId: pack.id });
+    await attachContextPackToMemoryTask(rootDir, options.memoryTaskId, {
+      id: pack.id,
+      relatedSourceIds: pack.relatedSourceIds,
+      relatedPageIds: pack.relatedPageIds,
+      relatedNodeIds: pack.relatedNodeIds
+    });
   }
 
   return {

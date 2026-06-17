@@ -61,7 +61,7 @@ import {
   type ManagedGraphPageMetadata,
   type ManagedPageMetadata
 } from "./markdown.js";
-import { buildMemoryGraphElements, loadMemoryTaskPages, memoryTaskHashes, updateMemoryTask } from "./memory.js";
+import { buildMemoryGraphElements, loadMemoryTaskPages, memoryTaskHashes, updateMemoryTaskRecord } from "./memory-store.js";
 import { runConfiguredRoles, summarizeRoleQuestions } from "./orchestration.js";
 import {
   buildOutputAssetManifest,
@@ -5831,7 +5831,7 @@ export async function queryVault(rootDir: string, rawOptions: QueryOptions): Pro
     ]
   });
   if (options.memoryTaskId) {
-    await updateMemoryTask(rootDir, options.memoryTaskId, {
+    await updateMemoryTaskRecord(rootDir, options.memoryTaskId, {
       note: `Query: ${options.question}`,
       pageId: savedPageId,
       sourceId: query.relatedSourceIds[0],
@@ -6109,7 +6109,7 @@ export async function exploreVault(rootDir: string, rawOptions: ExploreOptions):
     ]
   });
   if (options.memoryTaskId) {
-    await updateMemoryTask(rootDir, options.memoryTaskId, {
+    await updateMemoryTaskRecord(rootDir, options.memoryTaskId, {
       note: `Explore: ${options.question}`,
       pageId: hubPage.id,
       sourceId: [...relatedSourceIds][0],
