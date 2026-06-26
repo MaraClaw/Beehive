@@ -2907,7 +2907,9 @@ describe("beehive workflow", () => {
     expect(tools.tools.some((tool) => tool.name === "start_task")).toBe(true);
     expect(tools.tools.some((tool) => tool.name === "retrieval_status")).toBe(true);
     expect(tools.tools.some((tool) => tool.name === "doctor_vault")).toBe(true);
-    expect(tools.tools.find((tool) => tool.name === "workspace_info")?.inputSchema.required).toContain("workspace_id");
+    const workspaceInfoInputSchema = tools.tools.find((tool) => tool.name === "workspace_info")?.inputSchema;
+    expect(workspaceInfoInputSchema?.required).toContain("workspace_id");
+    expect(JSON.stringify(workspaceInfoInputSchema)).toContain('"pattern":"^[A-Za-z0-9][A-Za-z0-9_-]*$"');
 
     const callTool = async (name: string, args: Record<string, unknown> = {}) =>
       await client.callTool({ name, arguments: { workspace_id: workspaceId, ...args } });

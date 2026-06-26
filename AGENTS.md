@@ -1,8 +1,8 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-06-15
-**Commit:** 8c76396
-**Branch:** develop
+**Generated:** 2026-06-26
+**Commit:** 559b353
+**Branch:** workspace_id-refactoring
 
 ## OVERVIEW
 
@@ -37,6 +37,23 @@ docs/                     # live-testing and release/user-facing docs
 | Obsidian runtime | `packages/obsidian-plugin/src/main.ts`, `src/commands/`, `src/cli/` | Desktop plugin shells out to the CLI. |
 | Release/publish safety | `scripts/release-preflight.mjs`, `release-publish.mjs`, `check-release-sync.mjs` | Dry-run still validates tags/worktrees/version sync. |
 | ClawHub skill package | `skills/beehive/SKILL.md`, `README.md`, `examples/`, `references/` | Text-only published skill; frontmatter is checked. |
+
+## CODE MAP
+
+Refs are approximate source-scan counts from this generation; codegraph was not indexed and TS symbol LSP was unavailable.
+
+| Symbol | Type | Location | Refs | Role |
+| --- | --- | --- | ---: | --- |
+| `compileVault` | function | `packages/engine/src/vault.ts` | 217 | Central compile/wiki/graph/search orchestration. |
+| `ingestInputDetailed` | function | `packages/engine/src/ingest.ts` | 23 | Detailed file/URL/directory ingest result envelope. |
+| `syncTrackedFiles` | function | `packages/engine/src/ingest.ts` | 9 | Per-file graph refresh path behind `graph update --file`. |
+| `runWatchCycle` | function | `packages/engine/src/watch.ts` | 19 | One-shot watch/repo refresh path for hooks and CLI. |
+| `queryGraphVault` | function | `packages/engine/src/vault.ts` | 18 | Deterministic graph query wrapper over compiled graph state. |
+| `listGraphCallers` | function | `packages/engine/src/graph-callers.ts` | 10 | Caller lookup from graph `calls` edges with bounded file:line evidence. |
+| `buildContextPack` | function | `packages/engine/src/context-packs.ts` | 18 | Token-budgeted agent evidence bundle generation. |
+| `installAgent` | function | `packages/engine/src/agents.ts` | 44 | Agent rules, hooks, skill bundles, and managed-block installs. |
+| `createMcpServer` | function | `packages/engine/src/mcp.ts` | 10 | Workspace-scoped Beehive MCP tool/resource registration. |
+| `fetchGraphArtifact` | function | `packages/viewer/src/lib.ts` | 4 | Viewer library API entry for graph payload consumers. |
 
 ## CONVENTIONS
 
