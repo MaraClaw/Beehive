@@ -1,2 +1,7 @@
 packages:
   - packages/*
+allowBuilds:
+  '@evilmartians/lefthook': true
+  esbuild: true
+  tree-sitter-julia: true
+  tree-sitter-systemverilog: true
