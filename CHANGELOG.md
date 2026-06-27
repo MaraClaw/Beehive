@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Changed PDF extraction to prefer a user-installed Poppler `pdftotext` binary, configurable through `BEEHIVE_PDFTOTEXT_BINARY`, while preserving the bundled `pdfjs-dist` fallback and the existing `pdf_text` sidecar contract.
+
 ## 3.21.0
 
 - Added declaration line ranges to code symbols: the TypeScript/JavaScript analyzer records `startLine`/`endLine` for functions, classes, and variables, the ranges travel through `CodeSymbol` onto graph symbol nodes, and `graph callers` scans only each caller's own declaration range so call sites are attributed to the correct caller even when several callers share a file. Symbols without ranges (other languages, older graphs) keep the previous per-file behavior.
