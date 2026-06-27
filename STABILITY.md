@@ -164,6 +164,7 @@ These may change in any minor release. Use at your own risk.
 - Custom web-search adapter modules (`webSearch.providers.<id>.module`)
 - Orchestration command executors (`orchestration.roles.*.executor.command`)
 - `providers.<id>.type = "local-whisper"` and its extensions (`binaryPath`, `modelPath`, `extraArgs`, `threads`) — shelling out to a user-installed `whisper.cpp` binary; the discovery, config shape, and model-download behavior may evolve as the feature graduates to stable
+- PDF extraction binary override (`BEEHIVE_PDFTOTEXT_BINARY`) — shelling out to a user-installed `pdftotext`-compatible binary; discovery, flags, and fallback behavior may evolve as the extractor strategy is tuned
 - `beehive provider setup` subcommand (added in 1.1.0) — options and prompts may change while the flow is being iterated
 - Any CLI flag documented as `experimental` in `--help`
 
