@@ -47,15 +47,15 @@
     "prepublishOnly": "node ../../scripts/check-release-sync.mjs && node ../../scripts/check-published-manifests.mjs"
   },
   "dependencies": {
-    "@asciidoctor/core": "^3.0.4",
+    "@asciidoctor/core": "^4.0.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@mozilla/readability": "^0.6.0",
     "@retorquere/bibtex-parser": "^10.0.0",
     "@vscode/tree-sitter-wasm": "^0.3.1",
     "chokidar": "^5.0.0",
     "compromise": "^14.15.1",
-    "csv-parse": "^6.2.1",
-    "fast-xml-parser": "^5.8.0",
+    "csv-parse": "^7.0.0",
+    "fast-xml-parser": "^5.9.3",
     "fflate": "^0.8.3",
     "graphology": "^0.26.0",
     "graphology-communities-louvain": "^2.0.2",
@@ -64,7 +64,7 @@
     "ini": "^7.0.0",
     "istextorbinary": "^9.5.0",
     "jsdom": "^29.1.1",
-    "mailparser": "^3.9.9",
+    "mailparser": "^3.9.12",
     "mammoth": "^1.12.0",
     "mdast-util-from-markdown": "^2.0.3",
     "mime-types": "^3.0.2",
@@ -75,7 +75,7 @@
     "orga": "^4.7.1",
     "pdfjs-dist": "^6.0.227",
     "rtf-parser": "^1.3.3",
-    "smol-toml": "^1.6.1",
+    "smol-toml": "^1.7.0",
     "subtitle": "^4.2.2",
     "tree-sitter-wasms": "^0.1.13",
     "turndown": "^7.2.4",
@@ -91,12 +91,12 @@
     "@types/jsdom": "^28.0.3",
     "@types/mailparser": "^3.4.6",
     "@types/mime-types": "^3.0.1",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.1",
     "@types/turndown": "^5.0.6",
     "graphology-types": "^0.24.8",
     "tree-sitter-julia": "0.23.1",
     "tree-sitter-systemverilog": "0.3.1",
     "tsup": "^8.5.1",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }

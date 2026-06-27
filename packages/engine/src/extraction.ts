@@ -1,4 +1,3 @@
-import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -12,8 +11,11 @@ import { z } from "zod";
 import { loadVaultConfig } from "./config.js";
 import { firstMarkdownHeading } from "./markdown-ast.js";
 import { getProviderForTask } from "./providers/registry.js";
+import { runTool, toolFailure } from "./tool-runner.js";
 import type { GraphArtifact, GraphNode, ProviderAdapter, SourceExtractionArtifact, SourceKind } from "./types.js";
 import { fileExists, normalizeWhitespace, readJsonFile, sha256, truncate } from "./utils.js";
+
+export { extractPdfText } from "./pdf-extraction.js";
 
 const imageVisionExtractionSchema = z.object({
   title: z.string().min(1).nullable().optional(),
@@ -319,41 +321,9 @@ export async function extractAudioTranscription(
   }
 }
 
-type ToolRunResult = {
-  code: number | null;
-  stdout: string;
-  stderr: string;
-};
-
 function videoBinary(envName: "BEEHIVE_FFMPEG_BINARY" | "BEEHIVE_YTDLP_BINARY", fallback: string): string {
   const configured = process.env[envName]?.trim();
   return configured || fallback;
-}
-
-function runTool(binary: string, args: string[], options?: { cwd?: string }): Promise<ToolRunResult> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(binary, args, {
-      cwd: options?.cwd,
-      stdio: ["ignore", "pipe", "pipe"]
-    });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-    });
-    child.on("error", reject);
-    child.on("close", (code) => {
-      resolve({ code, stdout, stderr });
-    });
-  });
-}
-
-function toolFailure(binary: string, result: ToolRunResult): Error {
-  const tail = (result.stderr || result.stdout).split(/\r?\n/).filter(Boolean).slice(-5).join("\n");
-  return new Error(`${binary} exited with code ${result.code}${tail ? `: ${tail}` : ""}`);
 }
 
 async function extractAudioFromVideoBytes(input: { mimeType: string; bytes: Buffer; fileName?: string }): Promise<{
@@ -566,24 +536,6 @@ export async function extractYoutubeTranscript(input: {
   }
 }
 
-function normalizePdfMetadata(raw: unknown): Record<string, string> | undefined {
-  if (!raw || typeof raw !== "object") {
-    return undefined;
-  }
-
-  const metadata: Record<string, string> = {};
-  for (const [key, value] of Object.entries(raw)) {
-    if (typeof value === "string") {
-      const cleaned = normalizeWhitespace(value);
-      if (cleaned) {
-        metadata[key] = cleaned;
-      }
-    }
-  }
-
-  return Object.keys(metadata).length ? metadata : undefined;
-}
-
 function normalizeDocumentText(raw: string): string {
   return raw
     .replace(/\r\n/g, "\n")
@@ -791,66 +743,6 @@ export interface GroupedTextExtraction {
   title: string;
   markdown: string;
   metadata: Record<string, string>;
-}
-
-export async function extractPdfText(input: {
-  mimeType: string;
-  bytes: Buffer;
-}): Promise<{ extractedText?: string; artifact: SourceExtractionArtifact }> {
-  try {
-    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    type PdfDocumentInitParameters = Parameters<typeof pdfjs.getDocument>[0] & { isEvalSupported: boolean };
-    const documentOptions: PdfDocumentInitParameters = {
-      data: new Uint8Array(input.bytes),
-      useWorkerFetch: false,
-      disableFontFace: true,
-      isEvalSupported: false,
-      verbosity: 0
-    };
-    const task = pdfjs.getDocument(documentOptions);
-    const document = await task.promise;
-    const pageTexts: string[] = [];
-
-    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
-      const page = await document.getPage(pageNumber);
-      const textContent = await page.getTextContent();
-      const pageText = normalizeWhitespace(
-        textContent.items
-          .map((item) => (typeof item === "object" && item && "str" in item && typeof item.str === "string" ? item.str : ""))
-          .join(" ")
-      );
-      if (pageText) {
-        pageTexts.push(pageText);
-      }
-      page.cleanup();
-    }
-
-    const metadataResult = await document.getMetadata().catch(() => null);
-    await task.destroy();
-
-    const extractedText = pageTexts.join("\n\n").trim();
-    const artifact: SourceExtractionArtifact = {
-      ...extractionMetadata("pdf", input.mimeType, "pdf_text"),
-      pageCount: document.numPages,
-      metadata: normalizePdfMetadata(metadataResult?.info)
-    };
-
-    if (!extractedText) {
-      artifact.warnings = ["PDF text extraction completed but produced no extractable text."];
-    }
-
-    return {
-      extractedText: extractedText || undefined,
-      artifact
-    };
-  } catch (error) {
-    return {
-      artifact: {
-        ...extractionMetadata("pdf", input.mimeType, "pdf_text"),
-        warnings: [`PDF text extraction failed: ${error instanceof Error ? truncate(error.message, 240) : "unknown error"}`]
-      }
-    };
-  }
 }
 
 export async function extractDocxText(input: {
